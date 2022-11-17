@@ -331,5 +331,7 @@ TSWLatexianTemp*
 .history
 .ionide
 
+output/
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,latex
 
