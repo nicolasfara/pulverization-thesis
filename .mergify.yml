@@ -1,0 +1,9 @@
+pull_request_rules:
+  - name: Automatic merge for renovate
+    conditions:
+      - author=renovate[bot]
+      - -conflict # No conflict
+      - -draft # The PR should not be a 'draft'
+    actions:
+      merge:
+        method: rebase
