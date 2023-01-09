@@ -11,33 +11,18 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.3.0
 
       - name: Build report
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@2.7.0
         with:
           root_file: thesis-main.tex
           args: -pdf -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape
 
-      - name: Create tag for the current release
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
-        uses: DanySK/semver-autotag-action@0.1.0
-
-      - name: Release report
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if [[ -z ${GITHUB_TOKEN} ]]; then
-            echo "No token found... unable to deploy"
-            false
-          else
-            TAG=$(git describe --tags --exact-match HEAD)
-            hub release create -m "$(git tag -l --format='%(contents)' "$TAG")" "$TAG" || true
-            for file in `ls *.pdf`
-            do
-              echo "Release of $file"
-              gh release upload "$TAG" $file --clobber
-            done
-          fi
+      - uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: "latest"
+          prerelease: false
+          files: |
+            *.pdf
