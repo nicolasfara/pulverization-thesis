@@ -6,7 +6,7 @@
 \documentclass[12pt,a4paper,openright,twoside]{book}
 \usepackage[utf8]{inputenc}
 
-%\newcommand{\thesislang}{italian} % decommentare in caso di tesi in italiano
+%\newcommand{\thesislang}{italian} % de-commentare in caso di tesi in italiano
 \newcommand{\thesislang}{english} % commentare in caso di tesi in italiano
 \usepackage{thesis-style}
 % version
@@ -43,91 +43,28 @@
 \mainmatter
 
 %----------------------------------------------------------------------------------------
-\chapter{\introductionname}
-\label{chap:introduction}
+\input{chapters/1-introduction.tex}
 %----------------------------------------------------------------------------------------
 
-Write introduction here.
-
-%
-\paragraph{Thesis Structure.} % Optional paragraph title
-%
-
-(This is optional an optional paragraph.)
-%
-Accordingly, the reminder of this thesis is structures as follows.
-%
-\Cref{chap:background} discusses (briefly describe the content of \cref{chap:background}).
-%
-Describe other chapters here in a similar way.
-%
-Finally, \Cref{chap:conclusions} concludes this thesis by summarizing its main contribution.
-
 %----------------------------------------------------------------------------------------
-\chapter{State of the Art} % or Background
-\label{chap:background}
+\input{chapters/2-state-of-art.tex}
 %----------------------------------------------------------------------------------------
 
-Write background here.
-
-This section is likely to contain a lot of citations.
-%
-For instance in \cite{AnzengruberSocInfo2013} the authors propose a novel means for tackling with the problem of preventing bad things from happening.
-
 %----------------------------------------------------------------------------------------
-\chapter{Design} % possible chapter for Projects
-\label{chap:design}
+\input{chapters/3-design.tex}
 %----------------------------------------------------------------------------------------
 
-Write design here.
-
-% \begin{figure}
-% 	\centering
-% 	\includegraphics[width=0.5\linewidth]{figures/classes.pdf}
-% 	\caption{A class diagram created with PlantUML}
-% 	\label{fig:classes}
-% \end{figure}
-
-You may want to reference images in your thesis.
-%
-In this case, you are encouraged to make them \emph{floating}, and reference them by means of labels.
-%
-For instance, in \Cref{fig:classes}, we describe a class diagram produced by means of \href{http://plantuml.com}{PlantUML}.
-
 %----------------------------------------------------------------------------------------
-\chapter{Implementation} % possible chapter for Projects
-\label{chap:implementation}
+\input{chapters/4-implementation.tex}
 %----------------------------------------------------------------------------------------
 
-Write implementation here.
-
-\lstinputlisting[
-	float,
-	language=Java,
-	caption={My very first program in Java},
-	label={lst:helloworld},
-]{listings/HelloWorld.java}
-
-You may need to reference listings in your thesis.
-%
-In this case, you are encouraged to make them \emph{floating}, and reference them by means of labels.
-%
-For instance, in \Cref{lst:helloworld}, we describe an hello world program in Java.
-
 %----------------------------------------------------------------------------------------
-\chapter{Validation} % possible chapter for Projects
-\label{chap:validation}
+\input{chapters/5-validation.tex}
 %----------------------------------------------------------------------------------------
 
-Write implementation here
-
 %----------------------------------------------------------------------------------------
-\chapter{\conclusionsname}
-\label{chap:conclusions}
-%----------------------------------------------------------------------------------------
-
-Write conclusions here.
-
+\input{chapters/6-conclusions.tex}
+%---------------------------------------------------------------------------------------
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY
