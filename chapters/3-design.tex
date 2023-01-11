@@ -1,17 +1,80 @@
 \chapter{Design} % possible chapter for Projects
 \label{chap:design}
 
-Write design here.
+This chapter describes the design choices and the overall architecture of the framework. \todo{Expand the introduction}
 
-% \begin{figure}
-% 	\centering
-% 	\includegraphics[width=0.5\linewidth]{figures/classes.pdf}
-% 	\caption{A class diagram created with PlantUML}
-% 	\label{fig:classes}
-% \end{figure}
+\section{Framework requirements}
+\label{sec:framework-requirements}
+\todo{Write the section about the project's requirements}
 
-You may want to reference images in your thesis.
-%
-In this case, you are encouraged to make them \emph{floating}, and reference them by means of labels.
-%
-For instance, in \Cref{fig:classes}, we describe a class diagram produced by means of \href{http://plantuml.com}{PlantUML}.
+\section{Architectural design}
+\label{sec:arch-design}
+
+The framework is articulated in modules: each module takes into account a specific aspect of the pulverization.
+The modularity of the framework enables from one side, the possibility to use only the needed modules, preventing the bloating of the project;
+on the other side, modularity allows the customization of some implementations of the framework.
+
+The two fundamentals modules of the pulverization framework are: \emph{core} and \emph{platform} which respectively defines the core concepts
+of pulverization like the type of components and all the logic needed to run the pulverized system like defining the components reference,
+loading the user-defined components and setup the communications between all of them.
+
+The third module is \emph{rabbitmq-platform} which is highly dependent on the two modules described above and its purpose is to rely on
+\textbf{RabbitMQ}\footnote{\textbf{RabbitMQ} is an open-source message-broker (or message-oriented-middleware) that originally implement
+the \emph{AMQP} protocol and has since been extended with a plug-in architecture to support other protocols like \emph{MQTT}.} to enable
+the communications between all the components.
+This component manages all the low-level aspects related to communication like the connection to the broker, declaring queues and so on.
+
+In~\Cref{fig:package-diagram} are represented all the framework's modules and the relationship between them.
+
+\begin{figure}
+    \centering
+    \missingfigure[figwidth=\textwidth]{Package diagram showing the module relationship}
+    \caption{Package diagram showing the modules that constitute the framework and their relationship.}
+    \label{fig:package-diagram}
+\end{figure}
+
+The pulverization framework relies on a three-level architecture. Each level of the framework's architecture is designed to use the functionalities
+of the layer above and makes accessible their functionalities to the layer below.
+
+The described architecture takes with it the implicit ``one-way dependency'' where the layer below depends on the layer above and not vice versa.
+The~\Cref{fig:framework-architecture} depicts the architecture's choice made to design and build the framework.
+
+\begin{figure}
+    \centering
+    \missingfigure[figwidth=\textwidth]{Create a pyramid diagram showing the architecture of the framework emphasizing the grow-up dependency}
+    \caption{Architectural diagram showing how the pulverization framework is designed.}
+    \label{fig:framework-architecture}
+\end{figure}
+
+Since this is a framework, it will likely be used by several users; therefore, it is strategic to minimize the cognitive effort that the user will
+have to make to use it.
+
+For a framework to be successful and usable, it must be able to provide an incremental approach to its use,
+meaning that it must provide only the abstractions necessary for its use while at the same time providing clarity in its innermost components so that
+the user can understand how it works and possibly extend the framework with external modules.
+
+The ``pyramid architecture'' used by the framework tries to apply the concept described above (\Cref{fig:pyramid-user-knowledge}):
+the tip of the pyramid represents the components' abstraction defined by the pulverization and those components are used and built by the user.
+Those abstraction needs to be as clear as possible from a software engineering perspective.
+As you move down the pyramid, the complexity of the modules increases but the user's knowledge of them should decrease.
+
+\begin{figure}
+    \centering
+    \missingfigure[figwidth=\textwidth]{pyramid architecture comparing the increase of complexity going down the pyramid and the decrease of user's knowledge going up the pyramid.}
+    \caption{A correlation between the framework's complexity and the required user's knowledge to use the framework.}
+    \label{fig:pyramid-user-knowledge}
+\end{figure}
+
+By designing the framework in this way, we open up different usage scenarios such as a basic use that requires only an understanding of the
+basic concepts, to advanced uses that require an advanced understanding of the framework but enable its extension.
+
+The sections below will describe the architectural choices made for each framework's module.
+
+\subsection{Core module}
+\label{sec:core-module}
+
+\subsection{Platform module}
+\label{sec:platform-module}
+
+\subsection{Rabbitmq-platform module}
+\label{sec:rabbitmq-platform-module}
