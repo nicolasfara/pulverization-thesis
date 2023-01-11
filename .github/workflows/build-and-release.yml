@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3.3.0
+        with:
+          fetch-depth: 0
 
       - name: Build report
         uses: xu-cheng/latex-action@2.7.0
@@ -19,10 +21,21 @@ jobs:
           root_file: thesis-main.tex
           args: -pdf -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape
 
+      - name: Generate tag
+        id: tag-generation
+        run: |
+          MESSAGE=$(git log --no-merges $(git describe --tags --abbrev=0)..HEAD --oneline --pretty=format:%s)
+          if ! git describe --tags --exact-match HEAD; then
+            TAG="$(git describe)" || TAG="0.1.0-$(git log -n1 --date=format:'%Y-%m-%dT%H%M%S' --format=%cd)"
+          else
+            TAG="$(git describe --tags --exact-match HEAD)"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: "latest"
+          automatic_release_tag: ${{ steps.tag-generation.outputs.tag }}
           prerelease: false
           files: |
             *.pdf
