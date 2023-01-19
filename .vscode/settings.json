@@ -2,5 +2,9 @@
     "latex-workshop.latex.outDir": "%DIR%/output",
     "grammarly.files.include": [
         "**/*.tex"
+    ],
+    "grammarly.config.suggestions.InformalPronounsAcademic": true,
+    "cSpell.words": [
+        "declarativeness"
     ]
 }
