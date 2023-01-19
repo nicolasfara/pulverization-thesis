@@ -66,15 +66,54 @@ As you move down the pyramid, the complexity of the modules increases but the us
 \end{figure}
 
 By designing the framework in this way, we open up different usage scenarios such as a basic use that requires only an understanding of the
-basic concepts, to advanced uses that require an advanced understanding of the framework but enable its extension.
+basic concepts, to advanced uses that require a deep understanding of the framework but enable its complete usage and extension.
+
+\todo{valutare se espandere qui con esempi o altro}
 
 The sections below will describe the architectural choices made for each framework's module.
 
 \subsection{Core module}
 \label{sec:core-module}
 
+Architecturally, the \emph{core} module is rather simple. Its simplicity is a consequence of the fact that this module is the main entry point
+for the user, and the lower the complexity of this module, the faster the user can become familiar with the framework.
+Moreover, a correct design of the interfaces defined in the \emph{core} module is a crucial aspect to consider to be aligned with the
+pulverization concepts illustrated in the article~\cite{fi12110203}.
+
+The pulverization represents a device as the combination of five components: \textbf{state}, \textbf{behaviour}, \textbf{communication},
+\textbf{sensors} and \textbf{actuators}~\cite{fi12110203}.
+The pulverization framework models the five components defined above through interfaces that the user will implement based on the specific scenario.
+
+This module provides a DSL to generate the configuration needed for the platform to run. In particular, the DSL provides a simple, clean and handy
+way to create in a declarative fashion how many logical devices should the platform manage, and how those devices are made.
+
 \subsection{Platform module}
 \label{sec:platform-module}
+
+The platform module defines the enabling concepts for system execution. It then defines the concept of intra-component communication,
+provides an abstraction for representing a remote component and how to access it.
+
+The highly distributed nature of the pulverization has forced the design phase to abstract from the actual place where components are actually
+deployed; in this way, we avoid the need for the user to specify and/or manage specific aspects of deployment but can focus solely on
+application logic while remaining adherent to the objectives of the pulverization, which among many want to separate aspects of 
+deployment from aspects of application logic.
+
+Although the abstractions defined in this module are fundamental to the execution of the system, their understanding by the user is not essential.
+Nevertheless, understanding the mechanisms defined by the platform module is important for later defining custom communicators.
+
+The communicator abstracts the way how the communication between two (pulverized) components occurs. 
+The communicator aims to define how two components communicate with each other. The design of this component abstracts from the message
+format and the type of components involved, effectively making the communicator highly generic.
+
+Its generality allows for simplified implementations, delegating to the platform the complex setup logic of the communicator such as defining which
+components are involved, the message format, etc.
+
+Finally, the platform module provides a DSL to allow the user to instantiate the platform and then actually run the system.
+The DSL allows you, declaratively, to specify the components you intend to execute in that specific deployment unit, as well as indicate which
+specific communicator implementation to use.
+Again, the simplicity and declarativeness of the DSL are distinguishing features of this framework, simplifying its use.
+
+\todo{Rileggere tutta la sezione}
 
 \subsection{Rabbitmq-platform module}
 \label{sec:rabbitmq-platform-module}
