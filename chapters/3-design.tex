@@ -90,30 +90,37 @@ way to create in a declarative fashion how many logical devices should the platf
 \subsection{Platform module}
 \label{sec:platform-module}
 
-The platform module defines the enabling concepts for system execution. It then defines the concept of intra-component communication,
-provides an abstraction for representing a remote component and how to access it.
+The platform module defines the enabling concepts for system execution like intra-component communication and provides an abstraction for
+representing a remote component and how to reach it; finally, it manages all the machinery needed to run the system.
 
 The highly distributed nature of the pulverization has forced the design phase to abstract from the actual place where components are actually
 deployed; in this way, we avoid the need for the user to specify and/or manage specific aspects of deployment but can focus solely on
 application logic while remaining adherent to the objectives of the pulverization, which among many want to separate aspects of 
-deployment from aspects of application logic.
+deployment from aspects of application logic~\cite{fi12110203}.
 
 Although the abstractions defined in this module are fundamental to the execution of the system, their understanding by the user is not essential.
 Nevertheless, understanding the mechanisms defined by the platform module is important for later defining custom communicators.
 
-The communicator abstracts the way how the communication between two (pulverized) components occurs. 
-The communicator aims to define how two components communicate with each other. The design of this component abstracts from the message
-format and the type of components involved, effectively making the communicator highly generic.
-
-Its generality allows for simplified implementations, delegating to the platform the complex setup logic of the communicator such as defining which
-components are involved, the message format, etc.
+As said before, communication between components is a fundamental aspect to consider; for this reason, the \emph{communicator} concept comes in.
+The communicator abstracts the way how the communication between two (pulverized) components occurs, defining how two components communicate with
+each other. The design of this component abstracts from the message format and the type of the involved components, effectively making the
+communicator highly generic and delegating all those complexities to the platform.
 
 Finally, the platform module provides a DSL to allow the user to instantiate the platform and then actually run the system.
-The DSL allows you, declaratively, to specify the components you intend to execute in that specific deployment unit, as well as indicate which
+The DSL allows, declaratively, to specify the components intended to be executed in that specific deployment unit, as well as indicate which
 specific communicator implementation to use.
-Again, the simplicity and declarativeness of the DSL are distinguishing features of this framework, simplifying its use.
 
 \todo{Rileggere tutta la sezione}
 
 \subsection{Rabbitmq-platform module}
 \label{sec:rabbitmq-platform-module}
+
+This module implements a possible communicator that bases its operation on RabbitMQ. Although this module, at the time of writing, represents
+the only implementation of a communicator, this does not mean that it should be the only possible solution.
+Other communicators based on different technologies and infrastructures will likely be implemented in the future.
+
+In this module, all the communication aspects that will be used for communication between components of the pulverized system are defined.
+The design of the framework delegates to these types of implementations to handle low-level aspects like connections, retry on failure and so on.
+
+While this module (or this kind of module more generally) requires a very good understanding of the concepts defined in 
+section~\ref{sec:platform-module} to be implemented, it requires no cognitive effort on the part of the user to be used.
