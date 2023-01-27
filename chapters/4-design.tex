@@ -3,11 +3,7 @@
 
 This chapter describes the design choices and the overall architecture of the framework. \todo{Expand the introduction}
 
-\section{Framework requirements}
-\label{sec:framework-requirements}
-\todo{Write the section about the project's requirements}
-
-\section{Architectural design}
+\section{Framework architecture}
 \label{sec:arch-design}
 
 The framework is articulated in modules: each module takes into account a specific aspect of the pulverization.
@@ -20,17 +16,17 @@ loading the user-defined components and setup the communications between all of 
 
 The third module is \emph{rabbitmq-platform} which is highly dependent on the two modules described above and its purpose is to rely on
 \textbf{RabbitMQ}\footnote{\textbf{RabbitMQ} is an open-source message-broker (or message-oriented-middleware) that originally implement
-the \emph{AMQP} protocol and has since been extended with a plug-in architecture to support other protocols like \emph{MQTT}.} to enable
+	the \emph{AMQP} protocol and has since been extended with a plug-in architecture to support other protocols like \emph{MQTT}.} to enable
 the communications between all the components.
 This component manages all the low-level aspects related to communication like the connection to the broker, declaring queues and so on.
 
 In~\Cref{fig:package-diagram} are represented all the framework's modules and the relationship between them.
 
 \begin{figure}
-    \centering
-    \missingfigure[figwidth=\textwidth]{Package diagram showing the module relationship}
-    \caption{Package diagram showing the modules that constitute the framework and their relationship.}
-    \label{fig:package-diagram}
+	\centering
+	\missingfigure[figwidth=\textwidth]{Package diagram showing the module relationship}
+	\caption{Package diagram showing the modules that constitute the framework and their relationship.}
+	\label{fig:package-diagram}
 \end{figure}
 
 The pulverization framework relies on a three-level architecture. Each level of the framework's architecture is designed to use the functionalities
@@ -40,10 +36,10 @@ The described architecture takes with it the implicit ``one-way dependency'' whe
 The~\Cref{fig:framework-architecture} depicts the architecture's choice made to design and build the framework.
 
 \begin{figure}
-    \centering
-    \missingfigure[figwidth=\textwidth]{Create a pyramid diagram showing the architecture of the framework emphasizing the grow-up dependency}
-    \caption{Architectural diagram showing how the pulverization framework is designed.}
-    \label{fig:framework-architecture}
+	\centering
+	\missingfigure[figwidth=\textwidth]{Create a pyramid diagram showing the architecture of the framework emphasizing the grow-up dependency}
+	\caption{Architectural diagram showing how the pulverization framework is designed.}
+	\label{fig:framework-architecture}
 \end{figure}
 
 Since this is a framework, it will likely be used by several users; therefore, it is strategic to minimize the cognitive effort that the user will
@@ -59,10 +55,10 @@ Those abstraction needs to be as clear as possible from a software engineering p
 As you move down the pyramid, the complexity of the modules increases but the user's knowledge of them should decrease.
 
 \begin{figure}
-    \centering
-    \missingfigure[figwidth=\textwidth]{pyramid architecture comparing the increase of complexity going down the pyramid and the decrease of user's knowledge going up the pyramid.}
-    \caption{A correlation between the framework's complexity and the required user's knowledge to use the framework.}
-    \label{fig:pyramid-user-knowledge}
+	\centering
+	\missingfigure[figwidth=\textwidth]{pyramid architecture comparing the increase of complexity going down the pyramid and the decrease of user's knowledge going up the pyramid.}
+	\caption{A correlation between the framework's complexity and the required user's knowledge to use the framework.}
+	\label{fig:pyramid-user-knowledge}
 \end{figure}
 
 By designing the framework in this way, we open up different usage scenarios such as a basic use that requires only an understanding of the
@@ -95,7 +91,7 @@ representing a remote component and how to reach it; finally, it manages all the
 
 The highly distributed nature of the pulverization has forced the design phase to abstract from the actual place where components are actually
 deployed; in this way, we avoid the need for the user to specify and/or manage specific aspects of deployment but can focus solely on
-application logic while remaining adherent to the objectives of the pulverization, which among many want to separate aspects of 
+application logic while remaining adherent to the objectives of the pulverization, which among many want to separate aspects of
 deployment from aspects of application logic~\cite{fi12110203}.
 
 Although the abstractions defined in this module are fundamental to the execution of the system, their understanding by the user is not essential.
@@ -122,67 +118,75 @@ Other communicators based on different technologies and infrastructures will lik
 In this module, all the communication aspects that will be used for communication between components of the pulverized system are defined.
 The design of the framework delegates to these types of implementations to handle low-level aspects like connections, retry on failure and so on.
 
-While this module (or this kind of module more generally) requires a very good understanding of the concepts defined in 
+While this module (or this kind of module more generally) requires a very good understanding of the concepts defined in
 section~\ref{sec:platform-module} to be implemented, it requires no cognitive effort on the part of the user to be used.
+
+% - New section ---------------------------------------------------------------
 
 \section{Data flow in the framework}
 \label{sec:framework-data-flow}
 
-\todo{definire una sezione per valutare l'approccio asincrono dello scambio dati}
+\subsection{Components interaction}
+\label{sec:framework-components-interaction}
 
-\section{Framework dynamics}
-\label{sec:framework-dynamics}
+\subsection{Device cycle}
+\label{sec:framework-device-cycle}
 
-The pulverization framework is designed to adapt its behaviour based on specific configurations without the need for the user to change the
-business logic. This section will describe from a high-level perspective how the framework adapts its behaviour based on the configuration.
+% \todo{definire una sezione per valutare l'approccio asincrono dello scambio dati}
 
-One fundamental aspect of pulverization is the ability to ``move'' the component of a device from one location to another in a transparent way.
+% \section{Framework dynamics}
+% \label{sec:framework-dynamics}
 
-The pulverization framework is designed to be able to take each one of the five components and set up the deployment to match the current
-configuration. The framework force the user to define the components by reasoning in terms of relations between itself and the other components,
-in this way, we isolate the single logic of the component and we can easily move it to another deployment unit if needed.
-Moreover, by defining in this way the components, the framework can easily determine if the other component is remote or in the same deployment unit,
-optimizing the communication between them.
+% The pulverization framework is designed to adapt its behaviour based on specific configurations without the need for the user to change the
+% business logic. This section will describe from a high-level perspective how the framework adapts its behaviour based on the configuration.
 
-\begin{figure}[h]
-    \centering
-    \missingfigure[figwidth=\textwidth]{a diagram showing how easy is to move components into another deployment unit.}
-    \caption{The relation between the components of a device and the deployment unit.}
-    \label{fig:framework-dynamics}
-\end{figure}
+% One fundamental aspect of pulverization is the ability to ``move'' the component of a device from one location to another in a transparent way.
 
-This feature is fundamental to cover different scenarios and contexts where a dynamic adaptation of the system is needed. For example, considering
-the case of a smart device, the system can decide to move the \emph{behaviour} from the device to a cloud service because of low batter or any other
-issues, in this way the heavy computation can be offloaded to a more powerful machine so that the device can continue to run for a longer time
-managing only aspects of sensing and actuation.
+% The pulverization framework is designed to be able to take each one of the five components and set up the deployment to match the current
+% configuration. The framework force the user to define the components by reasoning in terms of relations between itself and the other components,
+% in this way, we isolate the single logic of the component and we can easily move it to another deployment unit if needed.
+% Moreover, by defining in this way the components, the framework can easily determine if the other component is remote or in the same deployment unit,
+% optimizing the communication between them.
 
-The \Cref{fig:dynamics-example} depicts a possible scenario where the \emph{behaviour} is moved from the device to a cloud service, depending on
-the current context.
-\begin{figure}
-    \centering
-    \missingfigure[figwidth=\textwidth]{a diagram showing the example above.}
-    \caption{}
-    \label{fig:dynamics-example}
-\end{figure}
+% \begin{figure}[h]
+%     \centering
+%     \missingfigure[figwidth=\textwidth]{a diagram showing how easy is to move components into another deployment unit.}
+%     \caption{The relation between the components of a device and the deployment unit.}
+%     \label{fig:framework-dynamics}
+% \end{figure}
 
-To achieve this dynamic feature, the framework works based on two perspectives of a single component:
-\begin{itemize}
-    \item \textbf{Component implemented logic} (behaviour of the component)
-    \item \textbf{Component communication logic} (how the component communicates with the other components)
-\end{itemize}
+% This feature is fundamental to cover different scenarios and contexts where a dynamic adaptation of the system is needed. For example, considering
+% the case of a smart device, the system can decide to move the \emph{behaviour} from the device to a cloud service because of low batter or any other
+% issues, in this way the heavy computation can be offloaded to a more powerful machine so that the device can continue to run for a longer time
+% managing only aspects of sensing and actuation.
 
-The first perspective is the one that the user will implement, describing and implementing the logic of the component.
-The second perspective is the one that the framework will use to determine how the communication between the components should be handled.
-Generally, the communication logic could be pre-defined by the framework, but the user can override it if needed.
-In this way, we enable full customization of the framework giving the user the ability to define how the communication between components should
-occur, or use the default implementation.
+% The \Cref{fig:dynamics-example} depicts a possible scenario where the \emph{behaviour} is moved from the device to a cloud service, depending on
+% the current context.
+% \begin{figure}
+%     \centering
+%     \missingfigure[figwidth=\textwidth]{a diagram showing the example above.}
+%     \caption{}
+%     \label{fig:dynamics-example}
+% \end{figure}
 
-\begin{figure}[h]
-    \centering
-    \missingfigure[figwidth=\textwidth]{a diagram showing the two perspectives of a component.}
-    \caption{}
-    \label{fig:component-perspectives}
-\end{figure}
+% To achieve this dynamic feature, the framework works based on two perspectives of a single component:
+% \begin{itemize}
+%     \item \textbf{Component implemented logic} (behaviour of the component)
+%     \item \textbf{Component communication logic} (how the component communicates with the other components)
+% \end{itemize}
 
-The~\Cref{fig:component-perspectives} shows the two perspectives of a component, the one implemented by the user and the one used by the framework.
-\todo{rileggere la sezione e vedere se ridurre il livello di dettaglio oppure introdurre nuovi concetti}
+% The first perspective is the one that the user will implement, describing and implementing the logic of the component.
+% The second perspective is the one that the framework will use to determine how the communication between the components should be handled.
+% Generally, the communication logic could be pre-defined by the framework, but the user can override it if needed.
+% In this way, we enable full customization of the framework giving the user the ability to define how the communication between components should
+% occur, or use the default implementation.
+
+% \begin{figure}[h]
+%     \centering
+%     \missingfigure[figwidth=\textwidth]{a diagram showing the two perspectives of a component.}
+%     \caption{}
+%     \label{fig:component-perspectives}
+% \end{figure}
+
+% The~\Cref{fig:component-perspectives} shows the two perspectives of a component, the one implemented by the user and the one used by the framework.
+% \todo{rileggere la sezione e vedere se ridurre il livello di dettaglio oppure introdurre nuovi concetti}

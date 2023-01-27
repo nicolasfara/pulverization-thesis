@@ -3,7 +3,7 @@
 % - https://www.youtube.com/watch?v=ihxSUsJB_14
 % - https://www.youtube.com/watch?v=XTFWaV55uDo
 %%%%
-\documentclass[12pt,a4paper,openright,twoside]{book}
+\documentclass[12pt,a4paper,openright,twoside, draft]{book} % TODO: togliere draft
 \usepackage[utf8]{inputenc}
 
 %\newcommand{\thesislang}{italian} % Italian thesis
@@ -50,20 +50,24 @@
 \input{chapters/2-state-of-art.tex}
 %----------------------------------------------------------------------------------------
 
+% Requirements --------------------------------------------------------------------------
+\input{chapters/3-requirements.tex}
+%----------------------------------------------------------------------------------------
+
 % Design --------------------------------------------------------------------------------
-\input{chapters/3-design.tex}
+\input{chapters/4-design.tex}
 %----------------------------------------------------------------------------------------
 
 % Implementations -----------------------------------------------------------------------
-\input{chapters/4-implementation.tex}
+\input{chapters/5-implementation.tex}
 %----------------------------------------------------------------------------------------
 
 % Validations ---------------------------------------------------------------------------
-\input{chapters/5-validation.tex}
+\input{chapters/6-validation.tex}
 %----------------------------------------------------------------------------------------
 
 % Conclusions ---------------------------------------------------------------------------
-\input{chapters/6-conclusions.tex}
+\input{chapters/7-conclusions.tex}
 %----------------------------------------------------------------------------------------
 
 %----------------------------------------------------------------------------------------
