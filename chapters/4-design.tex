@@ -256,6 +256,29 @@ The sequence diagrams in~\Cref{fig:framework-components-interaction-2-state-beha
 \subsection{Device cycle}
 \label{sec:framework-device-cycle}
 
+In the previous section, we looked at what interactions there are between the various components. In this section, we analyze how these interactions
+are synchronized to ensure the overall operation of the device.
+
+By device cycle, we mean the sequence of operations that the device must perform to function. In the context of pulverization, this cycle is
+pre-determined and well-structured.
+
+The cycle consists of the following steps:
+
+\begin{itemize}
+	\item \textit{Context acquisition:} the device retrieves information from sensors and communications.
+	\item \textit{Computation:} the behaviour function is applied using the state, sensors and communications, producing an output.
+	\item \textit{Coordination:} the coordination data is sent to all the neighbours.
+	\item \textit{Actuation:} the actuators are activated to execute the prescriptive actions produced by the behaviour.
+\end{itemize}
+
+Given the highly distributed nature of pulverization, it is quite complex to manage this cycle properly. For this reason, it is left to the platform
+to manage any synchronization and controls to ensure that the cycle runs smoothly.
+
+To deal with this problem, a model was created that abstracts from where the various components are deployed, thus creating a uniform level
+to access the components while delegating to the platform the logic on how to reach the component ``physically''. In this way it is also possible
+to make optimizations on communications, e.g., if two components belong to the same deployment unit, then they communicate directly in memory,
+otherwise, they take advantage of one of the provided implementations to communicate over the network.
+
 % \todo{definire una sezione per valutare l'approccio asincrono dello scambio dati}
 
 % \section{Framework dynamics}
