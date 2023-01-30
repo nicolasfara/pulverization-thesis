@@ -29,6 +29,23 @@ In~\Cref{fig:package-diagram} are represented all the framework's modules and th
 	\label{fig:package-diagram}
 \end{figure}
 
+In the~\Cref{tab:framework-modules} are reported a synthetic representation of the modules that constitute the framework with a corresponding
+description.
+
+\begin{table}
+	\begin{tabularx}{\textwidth}{l X}
+		\toprule
+		\textbf{Module}            & \textbf{Description}                                                                                             \\ \midrule
+		\texttt{Core}              & Defines all the pulverization concepts, exposing them as interfaces.
+		Provides a DSL to specify the device types.                                                                                                   \\
+		\texttt{Platform}          & Is responsible for executing all the device's components on the available infrastructure.
+		Provides a DSL to configure the platform specifying which components should be used.                                                          \\
+		\texttt{RabbitMQ Platform} & Represents a possible implementation for enabling intra-component communication leveraging RabbitMQ as protocol. \\ \bottomrule
+	\end{tabularx}
+	\caption{A tabular representation of the modules that constitute the framework.}
+	\label{tab:framework-modules}
+\end{table}
+
 The pulverization framework relies on a three-level architecture. Each level of the framework's architecture is designed to use the functionalities
 of the layer above and makes accessible their functionalities to the layer below.
 
