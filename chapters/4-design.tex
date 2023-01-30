@@ -265,10 +265,10 @@ pre-determined and well-structured.
 The cycle consists of the following steps:
 
 \begin{itemize}
-	\item \textit{Context acquisition:} the device retrieves information from sensors and communications.
-	\item \textit{Computation:} the behaviour function is applied using the state, sensors and communications, producing an output.
-	\item \textit{Coordination:} the coordination data is sent to all the neighbours.
-	\item \textit{Actuation:} the actuators are activated to execute the prescriptive actions produced by the behaviour.
+	\item \emph{Context acquisition:} the device retrieves information from sensors and communications.
+	\item \emph{Computation:} the behaviour function is applied using the state, sensors and communications, producing an output.
+	\item \emph{Coordination:} the coordination data is sent to all the neighbours.
+	\item \emph{Actuation:} the actuators are activated to execute the prescriptive actions produced by the behaviour.
 \end{itemize}
 
 Given the highly distributed nature of pulverization, it is quite complex to manage this cycle properly. For this reason, it is left to the platform
@@ -278,6 +278,15 @@ To deal with this problem, a model was created that abstracts from where the var
 to access the components while delegating to the platform the logic on how to reach the component ``physically''. In this way it is also possible
 to make optimizations on communications, e.g., if two components belong to the same deployment unit, then they communicate directly in memory,
 otherwise, they take advantage of one of the provided implementations to communicate over the network.
+
+The modeling provided for this problem involves the use of two concepts: the \emph{ComponentRef} and the \emph{Communicator}.
+The former embodies the concept of ``reference to a component'' abstracting from where the component is physically deployed. In this way, the
+communication with another component can be done seamlessly and clearly.
+The latter is used by the \emph{ComponentRef} to communicate with the component it refers to. The \emph{Communicator} manages all the low level
+aspects of the communication, e.g., the protocol used to communicate, the serialization of the data, etc.
+
+Is the responsibility of the platform to create the right \emph{Communicator} for each \emph{ComponentRef} based on the initial configuration given
+by the user. Separating the reference to a component from how the communication occurs, allows the platform to optimize all the communication and change in real-time the communicator based, for example, on the new deployment.
 
 % \todo{definire una sezione per valutare l'approccio asincrono dello scambio dati}
 
