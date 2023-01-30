@@ -10,7 +10,7 @@ The framework is articulated in modules: each module takes into account a specif
 The modularity of the framework enables from one side, the possibility to use only the needed modules, preventing the bloating of the project;
 on the other side, modularity allows the customization of some implementations of the framework.
 
-The two fundamentals modules of the pulverization framework are: \emph{core} and \emph{platform} which respectively defines the core concepts
+The two fundamentals modules of the pulverization framework are: \emph{core} and \emph{platform} which respectively define the core concepts
 of pulverization like the type of components and all the logic needed to run the pulverized system like defining the components reference,
 loading the user-defined components and setup the communications between all of them.
 
@@ -52,7 +52,7 @@ the user can understand how it works and possibly extend the framework with exte
 The ``pyramid architecture'' used by the framework tries to apply the concept described above (\Cref{fig:pyramid-user-knowledge}):
 the tip of the pyramid represents the components' abstraction defined by the pulverization and those components are used and built by the user.
 Those abstraction needs to be as clear as possible from a software engineering perspective.
-As you move down the pyramid, the complexity of the modules increases but the user's knowledge of them should decrease.
+As you move down the pyramid, the complexity of the modules increases but the user's knowledge of them decreases.
 
 \begin{figure}
 	\centering
@@ -62,7 +62,7 @@ As you move down the pyramid, the complexity of the modules increases but the us
 \end{figure}
 
 By designing the framework in this way, we open up different usage scenarios such as a basic use that requires only an understanding of the
-basic concepts, to advanced uses that require a deep understanding of the framework but enable its complete usage and extension.
+basic concepts, to advanced uses that require a deep understanding of the framework enabling its complete usage and extension.
 
 \todo{valutare se espandere qui con esempi o altro}
 
@@ -78,7 +78,16 @@ pulverization concepts illustrated in the article~\cite{fi12110203}.
 
 The pulverization represents a device as the combination of five components: \textbf{state}, \textbf{behaviour}, \textbf{communication},
 \textbf{sensors} and \textbf{actuators}~\cite{fi12110203}.
-The pulverization framework models the five components defined above through interfaces that the user will implement based on the specific scenario.
+All of those concepts are modeled by the framework through interfaces that the user will implement based on the specific scenario.
+
+\begin{figure}
+	\centering
+	\missingfigure[figwidth=\textwidth]{Create a class diagram showing the interfaces defined by the core module}
+	\caption{Class diagram showing the interfaces defined by the core module.}
+	\label{fig:core-module-architecture}
+\end{figure}
+
+The~\Cref{fig:core-module-architecture} shows the concepts defined by the core module and their relationship.
 
 This module provides a DSL to generate the configuration needed for the platform to run. In particular, the DSL provides a simple, clean and handy
 way to create in a declarative fashion how many logical devices should the platform manage, and how those devices are made.
@@ -95,7 +104,8 @@ application logic while remaining adherent to the objectives of the pulverizatio
 deployment from aspects of application logic~\cite{fi12110203}.
 
 Although the abstractions defined in this module are fundamental to the execution of the system, their understanding by the user is not essential.
-Nevertheless, understanding the mechanisms defined by the platform module is important for later defining custom communicators.
+Nevertheless, their understanding becomes crucial when the user wants to extend the framework with new features, like implementing a new protocol to
+enable intra-communication components.
 
 As said before, communication between components is a fundamental aspect to consider; for this reason, the \emph{communicator} concept comes in.
 The communicator abstracts the way how the communication between two (pulverized) components occurs, defining how two components communicate with
@@ -104,9 +114,14 @@ communicator highly generic and delegating all those complexities to the platfor
 
 Finally, the platform module provides a DSL to allow the user to instantiate the platform and then actually run the system.
 The DSL allows, declaratively, to specify the components intended to be executed in that specific deployment unit, as well as indicate which
-specific communicator implementation to use.
+specific communicator implementation to use. In~\Cref{fig:platform-module-architecture} is depicted the overall architecture of the platform module.
 
-\todo{Rileggere tutta la sezione}
+\begin{figure}
+	\centering
+	\missingfigure[figwidth=\textwidth]{Create a class diagram showing the interfaces defined by the platform module}
+	\caption{Class diagram showing the interfaces defined by the platform module.}
+	\label{fig:platform-module-architecture}
+\end{figure}
 
 \subsection{Rabbitmq-platform module}
 \label{sec:rabbitmq-platform-module}
@@ -120,14 +135,123 @@ The design of the framework delegates to these types of implementations to handl
 
 While this module (or this kind of module more generally) requires a very good understanding of the concepts defined in
 section~\ref{sec:platform-module} to be implemented, it requires no cognitive effort on the part of the user to be used.
+\todo{Forward reference alla sezione dove si spiegano i dettagli implementativi di questo modulo}
 
 % - New section ---------------------------------------------------------------
 
 \section{Data flow in the framework}
 \label{sec:framework-data-flow}
 
+Pulverization based its design on the communication between components to create a synergy that allows the system to work properly.
+The ``fragmentation'' of the devices into components allows the system to work independently from the specific deployment, focusing entirely on
+the business logic of the application.
+Is the responsibility of the framework to take care of the communication between components, and define how those communications should be handled.
+
+The following sections will describe the data flow in the framework, from the point of view of the components and the point of the device.
+
 \subsection{Components interaction}
 \label{sec:framework-components-interaction}
+
+The original formulation of the pulverization defines the component's interaction as follows (see~\Cref{fig:framework-components-interaction}):
+
+\begin{figure}
+	\centering
+	\missingfigure[figwidth=\textwidth]{Create a diagram showing the interaction between components defined in the original article}
+	\caption{Interaction between components.}
+	\label{fig:framework-components-interaction}
+\end{figure}
+
+Four interactions are involved in pulverization:
+\begin{itemize}
+	\item \textbf{Behaviour} to \textbf{State}: the \textbf{Behaviour} read from the \textbf{State} the \textit{sensed values}, the \textit
+	      {communications} and the current \textit{state}, then update the \textbf{State} with information like \textit{new communication} to send to
+	      all the neighbours, a set of \textit{prescriptive actions} to perform and the \textit{new state}.
+	\item \textbf{Sensors} to \textbf{State}: the \textbf{Sensors} send to the \textbf{State} a set of \textit{sensed values}.
+	\item \textbf{Actuators} to \textbf{State}: the \textbf{Actuators} receives from the \textbf{State} a set of \textit{prescriptive actions} to
+	      perform.
+	\item \textbf{State} to \textbf{Communicator}: the \textbf{State} sends to the \textbf{Communication} a \textit{new communication}
+	      to send to all the neighbours and correspondingly the \textbf{Communication} send to the state all the \textit{communications} from the
+	      neighbours.
+\end{itemize}
+
+\todo{Spiegare che la formulazione originale e' stata concepita come "nastro di turing" rappresentato dallo stato}
+
+Despite this formulation being very clear and reasonable, it requires some extra communication to achieve the result.
+For example, when the \textbf{Behaviour} component computes the \textit{new communication} to send to all the neighbours, it needs to send it to the
+\textbf{State} component, which will then send it to the \textbf{Communicator} component. This not represents a problem per se but forces an extra
+step to complete the communication, resulting in a possible inefficient communication pattern.
+
+This kind of ``extra communication'' can be observed also in other component's interactions, like the one between the \textbf{Sensors} and the
+\textbf{Behaviour} and the \textbf{Actuators} and the \textbf{Behaviour}. In all of those cases, the \textbf{State} component is involved in the
+communication creating an extra step.
+
+The framework uses a different formulation of the component's interaction to reduce the extra communication simplifying the overall communication
+pattern. This formulation is depicted in~\Cref{fig:framework-components-interaction-2}.
+
+\begin{figure}
+	\centering
+	\missingfigure[figwidth=\textwidth]{Create a diagram showing the interaction between components defined in the framework}
+	\caption{Interaction between components.}
+	\label{fig:framework-components-interaction-2}
+\end{figure}
+
+This new formulation is based on the fact that the \textbf{behaviour} component has a direct dependency on all the other four components,
+in this way, the \textbf{behaviour} component can directly interact with the other components without the need to be intermediated by the
+\textbf{State} component.
+
+The component's interaction is now defined as follows:
+\begin{itemize}
+	\item \textbf{Sensors} to \textbf{Behaviour:} the \textbf{Sensors} send to the \textbf{Behaviour} a set of \textit{sensed values}.
+	\item \textbf{Actuators} to \textbf{Behaviour:} the \textbf{Actuators} receives from the \textbf{Behaviour} a set of \textit{prescriptive
+		      actions} to perform.
+	\item \textbf{Communication} to \textbf{Behaviour:} the \textbf{Communication} sends to the \textbf{Behaviour} a set of \textit{communications}
+	      from the neighbours and receives from the \textbf{Behaviour} the \textit{new communication} for the neighbours.
+	      \item\textbf{State} to \textbf{Behaviour:} the \textbf{Behaviour} read from the \textbf{State} the \textit{current state} and write to it
+	      the \textit{new state}.
+\end{itemize}
+
+Now, the \textbf{Behaviour} component is central in the communication between components, and it is the only component that needs to interact with all the other components.
+
+Below, is presented a formal description of each component's interaction with the \textbf{Behaviour} component.
+
+For what concern the \textbf{Sensors} and \textbf{Actuators} components, the interaction with the \textbf{Behaviour} component is specular: the
+sensors send to the behaviour the sensed values and the actuators receive from the behaviour the prescriptive actions to perform.
+The sequence diagrams in~\Cref{fig:framework-components-interaction-2-sensors-actuators} show the interaction of the sensors and actuator with the
+behaviour.
+
+\begin{figure}
+	\centering
+	\missingfigure[figwidth=\textwidth]{Create a sequence diagram showing the interaction between sensors and actuators with the behaviour}
+	\caption{Interaction between sensors and actuators with the behaviour.}
+	\label{fig:framework-components-interaction-2-sensors-actuators}
+\end{figure}
+
+The \textbf{Communication} and \textbf{Behaviour} interaction is bidirectional, which means that the communication sends to the behaviour all the
+messages coming from the neighbours and the behaviour sends to the communication component the new messages that should be propagated
+to the neighbours.
+Reasoning on the way this interaction occurs could lead to modeling it using a specific pattern (e.g. synchronous or asynchronous) but is fundamental
+to abstract over the specific pattern giving the freedom to use the one that better fits the current situation.
+The sequence diagrams in~\Cref{fig:framework-components-interaction-2-communication-behaviour} shows the interaction between the communication and
+behaviour components using a communication pattern which not represents the only possible one.
+
+\begin{figure}
+	\centering
+	\missingfigure[figwidth=\textwidth]{Create a sequence diagram showing the interaction between communication and behaviour}
+	\caption{Interaction between communication and behaviour.}
+	\label{fig:framework-components-interaction-2-communication-behaviour}
+\end{figure}
+
+Even the \textbf{State} and \textbf{Behaviour} interaction is bidirectional.
+The behaviour queries the state component to get the current state, then, the behaviour computes the new state and writes it to the state component.
+Even in this case, the way this interaction is modeled is not fundamental and should be abstracted over the specific pattern.
+The sequence diagrams in~\Cref{fig:framework-components-interaction-2-state-behaviour} shows the interaction between the state and behaviour.
+
+\begin{figure}
+	\centering
+	\missingfigure[figwidth=\textwidth]{Create a sequence diagram showing the interaction between state and behaviour}
+	\caption{Interaction between state and behaviour.}
+	\label{fig:framework-components-interaction-2-state-behaviour}
+\end{figure}
 
 \subsection{Device cycle}
 \label{sec:framework-device-cycle}
