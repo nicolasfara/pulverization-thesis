@@ -8,5 +8,8 @@
         "Behaviour",
         "declarativeness",
         "neighbours"
-    ]
+    ],
+    "files.watcherExclude": {
+        "**/target": true
+    }
 }

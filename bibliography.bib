@@ -1,13 +1,54 @@
-@Article{fi12110203,
-AUTHOR = {Casadei, Roberto and Pianini, Danilo and Placuzzi, Andrea and Viroli, Mirko and Weyns, Danny},
-TITLE = {Pulverization in Cyber-Physical Systems: Engineering the Self-Organizing Logic Separated from Deployment},
-JOURNAL = {Future Internet},
-VOLUME = {12},
-YEAR = {2020},
-NUMBER = {11},
-ARTICLE-NUMBER = {203},
-URL = {https://www.mdpi.com/1999-5903/12/11/203},
-ISSN = {1999-5903},
-ABSTRACT = {Emerging cyber-physical systems, such as robot swarms, crowds of augmented people, and smart cities, require well-crafted self-organizing behavior to properly deal with dynamic environments and pervasive disturbances. However, the infrastructures providing networking and computing services to support these systems are becoming increasingly complex, layered and heterogeneous&mdash;consider the case of the edge&ndash;fog&ndash;cloud interplay. This typically hinders the application of self-organizing mechanisms and patterns, which are often designed to work on flat networks. To promote reuse of behavior and flexibility in infrastructure exploitation, we argue that self-organizing logic should be largely independent of the specific application deployment. We show that this separation of concerns can be achieved through a proposed &ldquo;pulverization approach&rdquo;: the global system behavior of application services gets broken into smaller computational pieces that are continuously executed across the available hosts. This model can then be instantiated in the aggregate computing framework, whereby self-organizing behavior is specified compositionally. We showcase how the proposed approach enables expressing the application logic of a self-organizing cyber-physical system in a deployment-independent fashion, and simulate its deployment on multiple heterogeneous infrastructures that include cloud, edge, and LoRaWAN network elements.},
-DOI = {10.3390/fi12110203}
+@article{fi12110203,
+  author         = {Casadei, Roberto and Pianini, Danilo and Placuzzi, Andrea and Viroli, Mirko and Weyns, Danny},
+  title          = {Pulverization in Cyber-Physical Systems: Engineering the Self-Organizing Logic Separated from Deployment},
+  journal        = {Future Internet},
+  volume         = {12},
+  year           = {2020},
+  number         = {11},
+  article-number = {203},
+  url            = {https://www.mdpi.com/1999-5903/12/11/203},
+  issn           = {1999-5903},
+  abstract       = {Emerging cyber-physical systems, such as robot swarms, crowds of augmented people, and smart cities, require well-crafted self-organizing behavior to properly deal with dynamic environments and pervasive disturbances. However, the infrastructures providing networking and computing services to support these systems are becoming increasingly complex, layered and heterogeneous&mdash;consider the case of the edge&ndash;fog&ndash;cloud interplay. This typically hinders the application of self-organizing mechanisms and patterns, which are often designed to work on flat networks. To promote reuse of behavior and flexibility in infrastructure exploitation, we argue that self-organizing logic should be largely independent of the specific application deployment. We show that this separation of concerns can be achieved through a proposed &ldquo;pulverization approach&rdquo;: the global system behavior of application services gets broken into smaller computational pieces that are continuously executed across the available hosts. This model can then be instantiated in the aggregate computing framework, whereby self-organizing behavior is specified compositionally. We showcase how the proposed approach enables expressing the application logic of a self-organizing cyber-physical system in a deployment-independent fashion, and simulate its deployment on multiple heterogeneous infrastructures that include cloud, edge, and LoRaWAN network elements.},
+  doi            = {10.3390/fi12110203}
+}
+
+@article{Doeraene:256862,
+  title       = {Cross-Platform Language Design},
+  author      = {Doeraene, Sébastien Jean R},
+  institution = {IINFCOM},
+  publisher   = {EPFL},
+  address     = {Lausanne},
+  pages       = {184},
+  year        = {2018},
+  abstract    = {Programming languages are increasingly compiled to  multiple runtimes, each featuring their own rich structures  such as their object model.
+                 Furthermore, they need to  interact with other languages targeting said runtimes.
+                 A  language targeting only one runtime can be designed to  tailor its semantics to those of that runtime, for easy  interoperability with other languages.
+                 However, in a  language targeting multiple runtimes with differing  semantics, it is difficult to cater to each of them while  retaining a common behavior across runtimes.
+                 We call  \emph{cross-platform language} a language that aims at  being both \emph{portable} across platforms and  \emph{interoperable} with each target platform.
+                 Portability  is the ability for a program or a library to cross-compile  for multiple platforms, and behave the same way on all of  them.
+                 Interoperability is the ability to communicate with  other languages on the same platform.
+                 While many  cross-compiling languages focus on one of these two  properties---only adding support for the other one as an  afterthought---, languages that are designed from the  ground up to support both are rare.
+                 
+                 In this thesis, we  present the design of Scala.js, the dialect of Scala  targeting the JavaScript platform, which turned Scala into  a cross-platform language.
+                 On the one hand, Scala programs  can be cross-compiled for the JVM and JavaScript with  portable semantics.
+                 On the other hand, whereas Scala/JVM  interoperates with Java, Scala.js interoperates with  JavaScript, allowing to use any JavaScript library.
+                 Along  the dissertation, we give insights that can be transferred  to the design of other cross-platform languages, although  with a bias towards those targeting the JVM and  JavaScript.
+                 
+                 The first and most obvious challenge is to  reconcile the static nature of Scala's object model with  JavaScript's dynamic one.
+                 Besides the ability to mutate a  class hierarchy at run-time in JavaScript, there are  fundamental differences between the two models, in  particular the difference between compile-time overloading  and run-time overloading.
+                 We discuss how such semantic  mismatches can live in harmony within the language.
+                 
+                 The  second challenge is to obtain good performance from a  language where interoperability with a dynamic and unknown  part of the program is pervasive.
+                 To that end, we design  and specify an intermediate representation (IR) with  first-class support for dynamically typed interoperability  features in addition to statically typed JVM-style  operations.
+                 Despite its tight integration with the open  world of JavaScript, most of the IR can be considered as a  closed world where advanced whole-program optimizations can  be performed.
+                 The performance of the overall system is  evaluated and shown to be competitive with hand-written  JavaScript, and even with Scala/JVM in some cases.},
+  url         = {http://infoscience.epfl.ch/record/256862},
+  doi         = {10.5075/epfl-thesis-8733}
+}
+
+@online{scala-native,
+  author = {EPFL.},
+  title = {The compiler plugin and code generator},
+  url = {https://scala-native.org/en/stable/contrib/compiler.html},
+  year = {2023}
 }

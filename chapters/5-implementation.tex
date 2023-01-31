@@ -1,11 +1,109 @@
-\chapter{Implementation} % possible chapter for Projects
+\chapter{Implementation}
 \label{chap:implementation}
+
+This chapter discusses in detail all the implementation aspects of the framework, showing all its characterizing elements.
+First, the reasons for choosing Kotlin as the language to implement the framework are explained.
+Then, for each module, the logic governing it, the main classes, and usage scenarios will be analyzed.
+Finally, the chapter will conclude with a discussion of the configuration DSL and the platform DSL.
 
 \section{Languages with multiplatform targets}
 \label{sec:languages-multiplatform-targets}
 
+Pulverization is born in a context where device heterogeneity, understood as the strong difference in computational terms of devices as well as
+diversity of architectures, is the norm.
+For those reasons, we can deal with networks of embedded devices (which have very limited computational resources) up to networks of computers with
+high computational power and memory.
+Nowadays, architectures that combine these two scenarios are increasingly common, thus having to manage architecturally heterogeneous networks of
+devices.
+
+For these reasons, it is necessary to build a framework that can support as many architectures and platforms as possible to maximize the number
+of devices on which the pulverized system can run.
+
+In this context, the choice of the language to implement the framework is crucial.
+A cross-platform language (or even known as multiplatform) is a language that allows the same code to be compiled for different platforms.
+The trend over the last years is to use the same language to span over several runtime and VMs (e.g. JVM, JavaScript, native platforms, etc.) in order
+to reduce the effort of maintaining the codebase and to increase the portability of the application.
+The other main advantage of using a multiplatform language is that all the shared concepts and logic can be implemented in a single codebase that
+can be reused in all the specific platforms.
+
+In this way, we can use one programming language and manage the targeting of multiple platforms effectively (see~\Cref{fig:mulitplatform-languages}).
+
+\begin{figure}
+	\centering
+	\missingfigure[figwidth=\textwidth]{Show from an architectural perspective how a multiplatform language works}
+	\caption{Diagram showing the philosophy of multiplatform languages.}
+	\label{fig:mulitplatform-languages}
+\end{figure}
+
+\todo{Aggiungere paragrafo in cui si da un idea piu tecnica di come viene gestito il multiplatform. Ad esempio spiegando IR ecc.}
+
+The two following sections will examine two of the main relevant language based on the JVM ecosystem that supports multiplatform targets.
+
 \subsection{Scala Language}
 \label{sec:scala-language}
+
+The Scala programming language is a general-purpose programming language that is designed to combine object-oriented and functional programming in one
+concise, high-level language.
+
+Although Scala was born under the JVM, it has been extended to support other platforms such as JavaScript, and native platforms.
+
+Support for cross-platform is enabled through external plugins and not directly by the Scala compiler.
+The plugin enables compiler extensions allowing the generation of intermediate representations (IRs) containing platform-specific aspects; with the
+IR, the compiler makes optimization, linking and other dependencies management.
+
+The~\Cref{lst:scala-cross-platform} shows the minimal configuration required to enable the cross-platform support for the Scala language.
+
+\lstinputlisting[
+	float,
+	language=scala,
+	caption={Minimal configuration to enable cross-platform support for Scala.},
+	label={lst:scala-cross-platform}
+]{listings/scala-cross-platform.sbt}
+
+\begin{figure}
+	\centering
+	\begin{subfigure}{.45\textwidth}
+		\centering
+		\includegraphics[width=0.95\linewidth]{figures/scala-native-ir.png}
+		\caption{Scala native compilation pipeline.}
+		\label{fig:scala-native-ir}
+	\end{subfigure}
+	\begin{subfigure}{.45\textwidth}
+		\centering
+		\includegraphics[width=.95\linewidth]{figures/compilation-pipeline.png}
+		\caption{Scala.js compilation pipeline.}
+		\label{fig:scala-js-ir}
+	\end{subfigure}
+	\caption{Representation of the Scala Native and Scala.js IR generation and compilation pipelines.}
+	\label{fig:scala-ir}
+\end{figure}
+
+The~\Cref{fig:scala-ir} depicts the two main targets and for each one shows the compilation pipeline in particular, the~\Cref{fig:scala-native-ir}
+shows the compilation pipeline for the native target, while the~\Cref{fig:scala-js-ir} shows the compilation pipeline for the JavaScript target.
+
+For what concern the native target, the compilation pipeline is composed of the following steps~\cite{scala-native}:
+\begin{itemize}
+	\item \textbf{Scala code compiled into Native Intermediate Representation}: the \texttt{nscplugin} takes the Scala source code and inspecting the
+	      AST, it generates the \texttt{.nir} files.
+	\item \textbf{LLVM final compilation}: all the \texttt{.nir} files are compiled into \texttt{.ll} files and passed to the LLVM compiler that
+	      produces the native binary file.
+\end{itemize}
+
+The pipeline for the JavaScript target is composed of the following steps~\cite{Doeraene:256862}:
+\begin{itemize}
+	\item \textbf{Generation of the Scala.js IR:} the \texttt{scalajs-compiler} takes the Scala source code and generates the \texttt{.sjsir} files.
+	\item \textbf{Optimization (linking):} in this phase the \texttt{scalajs-optimizer} takes the \texttt{.sjsir} files and performs optimizations
+	      taking also other \texttt{.sjsir} files coming from dependencies.
+	\item \textbf{Output file:} the \texttt{scalajs-optimizer} generates the \texttt{.js} file that is the output of the compilation.
+\end{itemize}
+
+During the first step, the \texttt{.scala} source files are compiled with scalac, augmented with the Scala.js compiler plugin.
+The compiler plugin, comparatively to the rest of scalac, is small: it takes the internal compiler ASTs that have been lowered to contain JVM-style
+classes, interfaces, methods and instructions, and turns them into Scala.js IR (.sjsir files).
+
+The \texttt{.sjsir} files are similar to \texttt{.class} files, although they are AST-based (instead of stack-machine-based) and contain features
+dedicated to JavaScript interoperability. The \texttt{.sjsir} format and specification are independent of Scala: it means that the linker is
+independent of the version of Scala.
 
 \subsection{Kotlin Language}
 \label{sec:kotlin-language}
