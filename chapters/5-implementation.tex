@@ -20,7 +20,7 @@ For these reasons, it is necessary to build a framework that can support as many
 of devices on which the pulverized system can run.
 
 In this context, the choice of the language to implement the framework is crucial.
-A cross-platform language (or even known as multiplatform) is a language that allows the same code to be compiled for different platforms.
+A cross-platform language (or even known as multiplatform language) is a language that allows the same code to be compiled for different platforms.
 The trend over the last years is to use the same language to span over several runtime and VMs (e.g. JVM, JavaScript, native platforms, etc.) in order
 to reduce the effort of maintaining the codebase and to increase the portability of the application.
 The other main advantage of using a multiplatform language is that all the shared concepts and logic can be implemented in a single codebase that
@@ -47,11 +47,12 @@ concise, high-level language.
 
 Although Scala was born under the JVM, it has been extended to support other platforms such as JavaScript, and native platforms.
 
-Support for cross-platform is enabled through external plugins and not directly by the Scala compiler.
-The plugin enables compiler extensions allowing the generation of intermediate representations (IRs) containing platform-specific aspects; with the
-IR, the compiler makes optimization, linking and other dependencies management.
+Support for cross-platform is enabled through external plugins and not directly by the Scala compiler itself.
+The plugin enables compiler extensions allowing the generation of \emph{intermediate representations} (IRs) containing platform-specific aspects;
+with the IR, the compiler makes optimization, linking and other dependencies management.
 
-The~\Cref{lst:scala-cross-platform} shows the minimal configuration required to enable the cross-platform support for the Scala language.
+The~\Cref{lst:scala-cross-platform} shows the minimal configuration required to enable the cross-platform support for the Scala language,
+in particular are enabled JVM, JavaScript and native platforms.
 
 \lstinputlisting[
 	float,
@@ -83,13 +84,16 @@ shows the compilation pipeline for the native target, while the~\Cref{fig:scala-
 
 For what concern the native target, the compilation pipeline is composed of the following steps~\cite{scala-native}:
 \begin{itemize}
-	\item \textbf{Scala code compiled into Native Intermediate Representation}: the \texttt{nscplugin} takes the Scala source code and inspecting the
+	\item \textbf{Scala code compiled into Native Intermediate Representation:} the \texttt{nscplugin} takes the Scala source code and inspecting the
 	      AST, it generates the \texttt{.nir} files.
-	\item \textbf{LLVM final compilation}: all the \texttt{.nir} files are compiled into \texttt{.ll} files and passed to the LLVM compiler that
+	\item \textbf{LLVM final compilation:} all the \texttt{.nir} files are compiled into \texttt{.ll} files and passed to the LLVM compiler that
 	      produces the native binary file.
 \end{itemize}
 
-The pipeline for the JavaScript target is composed of the following steps~\cite{Doeraene:256862}:
+\todo{espandere la parte relativa a scala native}
+
+The pipeline for the JavaScript target is quite more articulated but for the sake of simplicity, are reported only the main phases of the compilation
+steps~\cite{Doeraene:256862}:
 \begin{itemize}
 	\item \textbf{Generation of the Scala.js IR:} the \texttt{scalajs-compiler} takes the Scala source code and generates the \texttt{.sjsir} files.
 	\item \textbf{Optimization (linking):} in this phase the \texttt{scalajs-optimizer} takes the \texttt{.sjsir} files and performs optimizations
@@ -99,11 +103,38 @@ The pipeline for the JavaScript target is composed of the following steps~\cite{
 
 During the first step, the \texttt{.scala} source files are compiled with scalac, augmented with the Scala.js compiler plugin.
 The compiler plugin, comparatively to the rest of scalac, is small: it takes the internal compiler ASTs that have been lowered to contain JVM-style
-classes, interfaces, methods and instructions, and turns them into Scala.js IR (.sjsir files).
+classes, interfaces, methods and instructions, and turns them into Scala.js IR (\texttt{.sjsir} files).
 
 The \texttt{.sjsir} files are similar to \texttt{.class} files, although they are AST-based (instead of stack-machine-based) and contain features
-dedicated to JavaScript interoperability. The \texttt{.sjsir} format and specification are independent of Scala: it means that the linker is
-independent of the version of Scala.
+dedicated to JavaScript interoperability. The \texttt{.sjsir} format and specification are independent of Scala: which means that the linker is
+independent of the language version.
+
+\subsubsection*{Scala multiplatform ecosystem}
+
+This section will examine the current ecosystem concerning the multiplatform support for the Scala language to have more awareness about the
+usability of this technology.
+In particular, will be addressed two main factors: the number of libraries that supports multiplatform targeting and the maturity of each platform.
+
+At first glance, there is a strong sense of fragmentation of projects and various communities. Some communities pervasively support all three
+platforms (JVM, JS, and native) while others do not, and this is reflected in the amount of multi-targeting compatible libraries.
+For example, the \emph{typelevel} ecosystem supports all three platforms for all their main libraries:
+\textbf{Cats Effects}~\footnote{\url{https://typelevel.org/cats-effect/}} and \textbf{FS2}~\footnote{\url{https://fs2.io/}}.
+From the other side, the \emph{zio}~\footnote{\url{https://zio.dev/}} ecosystem supports only JVM and JavaScript while the native platform is an
+experimental stage.
+Even if the actual number of libraries is not so high, the Scala ecosystem is quite mature to be used in its multiplatform version.
+Moreover, there is a lot of work being done by the Scala community to improve the multiplatform support for the language, so it's very likely that in
+the future the number of libraries targeting multiplatform will increase.
+
+To complete the analysis and to have a more complete picture of the Scala multiplatform ecosystem, will be examined the maturity of each platform.
+Starting from \emph{Scala.js}, the platform is quite mature and stable: the project was born several years ago and it's used in production by many
+companies, year to year several improvements were made to reach a high level of performance and stability~\cite{scala-js-performance, marr2016cross}.
+
+Finally, the \emph{Scala Native} platform works quite well but has some limitations that make it not suitable for all production use.
+One of the biggest and most important limitations is the lack of support for multithreading~\cite{scala-native-multithreading}.
+If for some projects this limitation is not a problem, for others it can be a big issue; nevertheless, the \emph{typelevel} community dealt with this
+restriction by implementing an event-loop-based concurrency model~\cite{scala-native-multithreading} to support the native projects.
+Another limitation is represented by the supported architectures: at the time of writing, only the platforms supported by \emph{LLVM} can be targeted,
+which means that not all the embedded devices can be supported.
 
 \subsection{Kotlin Language}
 \label{sec:kotlin-language}
