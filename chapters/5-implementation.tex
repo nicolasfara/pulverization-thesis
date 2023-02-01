@@ -139,6 +139,32 @@ which means that not all the embedded devices can be supported.
 \subsection{Kotlin Language}
 \label{sec:kotlin-language}
 
+Kotlin is a cross-platform, statically typed, general-purpose high-level programming language.
+It's designed to interoperate fully with Java but also compile to JavaScript or native code via LLVM.
+
+For what concern the multiplatform support of the language, Kotlin multiplatform is designed to simplify the development of cross-platform projects
+by reducing the time spent writing and maintaining the same code for different platforms.
+
+The Kotlin multiplatform use cases can be synthesized in the following points:
+\begin{itemize}
+	\item \textbf{Android and iOS applications} sharing the code between mobile platforms enable the building of cross-platform mobile applications
+	      sharing the common code between Android and iOS.
+	\item \textbf{Full-stack web applications} when building web applications, it's possible to share the code between the client and the server
+	      reusing the same logic on both sides.
+	\item \textbf{Multiplatform libraries} a multiplatform library with common code and its platform-specific implementations for JVM, JS, and Native platforms can be created. Once published, a multiplatform library can be used in other cross-platform projects as a dependency.
+\end{itemize}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.5\linewidth]{figures/kotlin-multiplatform.png}
+	\caption{Kotlin multiplatform structure}
+	\label{fig:kotlin-multiplatform-structure}
+\end{figure}
+
+The Kotlin multiplatform works using an onion-like structure (see~\Cref{fig:kotlin-multiplatform-structure}) where the common code is at the center 
+and works everywhere on all platforms, to interoperate with platforms, a specific version of Kotlin is used that includes platform-specific 
+libraries and tools. Through these platforms, you can access the platform's native code and leverage all native capabilities.
+
 % - New section ---------------------------------------------------------------
 
 \section{Core module}
