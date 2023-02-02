@@ -280,8 +280,8 @@ the development of many other libraries.
 Finally, the \emph{number of supported platforms} is the most important factor to consider: without extensive support of the most common
 architectures and platforms, the adoption of the pulverization framework could be limited.
 In this regard, Scala native is not clear about which specific targets supports or it will support in the future, but for sure currently, it does not
-support all the Apple mobile ecosystem like iOS, watchOS and tvOS. On the other hand, Kotlin native has wide support for the Apple mobile ecosystem 
-and also for the Linux platform targeting ARM32, ARM64 and x86\_64 architectures as well as for the Windows platform targeting x86 and x86\_64 
+support all the Apple mobile ecosystem like iOS, watchOS and tvOS. On the other hand, Kotlin native has wide support for the Apple mobile ecosystem
+and also for the Linux platform targeting ARM32, ARM64 and x86\_64 architectures as well as for the Windows platform targeting x86 and x86\_64
 architectures.
 
 For all the reasons mentioned above, Kotlin multiplatform was chosen as the framework implementation language.
@@ -290,6 +290,63 @@ For all the reasons mentioned above, Kotlin multiplatform was chosen as the fram
 
 \section{Core module}
 \label{sec:core-module-impl}
+
+The \texttt{core} module models the core concepts of the framework. The~\Cref{fig:core-module-impl} shows the package structure of the module, which
+is divided into two main packages: \texttt{core} and \texttt{dsl}.
+
+\begin{figure}
+	\centering
+	\missingfigure{Diagramma dei package del modulo core}
+	\caption{Core module implementation}
+	\label{fig:core-module-impl}
+\end{figure}
+
+The \texttt{core} package contains all the interfaces that model the pulverization components.
+In particular, in~\Cref{tab:core-interfaces} are listed the fundamental interface defined in the \texttt{core} package.
+
+\begin{table}[ht]
+	\begin{tabularx}{\textwidth}{l X}
+		\toprule
+		Interface                   & Description                                                                            \\ \midrule
+		\texttt{Behaviour}          & The interface that models the behaviour of a component                                 \\
+		\texttt{SensorsContainer}   & The interface that models a single sensor belonging to a device                        \\
+		\texttt{ActuatorsContainer} & The interface that models a single actuator belonging to a device                      \\
+		\texttt{State}              & The interface that represents the state of a device                                    \\
+		\texttt{Communication}      & The interface that models the capability of a device to communicate with other devices \\ \bottomrule
+	\end{tabularx}
+	\caption{Core interfaces}
+	\label{tab:core-interfaces}
+\end{table}
+
+All the interfaces illustrated in~\Cref{tab:core-interfaces} are based on another concept expressed by the \texttt{Initializable} interface.
+The \texttt{Initializable} interface is used to model the initialization of a component. Every component, before being used, should allocate resources
+or perform some operations before becoming operative, as well as release those resources when the component should be destroyed.
+The \texttt{Initializable} interface is used to model this concept and is implemented by defining two methods: \texttt{initialize} and
+\texttt{finalize}. The former must be invoked before the use of the component, while the latter must be invoked when the component is no longer
+needed, during the finalization step of the system.
+
+Analyzing the common aspects of the components defined in~\Cref{tab:core-interfaces}, it is possible to identify another common concept that can
+be isolated in a single common interface: the context in which the component is executed. In this specific scenario, the \texttt{Context} interface
+holds information about the specific device that components belong to, representing this information with a field \texttt{deviceID}.
+
+All those two concepts are implemented in a third interface that models the concept of ``generic pulverization component'' called
+\texttt{PulverizedComponent}, which is the base interface for all the components defined in~\Cref{tab:core-interfaces}.
+This interface implements also an external interface named \texttt{KoinComponent}; this interface enables field injection for all the class that
+implements it. This feature is used to dynamically inject the \texttt{Context} inside of each component.
+A detailed discussion about the \emph{dependency injection} and \emph{Koin} will be made in the following sections.
+
+\begin{figure}
+	\centering
+	\missingfigure{Diagramma delle classi che mostra le classi del modulo core}
+	\caption{Class diagram showing the relation between the core interfaces of the framework.}
+	\label{fig:core-interfaces-class-diagram}
+\end{figure}
+
+The~\Cref{fig:core-interfaces-class-diagram} shows the class diagram that models the relationship between the core interfaces of the framework
+illustrated previously.
+
+The modeling of the concepts of ``sensors'' and ``actuators'' within the framework and the implementation choices made to model these concepts in the
+framework are discussed in more detail below.
 
 % - New section ---------------------------------------------------------------
 
