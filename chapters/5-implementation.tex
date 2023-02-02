@@ -161,9 +161,103 @@ The Kotlin multiplatform use cases can be synthesized in the following points:
 	\label{fig:kotlin-multiplatform-structure}
 \end{figure}
 
-The Kotlin multiplatform works using an onion-like structure (see~\Cref{fig:kotlin-multiplatform-structure}) where the common code is at the center 
-and works everywhere on all platforms, to interoperate with platforms, a specific version of Kotlin is used that includes platform-specific 
+The Kotlin multiplatform works using an onion-like structure (see~\Cref{fig:kotlin-multiplatform-structure}) where the common code is at the center
+and works everywhere on all platforms; to interoperate with platforms, a specific version of Kotlin is used that includes platform-specific
 libraries and tools. Through these platforms, you can access the platform's native code and leverage all native capabilities.
+
+Similarly to Scala, the multiplatform support for Kotlin is enabled via a
+Gradle~\footnote{\textbf{Gradle} is a build automation tool for multi-language software development. It's based on \emph{Apache Ant} and
+	\emph{Apache Maven} introducing a Groovy and Kotlin DSL. The main supported languages are \emph{Java, Kotlin, Groovy} and \emph{Scala}.} plugin.
+As for Scala, the plugin enables a series of tools and compiler extensions to support multiplatform development.
+
+\lstinputlisting[
+	language=kotlin,
+	caption={},
+	label={lst:koltin-multiplatform-setup}
+]{listings/kotlin-multiplatform-setup.kts}
+
+The~\Cref{lst:koltin-multiplatform-setup} shows a basic setup of Kotlin multiplatform using the Gradle plugin.
+
+To share code between all the platforms, Kotlin provides a specific mechanism using a hierarchical structure of modules.
+The common code is placed in the \texttt{commonMain} module and it's used to share the common business logic that applies to all the platforms.
+Often there is the need to create several native targets that could potentially reuse a lot of the common logic and third-party APIs; Kotlin allows
+to create a specific and flexible structure to reuse as much code as possible between the different targets.
+The~\Cref{fig:kotlin-multiplatform-hierarchy} shows a possible representation of a Kotlin multiplatform project hierarchical structure.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{figures/kotlin-multiplatform-hierarchical-structure.pdf}
+	\caption{Kotlin multiplatform hierarchical structure.}
+	\label{fig:kotlin-multiplatform-hierarchy}
+\end{figure}
+
+To access the platform-specific APIs from the shared code, Kotlin provides a specific mechanism called \emph{expect/actual}
+declarations~\footnote{\url{https://kotlinlang.org/docs/multiplatform-connect-to-apis.html}}.
+With this mechanism, a common source set defines an expected declaration, and platform source sets must provide the actual declaration that
+corresponds to the expected declaration.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{figures/expect-actual.png}
+	\caption{Kotlin multiplatform expect/actual mechanism.}
+	\label{fig:kotlin-multiplatform-expected-actual}
+\end{figure}
+
+The \emph{expect/actual} mechanism is shown in~\Cref{fig:kotlin-multiplatform-expected-actual} where a class in the common source set is marked as
+\texttt{expect} and the platform-specific source set provides the actual implementation of the class.
+
+The compiler ensures that every declaration marked as \texttt{expect} has a corresponding declaration marked as \texttt{actual} in the corresponding
+platform modules. In this way, is guaranteed that every platform has an implementation for that class or function.
+
+The following will be a brief introduction to how Kotlin can generate native code and js code from the same code base.
+
+The \emph{Kotlin/JS IR} compiler is responsible for compiling Kotlin code into JavaScript code. The compiler backend rather than generating directly
+JavaScript code generates an intermediate representation (IR) of the code which is subsequently compiled into JavaScript code.
+This strategy enables aggressive optimizations, improving, for example, the generated code size.
+
+The \emph{Kotlin/Native} compiler is responsible for compiling Kotlin code into native code. The compiler is available for all the main operating
+systems (macOS, Linux, and Windows) and supports different targets like \textbf{iOS, Windows, macOS, Linux, Raspberry PI, STM32,} and
+\textbf{WebAssembly}. Unfortunately, there aren't details about how the compiler pipeline works, but it's possible to see that the compiler generates
+an IR representation of the code and then compiles it into native code via LLVM.
+A relevant feature of \emph{Kotlin/Native} is the interoperability with \emph{C} code. This feature allows using existing C libraries in Kotlin using
+the \emph{cinterop} tools that generate Kotlin bindings for the C library. The \emph{cinterop} tool requires a \texttt{.def} file that describes what
+to include into bindings, in particular, are specified the \texttt{.a/.so} libraries to include and the \texttt{.h} files to parse. Finally, the
+\emph{cinterop} tool generates a Kotlin library that can be used in the Kotlin code.
+
+When a \emph{Kotlin/Native} library is distributed, a special file with extension \texttt{.klib} is generated. This file contains all the information and file specifics for each platform. It's a \texttt{.zip} file containing a predefined directory structure; for example,
+the \texttt{foo.klib} when unpacked as \texttt{foo/} directory contains the following files and directories:
+\begin{itemize}
+	\item in a folder with the \emph{component name} is contained the serialized Kotlin IR
+	\item in a folder \texttt{targets} are placed the platform-specific files, in particular in the folder \texttt{kotlin} there is Kotlin compiled
+	      into LLVM bitcode; in the \texttt{native} folder there are the bitcode files of additional native objects
+	\item the \texttt{linkdata} folder contains a set of \emph{ProtoBuf}~\footnote{Protocol Buffers (Protobuf) is a free and open-source
+		      cross-platform data format used to serialize structured data.} files with serialized linkage metadata
+	\item the \texttt{resources} folder contains resources such as images, fonts, and other files
+	\item a \texttt{manifest} file in the java property format describing the library.
+\end{itemize}
+
+This structure allows to have a single \texttt{.klib} file that can be used in different platforms without the need to recompile the library for each
+one of them.
+
+\subsubsection*{Kotlin multiplatform ecosystem}
+
+As already done for Scala, the ecosystem will be examined for Kotlin to get a better awareness of the usability of this technology.
+Again, the number of supported libraries and the maturity of the framework will be considered.
+
+Differently from the Scala multiplatform ecosystem, the Kotlin one seems to be more coherent and structured: lots of libraries
+like \textbf{kotlinx.serialization}, \textbf{kotlinx.coroutines}, and \textbf{ktor} are available for all the target platforms supported by Kotlin.
+The other difference is that most of the libraries are developed directly (or with the support of) the Kotlin team, this means that support and the
+development is more aligned and coherent with the language itself.
+The identification of the magnitude of libraries targeting Kotlin multiplatform is quite simple since a
+site~\footnote{\url{https://libs.kmp.icerock.dev/}} collects all the available Kotlin multiplatform libraries. From this site can be seen that more
+than 140 libraries are available for Kotlin multiplatform, spacing from different categories and applications. Of course, not all the available
+libraries are collected on this site, but it's a good starting point to get an idea of the ecosystem.
+
+For concern the maturity of the framework, the Kotlin multiplatform is still in beta, nevertheless, its stability and usability make it a
+good candidate for a production-ready product. The Kotlin team is working hard to improve the framework and make it more stable and usable.
+If in Scala the specific module for each supported platform (JS and native) is developed by an external community, reducing the guarantee of stability
+and coherence with the language, in Kotlin the multiplatform module is developed by the JetBrains team itself, increasing the guarantee of stability
+of the entire framework.
 
 % - New section ---------------------------------------------------------------
 
