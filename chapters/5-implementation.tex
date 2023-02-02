@@ -236,8 +236,8 @@ the \texttt{foo.klib} when unpacked as \texttt{foo/} directory contains the foll
 	\item a \texttt{manifest} file in the java property format describing the library.
 \end{itemize}
 
-This structure allows to have a single \texttt{.klib} file that can be used in different platforms without the need to recompile the library for each
-one of them.
+This structure allows having a single \texttt{.klib} file that can be used on different platforms without the need to recompile the library for each
+one of them. In a sense, the \texttt{.klib} file is a portable binary format that can be used on different platforms.
 
 \subsubsection*{Kotlin multiplatform ecosystem}
 
@@ -258,6 +258,33 @@ good candidate for a production-ready product. The Kotlin team is working hard t
 If in Scala the specific module for each supported platform (JS and native) is developed by an external community, reducing the guarantee of stability
 and coherence with the language, in Kotlin the multiplatform module is developed by the JetBrains team itself, increasing the guarantee of stability
 of the entire framework.
+
+\subsection{Why Kotlin multiplatform as a choice}
+
+This section will present the reasons that led to the choice of Kotlin for the framework implementation over Scala.
+The decision was based on three main factors: \emph{support} of the overall multiplatform ecosystem, \emph{libraries availability} with
+multiplatform support and the number of \emph{supported platforms} by each language.
+
+As for \emph{support} related to Scala multiplatform, the issue is controversial. On the one hand, there's Scala.js, which has always been
+supported and maintained and has reached a very high level of maturity over time. On the other hand, scala native is managed by another community that
+has contributed to the project in a seesaw manner over time, where in some cases it had even been abandoned.
+On the other side, Kotlin multiplatform is entirely supported by JetBrains and is constantly evolving and improving. JetBrains has proven over time
+to carefully curate its products ensuring very high-quality standards, a symptom that Kotlin multiplatform may also fall into this case.
+
+The \emph{availability} of libraries that support multiplatform is a key aspect to consider: having a large number of supported libraries available
+allows complex applications to be developed in a short time and with fewer errors.
+In this regard, the Kotlin multiplatform has a clear advantage over Scala multiplatform: the Kotlin ecosystem is much more structured and coherent
+than the Scala one. The Kotlin team has developed a large number of libraries that support multiplatform, and the community has also contributed to
+the development of many other libraries.
+
+Finally, the \emph{number of supported platforms} is the most important factor to consider: without extensive support of the most common
+architectures and platforms, the adoption of the pulverization framework could be limited.
+In this regard, Scala native is not clear about which specific targets supports or it will support in the future, but for sure currently, it does not
+support all the Apple mobile ecosystem like iOS, watchOS and tvOS. On the other hand, Kotlin native has wide support for the Apple mobile ecosystem 
+and also for the Linux platform targeting ARM32, ARM64 and x86\_64 architectures as well as for the Windows platform targeting x86 and x86\_64 
+architectures.
+
+For all the reasons mentioned above, Kotlin multiplatform was chosen as the framework implementation language.
 
 % - New section ---------------------------------------------------------------
 
