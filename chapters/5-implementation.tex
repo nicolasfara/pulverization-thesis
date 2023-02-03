@@ -109,7 +109,7 @@ The \texttt{.sjsir} files are similar to \texttt{.class} files, although they ar
 dedicated to JavaScript interoperability. The \texttt{.sjsir} format and specification are independent of Scala: which means that the linker is
 independent of the language version.
 
-\subsubsection*{Scala multiplatform ecosystem}
+\subsubsection{Scala multiplatform ecosystem}
 
 This section will examine the current ecosystem concerning the multiplatform support for the Scala language to have more awareness about the
 usability of this technology.
@@ -239,7 +239,7 @@ the \texttt{foo.klib} when unpacked as \texttt{foo/} directory contains the foll
 This structure allows having a single \texttt{.klib} file that can be used on different platforms without the need to recompile the library for each
 one of them. In a sense, the \texttt{.klib} file is a portable binary format that can be used on different platforms.
 
-\subsubsection*{Kotlin multiplatform ecosystem}
+\subsubsection{Kotlin multiplatform ecosystem}
 
 As already done for Scala, the ecosystem will be examined for Kotlin to get a better awareness of the usability of this technology.
 Again, the number of supported libraries and the maturity of the framework will be considered.
@@ -492,6 +492,64 @@ The other relevant construct of this module is the configuration DSL, which will
 
 \section{Platform module}
 \label{sec:platform-module-impl}
+
+This module represents the most important part of the framework since it is the one that provides the implementation of the platform.
+It is organized in a \emph{communication} package that contains the main abstraction for intra-components communication, a \emph{componentsref}
+package which contains all the interfaces needed to uniform the representation of a component reference, a \emph{context} package that contains the
+logics for the context creation and, finally, a \emph{dsl} package that contains the DSL used to configure the pulverization platform.
+The~\Cref{fig:platform-module} shows the package diagram of the \texttt{platform} module.
+
+\begin{figure}
+	\centering
+	\missingfigure{}
+	\caption{Package diagram of the \texttt{platform} module showing the relationship between the packages.}
+	\label{fig:platform-module}
+\end{figure}
+
+\subsubsection{Communication package}
+
+In this package are given the main abstractions for intra-components communication. In particular, the main relevant interface is the
+\texttt{Communicator}: it is the interface that represents the communication between two components of a logical device.
+This interface is developed keeping in mind the fact that the concrete implementation could be based on any kind of communication medium,
+and for this reason, specific protocol aspects are abstracted over. This specific abstraction is captured by the \texttt{RemotePlace} data class
+that represents the remote place that the receiver's component is deployed on.
+This class is composed of two fields named \texttt{who} and \texttt{where:} the former identifies the receiver's component answering the question of
+``who is the other component'', while the latter represents where the component is located, answering the question of ``where can I reach the other
+components''.
+In this way, each communicator will specify how to represent that two fields using protocol-specific aspects: for example, a communicator based on
+TCP socket could represent the \texttt{who} field as the IP address of the receiver's component, while the \texttt{where} field could be the port.
+In conjunction with the \texttt{RemotePlace} class, the \texttt{RemotePlaceProvider} interface is used to provide the specific remote place based
+on the specific protocol and context. The interface provides a method \texttt{get} that takes as input a \texttt{PulverizedComponentType} and
+return a \texttt{RemotePlace} if any. The implementation of this interface is demanded by the specific communicator implementation.
+
+The \texttt{Communicator} interface, reported in~\Cref{lst:communicator-interface}, has a \texttt{setup} method that accept as arguments respectively
+the \texttt{Binding} and a \texttt{RemotePlace};
+those two arguments are used to set up the communication between the two components (defined by the \texttt{Binding}) and how to establish
+the connection (using the \texttt{RemotePlace}). The \texttt{finalize} method is used to close the connection between the two components and release
+resources if any.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={Communicator interface},
+	label={lst:communicator-interface}
+]{listings/Communicator.kt}
+
+The framework, by default, provides an implementation of the \texttt{Communicator} interface called \texttt{LocalCommunicator} that is used to
+implement the communication between two components that coexist in the same deployment unit. This implementation is based on the use of
+\texttt{Flow} which represents an asynchronous flow, in particular, two \texttt{Flow} are used to implement the communication: one for receiving
+messages (\texttt{inbox} flow) and one for sending messages (\texttt{outbox} flow).
+The \texttt{outbox} flow is used by the \texttt{fireMessage} method to send messages to the other component, while the \texttt{inbox} flow is used
+by the \texttt{receiveMessage} method to receive messages from the other component.
+This specific implementation is used by the platform to enable communication between components in memory in the same deployment unit.
+
+An important aspect to consider is the fact that the \texttt{Flow}s used by the \texttt{LocalCommunicator} should be shared across all the local instances otherwise each instance will have its own \texttt{Flow} and the communication will not work. To overcome this issue the
+\texttt{LocalCommunicator} uses another class called \texttt{CommManager} which is responsible for managing the \texttt{Flow}s.
+The \texttt{CommManager} is a singleton that is used to create the \texttt{Flow}s and to share them across all the local instances.
+The \texttt{CommManager} relies on the \texttt{lazy} property of Kotlin to create the \texttt{Flow}s only when they are needed and give the same flow
+instance on subsequent calls. The \texttt{lazy} property can guarantee a different level of thread safety, in particular, the \texttt{lazy} property
+accepts a parameter of type \texttt{LazyThreadSafetyMode} which specifies the behaviour of the lazy property. In this case, is specified
+\texttt{LazyThreadSafetyMode.PUBLICATION} which means that the \texttt{Flow} will be created only once and the same instance will be returned on
+subsequent calls, obtaining the desired behaviour.
 
 % - New section ---------------------------------------------------------------
 
