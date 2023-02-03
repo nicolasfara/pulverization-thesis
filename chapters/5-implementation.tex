@@ -345,8 +345,148 @@ A detailed discussion about the \emph{dependency injection} and \emph{Koin} will
 The~\Cref{fig:core-interfaces-class-diagram} shows the class diagram that models the relationship between the core interfaces of the framework
 illustrated previously.
 
+\subsubsection{Sensors and Actuators}
+
 The modeling of the concepts of ``sensors'' and ``actuators'' within the framework and the implementation choices made to model these concepts in the
 framework are discussed in more detail below.
+
+All the considerations and choices made to model the concept of \emph{sensor} hold also for the concept of \emph{actuator}, so for the sake of
+brevity, only the discussion about the \emph{sensor} concept is reported.
+
+The formulation presented in the original paper~\cite{fi12110203} defines the sensors module as \textit{``a set $\sigma$ of logical sensors''};
+starting from this assertion the \textbf{sensor} component is broken down into two separate concepts: the \emph{sensor} which models the physical
+sensor from which the data is collected, and the \emph{sensors container} which represents the collector of the sensors belonging to a specific
+device.
+
+The \texttt{Sensor} interface, represented in~\Cref{lst:sensor-interface}, models a single sensor defining the method \texttt{sense} which is use to
+perform the operation of \emph{sensing the environment.}
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={Sensor interface},
+	label={lst:sensor-interface}
+]{listings/Sensor.kt}
+
+The interface is generic in a type variable \texttt{T} that represents the type of the data collected by the sensor and implements the
+\texttt{Initializable} interface to model the ability of initialization of the sensor.
+
+More complex and with relevant design choices is the \texttt{SensorContainer} class. The sensors' container is modeled via an abstract class
+which implement the \texttt{PulverizationComponent} interface making the container itself initializable.
+The storing of the sensors is done via a \texttt{Set} of \texttt{Sensor} objects; since the \texttt{Sensor} interface is generic, it is not possible
+to determine which type of sensor will be used, for this reason, the Kotlin type projection over the type variable \texttt{T} of the \texttt{Sensor}
+is used. In this way, the \texttt{SensorContainer} can store sensors of different types, it will be the responsibility of the container to provide
+methods that allow retrieving the sensors of a specific type in a type-safe way.
+In this regard, the \texttt{SensorContainer} provides three-way of retrieving the sensors: \texttt{get<T>()}, \texttt{getAll<T>()} and
+\texttt{get<T>(run)}.
+The first method returns a single sensor of type \texttt{T} if it is present in the container, otherwise, it returns \texttt{null}.
+This method should be used with care considering that if more sensors with type \texttt{T} are present in the container, only one of them will be
+returned with any guarantee on which one will be returned. This method is useful when the container is sure that only one sensor of the specified
+type is present.
+The second method returns a \texttt{Set} of sensors of type \texttt{T} if at least one sensor of that type is present in the container, otherwise,
+it returns an empty \texttt{Set}.
+The third method finds the sensor of type \texttt{T} and invokes the \texttt{run} function over the retrieved sensor if it is not \texttt{null},
+otherwise, it does nothing.
+
+One of the challenges faced in implementing these methods stemmed from the presence of type erasure.
+The type erasure is a feature of the Java virtual machine that removes the type information from the compiled bytecode, making it impossible to
+retrieve the type of a generic type variable at runtime. To overcome this limitation, the Kotlin mechanism of \emph{reified type parameters} is used.
+This mechanism leverages another mechanism of the Kotlin language called \emph{inline functions} that allows inlining the body of a function
+inside the caller function. In this way, a sort of ``local monomorphization'' is performed, allowing the retrieval of the type of the generic type
+cleanly, without the need of using reflection via \texttt{KClass<T>}.
+
+Above was discussed the problem of retrieving a sensor in a type-safe way, this problem is solved by inspecting all the objects stored in the
+container and returning only those that are an instance of the type \texttt{T}.
+The complete implementation of the \texttt{SensorContainer} class is reported in~\Cref{lst:sensor-container-impl}.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={SensorContainer implementation},
+	label={lst:sensor-container-impl}
+]{listings/SensorContainer.kt}
+
+As stated above, all the considerations and choices made for the \texttt{Sensor} and \texttt{SensorContainer} are valid also for the \texttt{Actuator}
+and \texttt{ActuatorContainer}.
+
+\subsubsection{Communication}
+
+The other relevant component in the \emph{core} module is the \textbf{communication} component, which is responsible for the communication between
+the devices.
+The communication component is described as \textit{``A communication component $\chi$ handling interaction with neighbours, holding information on
+	the identity of neighbors and how to reach them, managing input channels used to receive external messages into the device’s state, and output
+	channels for emitting messages to all its neighbours''}.
+From this description emerges the bidirectional nature of communication where sending and receiving channels are neatly separated.
+Another aspect that emerges from the description is the need to hold a reference to the neighbors of the device and their identity.
+
+In light of the considerations made above, it was decided to demand the user the responsibility of holding the references to the neighbors and
+their identity, and to provide a simple interface to send and receive messages. The rationale behind this choice is that is quite difficult to
+provide a generic representation of the network topology and determine how it can change over time, and for this reason, it is better to leave the
+responsibility of managing the neighbors to the specific implementation of the communication component.
+
+The \texttt{Communication} interface, represented in~\Cref{lst:communication-interface}, models the communication component and defines
+two methods: \texttt{send} and \texttt{receive}.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={Communication interface},
+	label={lst:communication-interface}
+]{listings/Communication.kt}
+
+The interface is generic in a type variable \texttt{P} that represents the type of the messages that can be sent and received by the component.
+Moreover, the type variable is bounded to the \texttt{Any} type: this captures the fact that the message could not be nullable.
+While at first analysis it might seem redundant to specify this type bound, it turns out to be fundamental since in the type hierarchy in Kotlin, the
+topmost type is \texttt{Any?} which represents any nullable data type, enabling the possibility of sending and receiving \texttt{null} messages,
+a scenario that is not desirable.
+
+While the \texttt{send} method is straightforward, the \texttt{receive} method returns a specific type: \texttt{Flow<P>}.
+This type represents an asynchronous stream of values that in this case represents the messages received by all the neighbors.
+
+\subsubsection{Behaviour}
+
+The \textbf{behaviour} component is the heart of the device, it is responsible for the execution of the device's logic.
+The behaviour component is described as \textit{``A computation function $\beta$
+	modeling the device behavior, which maps the state of the device to a new state, a prescriptive set of actuations to be performed,
+	and coordination messages to be emitted''}.
+
+The \texttt{Behaviour} interface, represented in~\Cref{lst:behaviour-interface}, models the behaviour component and defines a single method:
+\texttt{invoke}.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={Behaviour interface},
+	label={lst:behaviour-interface}
+]{listings/Behaviour.kt}
+
+How the behaviour function should be structured can be easily inferred from the description above: it should take as input the current state of
+the device, the sensed values and the received messages, and it should return the new state of the device, the actuations to be performed and the
+messages to be sent. For this reason, the interface is generic in five type variables: \texttt{S} for the state, \texttt{E} for the communication,
+\texttt{W} for the sensed values, \texttt{A} for the actuations and \texttt{O} for the outcome of the function.
+The output produced by the behaviour function is represented by the \texttt{BehaviourOutput} data class, which is defined
+in~\Cref{lst:behaviour-interface}. This class holds information about the new state, the new communication, the actuations to be performed, and the
+function's outcome.
+The peculiarity of the \texttt{Behaviour} class is that the method \texttt{invoke} is marked as \texttt{operator} which allows the invocation of the
+function using the \texttt{()} operator over the class instance.
+
+\subsubsection{State}
+
+Finally, the \textbf{state} component is responsible for the representation of the state of the device.
+The state component is described as \textit{``A state $\kappa$, representing the device's local knowledge''}.
+
+The framework should abstract the representation of the state of the device, and for this reason, the \texttt{State} interface, represented in
+\Cref{lst:state-interface}, models the state component and defines two methods: \texttt{get} and \texttt{update}.
+The former is used to retrieve the current value of the state, while the latter is used to update the state with a new value.
+Is the responsibility of the user to implement the concrete representation of the state, and for this reason, the interface is generic in a type
+variable \texttt{S} that represents the type of the state. Is also the responsibility of the user to persist the state somehow, the reason why the
+interface does not provide any details about persistence.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={State interface},
+	label={lst:state-interface}
+]{listings/State.kt}
+
+\paragraph*{}
+
+The other relevant construct of this module is the configuration DSL, which will be discussed more in detail in the~\Cref{sec:configuration-dsl-impl}.
 
 % - New section ---------------------------------------------------------------
 
