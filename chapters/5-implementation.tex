@@ -614,12 +614,39 @@ function is marked as \texttt{expect} so that the specific target platform can p
 target platform is implemented with the following behaviour: first of all, the \texttt{.pulverization.env} file is searched in the given path, if
 the file is not found, the \texttt{DEVICE\_ID} environment variable is searched, if the variable is not found, the function raises an exception.
 
-\paragraph*{}
+\subsubsection{Dsl package}
 
-The last package is \emph{dsl} which contains the DSL used to configure and execute the pulverization platform.  The discussion of the details of
+The last package is \emph{dsl} which contains the DSL used to configure and execute the pulverization platform. The discussion of the details of
 the DSL is deferred to the~\Cref{sec:platform-dsl-impl}.
+Below, will be reported all the specific aspects of the platform created via the DSL, including the algorithm used to set up the deployment unit,
+create the components references and configure the communicators.
 
-\todo{Paralre di come e' gestita la logica di configurazione della piattaforma}
+The platform configuration via the DSL produces a platform object which is used to start and stop the platform.
+The creation process of the platform is made via the \texttt{start} method and is made of several activities executed in a specific order: first of
+all, the dependency injection framework is initialized registering the \emph{context}, the \emph{communicator manager} and the
+\emph{remote place provider}.
+Then, from the given configuration is determined which components belong to the same deployment unit and which components are remote.
+To do this, all the components defined in the logical device are retrieved, then from the configuration is checked if the components registered by
+the user matches the configuration otherwise, an exception is raised.
+After that, for each component, the corresponding \emph{component reference} is created and the \emph{communicator} is configured.
+The creation of a \emph{component reference} takes as argument the \emph{serializer}, a set containing all the \emph{components} belonging to
+the logical device, a set containing the \emph{deployment unit} components, and the \emph{communicator}.
+The two sets (the one containing all the components and the one containing the deployment unit components) are used to determine if
+the component is remote or not, and consequently leveraging the local communicator or the remote one (provided as argument).
+Once all the components are created, for each one, the corresponding logic is executed saving into a set the reference of the spawned job.
+In~\Cref{fig:platform-configuration} is reported the activity diagram showing the platform creation process.
+
+\begin{figure}
+	\centering
+	\missingfigure{Diagramma delle attivita' che mostra il processo di creazione della piattaforma}
+	\caption{Activity diagram showing the platform creation process.}
+	\label{fig:platform-configuration}
+\end{figure}
+
+The creation of component references for behavior, requires further analysis: in fact, the behaviour holds a reference for each component, namely
+the \emph{state, actuators, sensors,} and \emph{communication}. In this regard, not all four components might be defined, so the behavior will have
+to create a dummy component reference. This is created automatically when creating component references by looking at the configuration, and if a
+component is neither local nor remote, then the dummy implementation is used.
 
 % - New section ---------------------------------------------------------------
 
