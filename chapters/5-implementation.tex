@@ -656,6 +656,85 @@ component is neither local nor remote, then the dummy implementation is used.
 The RabbitMQ module, at the time of writing, is the only module that provides an implementation of the \texttt{Communicator} interface.
 In particular, this module enables the communication between components via \textbf{RabbitMQ}, a message broker that implements the AMQP protocol.
 
+\subsubsection{RabbitMQ overview}
+
+RabbiMQ is an open source \textbf{message broker} written in Erlang that implements the \textbf{AMQP} protocol~\cite{4012603}.
+RabbitMQ is lightweight and easy to deploy on-premises and in the cloud. It supports multiple messaging protocols. RabbitMQ can be deployed in
+distributed and federated configurations to meet high-scale, high-availability requirements~\cite{rabbitmq}.
+
+RabbitMQ is based on the notion of \textbf{broker}, which receives messages from publishers (applications that publish them, also known as producers)
+and route them to consumers (applications that process them). The publishers, consumers and the broker can all reside on different machines,
+reasons why RabbitMQ could be a good choice for a distributed system, in particular in the context of the pulverization.
+
+The AMQP protocol has the following view of the world: messages are published to exchanges, which are often compared to post offices or mailboxes.
+\emph{Exchanges} then distribute message copies to queues using rules called bindings. Then the broker either delivers messages to consumers
+subscribed to queues or consumers fetch/pull messages from queues on demand.
+
+Networks are unreliable and applications may fail to process messages therefore the AMQP model has a notion of message acknowledgments: when a
+message is delivered to a consumer the consumer notifies the broker, either automatically or as soon as the application developer chooses to do so.
+When message acknowledgements are in use, a broker will only completely remove a message from a queue when it receives a notification for that
+message (or group of messages).
+
+Exchanges are entities that receive messages from producers and route them to zero or more queues. The routing algorithm depends on the exchange
+type and rules called bindings. The AMQP protocol defines four exchange types that are reported in~\Cref{tab:exchange-types}.
+
+\begin{table}
+	\centering
+	\begin{tabular}{l l}
+		\toprule
+		\textbf{Exchange type} & \textbf{Default names}                                    \\
+		\midrule
+		Direct exchange        & (Empty string) and \texttt{amq.direct}                    \\
+		Fanout exchange        & \texttt{amq.fanout}                                       \\
+		Topic exchange         & \texttt{amq.topic}                                        \\
+		Headers exchange       & \texttt{amq.match} (and \texttt{amq.headers} in RabbitMQ) \\
+		\bottomrule
+	\end{tabular}
+	\caption{Exchange types.}
+	\label{tab:exchange-types}
+\end{table}
+
+The \emph{default exchange} is a direct exchange with no name (empty string) pre-declared by the broker. It has one special property that makes it
+very useful for simple applications: every queue that is created is automatically bound to it with a routing key which is the same as the queue name.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}{.45\textwidth}
+		\centering
+		\includegraphics[width=0.84\linewidth]{figures/exchange-direct.png}
+		\caption{Direct exchange example.}
+		\label{fig:direc-exchange}
+	\end{subfigure}
+	\begin{subfigure}{.45\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/exchange-fanout.png}
+		\caption{Fanout exchange example.}
+		\label{fig:fanout-exchange}
+	\end{subfigure}
+	\caption{Representation of the two main exchanges defined in the AMQP protocol.}
+	\label{fig:amqp-exhange-type}
+\end{figure}
+
+A direct exchange delivers messages to queues based on the message routing key. A direct exchange is ideal for the unicast routing of messages (although they can be used for multicast routing as well). Here is how it works:
+
+\begin{itemize}
+	\item A queue binds to the exchange with a routing key $K$
+	\item When a new message with routing key $R$ arrives at the direct exchange, the exchange routes it to the queue if $K = R$
+\end{itemize}
+
+A direct exchange can be represented graphically as in~\Cref{fig:direc-exchange}.
+
+A fanout exchange routes messages to all of the queues that are bound to it and the routing key is ignored. If $N$ queues are bound to a fanout
+exchange, when a new message is published to that exchange a copy of the message is delivered to all $N$ queues. Fanout exchanges are ideal for the
+broadcast routing of messages. A fanout exchange can be represented graphically as in~\Cref{fig:fanout-exchange}.
+
+Topic exchanges route messages to one or many queues based on matching between a message routing key and the pattern that was used to bind a queue to
+an exchange. The topic exchange type is often used to implement various publish/subscribe pattern variations. Topic exchanges are commonly used for
+the multicast routing of messages. Topic exchanges have a very broad set of use cases. Whenever a problem involves multiple consumers/applications
+that selectively choose which type of messages they want to receive, the use of topic exchanges should be considered.
+
+\subsubsection{Rabbimq communicator}
+
 When implementing a new \texttt{Communicator}, two main steps are required: the first one is the implementation of the \texttt{Communicator} interface
 and the second one is the implementation of the \texttt{RemotePlaceProvider}.
 The \texttt{Communicator} interface is implemented by the \texttt{RabbitMQCommunicator} class, while the \texttt{defaultRabbitMQRemotePlace} method
