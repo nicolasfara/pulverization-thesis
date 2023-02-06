@@ -551,6 +551,74 @@ accepts a parameter of type \texttt{LazyThreadSafetyMode} which specifies the be
 \texttt{LazyThreadSafetyMode.PUBLICATION} which means that the \texttt{Flow} will be created only once and the same instance will be returned on
 subsequent calls, obtaining the desired behaviour.
 
+\subsubsection{Componentsref package}
+
+In this package are modeled the interfaces that are used to represent a component reference.
+In the framework, the concept of ``component reference'' is introduced to abstract over specific aspects like the protocol used to communicate with
+the component and the way how a component can be reached.
+
+The \texttt{ComponentRef} interface is the main interface that represents a component reference; is generic in a type parameter \texttt{S} that
+represents the type of message that the component can send and receive. Even in this case, the type parameter is bounded to \texttt{Any} to prevent
+the use of nullable types. The interface provides three main methods: \texttt{sendToComponent, receiveFromComponent} and
+\texttt{receiveLastFromComponent}.
+
+This interface is entirely managed by the platform which is responsible for creating the component reference and for providing the right
+implementation based on the context in which the component is deployed. For this reason, the end user should not care about the implementation
+of this interface and should not extends or implement it. As a design choice, all the implementations of this interface are marked as
+\texttt{internal} so that they are not visible outside the platform module.
+
+The \texttt{ComponentRef} interface can be used in two main scenarios: the first one is when the component to which we refer exists in the same
+deployment unit or remotely, and the second one is when the component to which we refer not exists at all (e.g when a device does not have one of the
+five components).
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={ComponentRefImpl class},
+	label={lst:componentref-impl}
+]{listings/ComponentRefImpl.kt}
+
+For the first scenario, the \texttt{ComponentRefImpl} provides an implementation of the \texttt{ComponentRef} interface, while the second scenario is
+handled by the \texttt{NoOpComponentRef} that is an implementation of the \texttt{ComponentRef} interface that does nothing
+(see~\Cref{lst:componentref-impl}).
+The \texttt{ComponentRefImpl} defines a three-argument constructor that accepts respectively a \emph{serializer}, a \emph{binding} and a
+\emph{communicator}. The \emph{serializer} is used to serialize and deserialize the messages that the component can send and receive, while the
+\emph{binding} is used to identify the component to which we refer (and consequently the source component) and the \emph{communicator} is used to
+establish the communication between the two components.
+The implementation of this class is quite straightforward, in particular, the \texttt{sendToComponent} method uses the \texttt{fireMessage} method of
+the \emph{communicator} to send the message to the other component, while the \texttt{receiveFromComponent} and \texttt{receiveLastFromComponent}
+methods use the \texttt{receiveMessage} method of the \emph{communicator} to receive messages from the other component.
+The serializer is used to serialize and deserialize the messages that the component can send and receive, while the binding is used to
+setup the communicator.
+A notable aspect is how the serializer is managed: the serialization is managed via a Kotlin compiler plugin which enriches any class with
+a serializer if any; in this way on any serializable class can be used the method \texttt{serializer<C>()} to obtain the serializer of the class,
+but this method is inline so can not be used in the constructor of the \texttt{ComponentRefImpl} class because of type erasure.
+To overcome this issue, inside the \emph{companion object} of the class is defined the operator \texttt{invoke} as an inlined function that
+accepts only the \emph{binding} and \emph{communicator} as parameters, while the \emph{serializer} is obtained via the reified type, using the aforementioned \texttt{serializer} method. Since the operator \texttt{invoke} enable the use of the \texttt{()} operator, the class constructor is
+emulated reducing the boilerplate needed to create the class.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={NoOpComponentRef class},
+	label={lst:noopcomponentref-impl}
+]{listings/NoOpComponentRef.kt}
+
+The implementation of the \texttt{NoOpComponentRef}, shown on the~\Cref{lst:noopcomponentref-impl}, provides a no-ops implementation of the
+\texttt{ComponentRef} interface. The implementation provides that the send operation does nothing, while the receive operations always return
+\texttt{null} for the \texttt{receiveLastFromComponent} and an empty flow for \texttt{receiveFromComponent} method.
+
+\subsubsection{Context package}
+
+The context package defines only a function called \texttt{createContext} which is responsible for creating the context that will be made available to
+all the components. Since this function could have a specific implementation base on the target platform in which the framework is deployed, the
+function is marked as \texttt{expect} so that the specific target platform can provide the implementation. At the time of writing, only the JVM
+target platform is implemented with the following behaviour: first of all, the \texttt{.pulverization.env} file is searched in the given path, if
+the file is not found, the \texttt{DEVICE\_ID} environment variable is searched, if the variable is not found, the function raises an exception.
+
+\paragraph*{}
+
+The last package is \emph{dsl} which contains the DSL used to configure and execute the pulverization platform.  The discussion of the details of
+the DSL is deferred to the~\Cref{sec:platform-dsl-impl}.
+
 % - New section ---------------------------------------------------------------
 
 \section{RabbitMQ module}
@@ -565,3 +633,93 @@ subsequent calls, obtaining the desired behaviour.
 
 \section{Platform DSL}
 \label{sec:platform-dsl-impl}
+
+The platform DSl represents one fundamental building block of the entire framework: with this DSL the user can configure the platform in a simple
+declarative way, without the need to manage specific aspects like how the components should be instantiated or how the communication between them
+and so on. The DSL is implemented in the \emph{dsl} package of the \emph{platform} module and should provide the following features:
+\begin{itemize}
+	\item The ability to register the user-defined components with their corresponding logic
+	\item The ability to specify which communicator should be used to communicate between the components
+	\item The ability to specify a custom context that should be used.
+	\item Produce a platform instance that can be used to start the pulverized system.
+\end{itemize}
+
+All of those four features are implemented in the DSL using the syntax and the structure defined in the~\Cref{lst:platform-dsl} which provides
+an example of the use of the DSL to configure the platform.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={Example of the use of the DSL to configure the platform.},
+	label={lst:platform-dsl}
+]{listings/PlatformDSL.kt}
+
+First of all, the DSL takes as arguments the configuration of the device that should be executed; the configuration is used to know which components
+the logical device has and how they are distributed across the infrastructure. With that information, the platform can determine which components
+are local (in the same deployment unit) and which are remote, instantiating the right components and communicators.
+
+Then, the DSL provides a way to register the user-defined components with their corresponding logic. If the given components do not match the
+configuration, an exception is raised.
+
+Finally, the type of communicator and the remote place provider can be specified respectively via the \texttt{withPlatform} and
+\texttt{withRemotePlace} methods. The context can be overridden via the \texttt{withContext} method.
+
+The development of this DSL has involved the resolution of several issues, in particular, the management of serialization aspects and a limitation of
+the Kotlin type inference. Below are described those issues and the solutions adopted to overcome them.
+
+\subsubsection{Serialization}
+
+Serialization represents an important aspect of the working of the framework but at the same time, you don't want to force the user to manage
+serialization aspects. Is the responsibility of the framework to retrieve the serializer from the user-defined components and to use it in
+conjunction with other framework elements like the communicators. Thus, the low complexity of using and configuring the framework is guaranteed.
+
+The first issue is how to retrieve the serializer from the user-defined components without forcing the user to provide it. The solution adopted
+defines the DSL entry point as an inline function that accepts a reified type parameter, in this way, the serializer can be retrieved via the
+\texttt{serializer} method. In particular, the function defines five type parameters: \texttt{S, C, SS, AS,} and \texttt{R} which respectively
+represents the type of the state, the type of communication, the type of the sensors, the type of the actuators, and the type of behaviour result.
+
+The problem occurs when a logical device does not define all of the five components but only a subset of them.
+For example, if a logical device is made of the \emph{behaviour, communication, sensors,} and \emph{actuators} components when using the DSL, a type
+for the \emph{state} should be provided. A first, elegant approach would be to default all the unspecified types to the \texttt{Nothing} bottom type;
+however, this approach is not feasible, since the \texttt{Nothing} type is not serializable and thus, it cannot be inlined as a type.
+The solution adopted is to use \texttt{Any} as the default type for the unspecified components. This solution enables the inlining of the type,
+so the function can be used (as inline) but the drawback is that there is no serializer for the \texttt{Any} type.
+Since the absence of the type means that the component is not used, the serializer for the \texttt{Any} type is a dummy serializer that does nothing
+but makes the function sound. In this way, a check can be made to verify if the given type is \texttt{Any} (and rely on the dummy serializer) or
+if it is a specified type retrieving the serializer from it.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={Dummy serializer for the Any type.},
+	label={lst:any-serializer}
+]{listings/AnySerializer.kt}
+
+The~\Cref{lst:any-serializer} shows the implementation of the dummy serializer for the \texttt{Any} type and how the serializer is retrieved from the
+user-defined types.
+
+\subsubsection{Type inference problem}
+
+The second issue is related to the type inference of Kotlin that does not infer a default type for an unspecified generic type.
+As said in the previous sections, the simplicity of the use of the DSL is one of the main goals of the framework. In particular, when the user
+configures the platform using the DSL, the user does not need to specify the type of components, since the framework can infer them from the
+configuration. However, the Kotlin type inference does not work for the generic types that are not specified raising a compilation error, forcing
+to specify all the types required by the entry point function of the DSL. The~\Cref{lst:platform-dsl-verbose} shows an example of the use of the
+DSL when all the types are specified. The proposed example although valid and works, is not very elegant because forces the user to remember
+the positional order of the types and to specify all of them.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={Example of the verbosity of the DSL when all the types are specified.},
+	label={lst:platform-dsl-verbose}
+]{listings/dsl-verbose.kt}
+
+To reduce the boilerplate code, and keep the DSL as simple as possible, the solution uses extension methods to help the type inference to infer
+all five types in the base of the configuration made by the user.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={Extension methods to help the Kotlin type inference algorithm.},
+	label={lst:platform-dsl-inference}
+]{listings/dsl-type-inference.kt}
+
+The~\Cref{lst:platform-dsl-inference} shows the implementation of the extension methods that help the type inference algorithm to infer the
+right types without specifying them explicitly.
