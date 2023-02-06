@@ -619,15 +619,108 @@ the file is not found, the \texttt{DEVICE\_ID} environment variable is searched,
 The last package is \emph{dsl} which contains the DSL used to configure and execute the pulverization platform.  The discussion of the details of
 the DSL is deferred to the~\Cref{sec:platform-dsl-impl}.
 
+\todo{Paralre di come e' gestita la logica di configurazione della piattaforma}
+
 % - New section ---------------------------------------------------------------
 
 \section{RabbitMQ module}
 \label{sec:rabbitmq-module-impl}
 
+The RabbitMQ module, at the time of writing, is the only module that provides an implementation of the \texttt{Communicator} interface.
+In particular, this module enables the communication between components via \textbf{RabbitMQ}, a message broker that implements the AMQP protocol.
+
+When implementing a new \texttt{Communicator}, two main steps are required: the first one is the implementation of the \texttt{Communicator} interface
+and the second one is the implementation of the \texttt{RemotePlaceProvider}.
+The \texttt{Communicator} interface is implemented by the \texttt{RabbitMQCommunicator} class, while the \texttt{defaultRabbitMQRemotePlace} method
+provides a default implementation of the \texttt{RemotePlaceProvider} interface.
+
+The remote place provider provides the implementation of the concepts ``who'' and ``where'' (defined by the \texttt{RemotePlace} class) in the
+following way: the \texttt{who} is the \emph{device id}, while the \texttt{where} is the \emph{name of the component}.
+This representation will be used by the \texttt{RabbitmqCommunicator} to create the queues that will be used to communicate between the components.
+
+The \texttt{RabbitmqCommunicator} should rely on a library that implements the AMQP protocol to communicate with the RabbitMQ broker, but since
+there isn't a Kotlin multiplatform library that implements the AMQP protocol, the class is marked as \texttt{expect} so that the specific target
+platform can provide the implementation. At the time of writing, only the JVM target platform is implemented using the \texttt{reactor-rabbitmq}
+library. The choice of this library is because it is based on \emph{Reactor}~\footnote{\url{https://projectreactor.io/}} and can be seamlessly used
+in combination with the Kotlin coroutines using the
+\texttt{kotlinx-coroutine-reactor}~\footnote{\url{https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-reactor/}}.
+
+The class constructor accepts all the RabbitMQ-specific parameters like: \emph{host}, \emph{port}, \emph{username}, \emph{password}, and
+\emph{virtual host}.
+Noticeable is the \texttt{setup} method that is used to set up the connection with the RabbitMQ broker, declare the exchange and the queues, and
+finally bind the queues to the exchange. In this method, the \texttt{binding} and the \texttt{remote place} are used to create the queues that will
+be used to communicate between the components.
+
+Below will be described how the queues are created and how they are used to communicate between the components.
+The \texttt{RabbitmqCommunicator} class defines two queues: a \emph{sendQueue} and a \emph{receiveQueue}, the first one is used to send messages to
+the remote component, while the second one is used to receive messages from the remote component.
+In this communicator, the send queue name format follows the pattern \texttt{<local component name>/<remote component name>/<remote component id},
+while the receive queue name format follows the pattern \texttt{<remote component name>/<local component name>/<remote component id>}.
+The \emph{local component name} is retrieved from the \texttt{binding} parameter, while the \emph{remote component name} and the
+\emph{remote component} are retrieved from the \texttt{remote place} parameter.
+For example, if the communicator should manage the communication between the \emph{Behaviour} and the \emph{State} (remote) component for a device
+with ID ``1'', the send queue name will be \texttt{Behaviour/State/1}, while the receive queue name will be \texttt{State/Behaviour/1}.
+Vice versa, the counterpart communicator that manages the communication between the \emph{State} and the \emph{Behaviour} (remote) component
+defines the send queue name as \texttt{State/Behaviour/1} and the receive queue name as \texttt{Behaviour/State/1}.
+As can be seen, the send queue name for the first communicator is the same as the receive queue name for the counterpart communicator, and vice versa.
+This means that the message sent by the first communicator will be received by the counterpart communicator.
+
+The~\Cref{fig:rabbitmq-queues} depicts the interaction pattern described above using two communicators.
+
+\begin{figure}
+	\centering
+	\missingfigure{Figura che mostra le code definite tra due comunicatori e come avviene scambio messaggi}
+	\caption{RabbitMQ queues}
+	\label{fig:rabbitmq-queues}
+\end{figure}
+
+The \texttt{fireMessage} and \texttt{receiveMessage} methods implementation are straightforward: the \texttt{fireMessage} method sends the message
+to the remote component via the send queue using the \texttt{Sender} object, while the \texttt{receiveMessage} method receives the message from the
+remote component via the receive queue using the \texttt{Receiver} object.
+
 % - New section ---------------------------------------------------------------
 
 \section{Configuration DSL}
 \label{sec:configuration-dsl-impl}
+
+The configuration DSL is used to define the structure of each logical device in terms of defining components and where they are deployed.
+Before proceeding to discuss the details of the DSL, it is important to define which information the configuration should have.
+
+The recurring terms and concepts in the pulverization are \emph{logical device}, \emph{deployment unit} and \emph{place} where the components are
+deployed. The first concept is modeled by the \texttt{LogicalDeviceConfiguration} class which defines the name of the device, the set of components
+type belonging to the logical device, and a set of deployment units.
+The \emph{deployment unit} is modeled by the \texttt{DeploymentUnit} class which defines the set of components type that should be deployed and the
+\texttt{Tier} which represents the place where the components should be deployed. The \emph{tier} is modeled via a sealed interface which has
+three possible values: \texttt{Cloud}, \texttt{Edge} and \texttt{Device}.
+
+The configuration captures also the concept of ``relationship'' between logical devices. In particular, the configuration DSL defines
+the \texttt{DeviceRelationsConfiguration} and the \texttt{DeviceLink} classes which are used to hold information about the link between the logical
+devices.
+
+Finally, the \texttt{PulverizationConfiguration} class has a set of \texttt{LogicalDeviceConfiguration} and a \texttt{DeviceRelationsConfiguration};
+this class represents the root of the configuration and is used to configure the pulverization platform.
+The~\Cref{fig:configuration-dsl-classes} depicts the relationship between the classes that define the configuration.
+
+\begin{figure}
+	\centering
+	\missingfigure{images/configuration-dsl-impl}
+	\caption{Configuration DSL classes}
+	\label{fig:configuration-dsl-classes}
+\end{figure}
+
+The configuration is enriched with some extension methods that allow getting the logical device configuration from a given device name and
+from a logical device configuration, can be retrieved the deployment unit from the given components.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={Configuration DSL},
+	label={lst:configuration-dsl-impl}
+]{listings/configuration-dsl.kt}
+
+An example of configuration is shown on the~\Cref{lst:configuration-dsl-impl}. The configuration defines three logical devices where the
+\emph{device-1} can communicate with the \emph{device-2} and the \emph{device-3}. At the time of writing, the information about the links
+between the logical devices is not used by the framework, but in a future version, this information can be used, for example, by the communication
+components to establish the right communication.
 
 % - New section ---------------------------------------------------------------
 
