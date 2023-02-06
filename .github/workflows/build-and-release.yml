@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build report
-        uses: xu-cheng/latex-action@2.7.0
+        uses: xu-cheng/latex-action@2.7.1
         with:
           root_file: thesis-main.tex
           args: -pdf -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape
