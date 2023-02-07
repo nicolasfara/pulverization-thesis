@@ -1,26 +1,243 @@
 \chapter{Validation} % possible chapter for Projects
 \label{chap:validation}
 
+This chapter describes the validation process of the framework. The validation process is divided into two parts: the validation of the framework
+itself via unit and integration testing, and the validation of the framework's use cases via the demos.
+Aspects of CI/CD used for the development and maintenance of the project will be explained, as well as the methodologies used to deploy the framework.
+Finally, the~\Cref{sec:framework-limitations} describes the current limitations of the framework and future work geared toward extending and
+improving the framework.
+
 \section{Testing}
 \label{sec:testing}
+
+The \emph{software testing} is a method to check whether the actual software product matches the expected requirements and to ensure that the
+software is ``defect free''. It involves the execution of software or system components using manual (not preferred) or automated tools to evaluate
+one or more properties of interest. The goal of software testing is to identify errors, gaps or missing requirements in contrast to actual
+requirements.
 
 \subsection{Unit testing}
 \label{sec:unit-testing}
 
+\emph{Unit testing} is a type of software testing where the focus is on individual units or components of a software system.
+Its purpose is to validate that each unit of the software works as intended meeting the requirements. Unit testing is usually performed by the
+developer and is the first level of testing performed on the software.
+
+Generally, unit tests are automated and executed whenever a change is made to the source code to ensure that the new code does not break the existing
+functionality. Unit tests are designed to validate the smallest possible unit of code, such as a single function or method, testing them in
+isolation from the rest of the system.
+
+Usually, a lot of unit tests are written to try to cover as much code area as possible by going to test corner cases and wrong uses of the code.
+One metric that indicates the amount of testing that is present in the code base is called code coverage.
+This metric, often expressed as a percentage, defines how many lines of code were covered by unit tests (but not limited to) indicating the
+pervasiveness of the tests. Attention should be paid to the fact that this metric is not an indication of good test quality but rather is intended to
+be the opposite: this metric shows how many portions of the system are untested.
+On the one hand, it might be counterintuitive, but by analyzing the concept of unit testing well, it is clear how it, too, is a part of software and
+as such can be error-prone (thus not exhaustively testing the function or class) so it does not provide guarantees about the actual correctness of
+the part of the code under test.
+Nevertheless, unit tests are critical to intercepting most problems and avoiding the introduction of new ones.
+
+The importance of testing has been recognized as a fundamental tool in the development and maintenance of a code base, and therefore
+several test suites have been developed.
+The most relevant in the JVM ecosystem are JUnit~\footnote{\textbf{JUnit} goal is to create an up-to-date foundation for developer-side testing on
+	the JVM. \url{https://junit.org/junit5/}}
+and TestNG~\footnote{\textbf{TestNG} is inspired by JUnit and NUnit but introduces some new functionalities that make it more powerful and easier to
+	use. \url{https://testng.org/doc/}}, which are both unit-testing frameworks for the Java programming language.
+
+In recent years, the concept has developed that tests themselves serve as specifications, and for that reason, they must follow good programming
+practices (such as code) and be as clear and expressive as possible so that they can be easily read and interpreted.
+In this regard, testing frameworks have emerged that provide DSLs enabling the writing of clear, well-organized and contextualized tests.
+The most relevant in the JVM ecosystem are Spock~\footnote{\textbf{Spock} is a testing and specification framework for Java and Groovy applications.
+	\url{http://spockframework.org/spock/docs/1.3/all\_in\_one.html}} and Kotest~\footnote{\textbf{Kotest} is a testing framework for Kotlin that
+	provides a rich set of tools for testing. \url{https://kotest.io/docs/}}.
+
+\paragraph*{}
+
+The following will outline the unit testing aspects involved in the framework, explaining the rationale for choosing Kotest as the testing framework
+and which key aspects of the framework were subject to unit testing.
+
+The requirements that a testing framework must have for this project are as follows:
+\begin{itemize}
+	\item It must provide a DSL for writing tests
+	\item It must provide several testing and assertion styles
+	\item It must support out-of-the-box support for Kotlin coroutines
+\end{itemize}
+
+The first two requirements are needed to write clear and expressive tests, while the third is needed to test the framework in a seamless way since
+is entirely based on coroutines.
+The two main candidates for this project are Spock and Kotest. Although Spock provides a DSL for writing tests and different styles, it does not
+provide any support for coroutine, since it was born for Java and groovy. In contrast, Kotest is entirely written in Kotlin and provides a full DSL
+with various styles for testing, as well as native support for coroutines.
+For these reasons, Kotest was chosen as the testing framework for this project. Moreover, Kotest supports Kotlin multiplatform, a feature that
+perfectly fits the framework's goal of being cross-platform; in this way, all the tests are executed on the JVM, JS and Native platforms.
+
+For most of the tests in the pulverization framework, the \emph{FreeSpec} style was used, which is a style that allows writing tests in a
+specification-like way, where the test cases are written as a sentence, and the test body is written as a code block.
+This style is particularly suitable for testing the framework since it allows writing tests clearly and expressively, the~\Cref{lst:free-spec} shows
+an example of a test written in this style.
+
+As can be seen, the test is written as a sentence in a specification-like fashion; in this way, even people who are not familiar with the framework
+can understand the test and its purpose, as well as understand the framework API and its usage.
+
+\lstinputlisting[
+	language=Kotlin,
+	label={lst:free-spec},
+	caption={Example of a test written in the \emph{FreeSpec} style.}
+]{listings/freespec-example.kt}
+
+As follow will be described the relevant testing aspect for each module of the framework.
+
+\subsubsection{Core module}
+
+The core module is mainly composed of interfaces that the user must implement to use the framework. For this reason, the tests for this module
+are limited and mainly focus on testing the \emph{configuration DSL} and the \emph{sensors container} and \emph{actuators container}.
+
+The testing of the sensors and actuators container presents some interesting details that are worth mentioning.
+The first aspect to consider is how the \emph{dependency injection} is performed during the tests. Is recalled that the \texttt{SensorsContainer} and
+\texttt{ActuatorsContainer} implement the \texttt{PulverizedComponent} interface and therefore they must give an instance of the \texttt{Context}
+interface. Although in this test scenario the context will not be used, it is necessary to provide an instance of the context to the container.
+The fast and easy way to do this is to use a mocked version of the context, which is provided to the container via dependency injection.
+The Koin framework makes available a \texttt{KoinTest} class and overriding the \texttt{getKoin} method, it is possible to provide a mocked version
+of the context to the container. The \Cref{lst:mocked-context} shows an example of how to provide a mocked version of the context to the container.
+
+\lstinputlisting[
+	language=Kotlin,
+	label={lst:mocked-context},
+	caption={Example of how to provide a mocked version of the context to the container during the tests.}
+]{listings/mocked-context.kt}
+
+The effective test of the container is performed with the use of fixtures: the container to be tested requires some components like sensors, actuators
+and so on to be added to it. For this reason, a fixture containing dummy components is created.
+In this way, the test is focused on testing the container itself and not managing also the creation of the components, simplifying the overall test
+class.
+
+The test conducted on the container are trivial, but they are useful to ensure that the container is working properly.
+the container is a delicate component in that it is queried through the type of the sensor or actuator to be retrieved, which is why it is necessary
+to exhaustively test all possible scenarios that may occur. In particular, the functionality of sensors/actuators insertion was tested, but especially
+the operations of retrieving instances of them, especially in the case of multiple instances of the same type of sensor/actuator are available in the
+container.
+
+\paragraph*{}
+
+The testing of the DSL is also trivial: the DSL is a simple class that provides a set of functions to configure the framework. The tests are focused
+on ensuring that the configuration produced is consistent with the use of the DSL.
+In addition to testing in normal DSL use, special attention was paid to recreating possible uses of DSL that would lead to inconsistencies in
+configuration and verify whether all such cases were handled correctly.
+For example, was tested the case in which the user define the same component in two different deployment units, which is not allowed and should
+produce an error. Finally, all the utility functions provided to work with the configuration were tested.
+
+\subsubsection{Platform module}
+
+The testing of the platform module is divided into four main parts: the testing of the \emph{communicator}, the testing of the
+\emph{components reference}, and finally, the testing of the \emph{dsl}.
+
+For what concern the \emph{communicator} testing, only the local communicator was tested, since the testing of the remote ones is delegated to the
+specific module that implements them. The local communicator relies on the \texttt{CommManager} class to use the right flow for communication
+with the other local communicator.
+The test consists in registering the \texttt{CommManager} to the dependency injection module and then testing that the class returns
+the same instance of the flow for the same communication type.
+
+The testing of the local communicator, instead, is more complex.
+First of all, is tested that the local communicator can not be initialized with a self-reference; that means that initialization of the local
+communicator with the same component as source and destination is not allowed.
+Then, is tested the communication between two local communicators: the test consists in creating two local communicators, spawning each one in a
+different coroutine and then sending a message from one to the other. The test is successful if the message is received by the other local
+communicator. If a problem occurs during the receiving of the message, the test can hang indefinitely, so a timeout is set to avoid this problem.
+So the test fails if the timeout is reached or if the payload differs from sender to receiver, in all the other case the test succeed.
+Finally, is tested the condition in which the sender sends more messages than the receiver can receive, in this case, the receiver should receive
+only the last message sent by the sender. To emulate this condition, the sender and the receiver are spawned in different coroutines and the sender
+starts sending messages to the receiver. The receiver, instead, when spawned is blocked for a certain amount of time, to emulate a slow receiver.
+After the delay, the receiver starts collecting the messages sent by the sender but only the last one should be collected.
+
+The testing of \emph{components reference} is straightforward: the test consists in creating a \texttt{ComponentsRefImpl} and then set up
+it with the pair of the components to be referenced. After that, is tested that the reference is correctly set up and that the class
+relies on the \texttt{LocalCommunicator} to send and receive the messages.
+
+The \emph{dsl} testing is focused on testing possible illegal configurations of the platform. In this regard, several test cases were
+created to test, for example, the case in which more or fewer components are registered than the one specified in the configuration.
+During the development of a demo of the framework, it was discovered a bug in the DSL relative to the type inference; the bug was fixed and a test
+was added to ensure that the bug will not be reintroduced in the future.
+
+\subsubsection{Code coverage}
+
+The code coverage represents an important indicator to be monitored during the development of a software project. In particular, the code coverage
+of the project is managed by two different tools that operate at two different levels.
+The first tool is \texttt{Kover}, which is a plugin for the \texttt{Gradle} build system that provides code coverage for Kotlin projects.
+The second tool is \texttt{Codecov}, which is a service that provides code coverage for GitHub projects.
+
+Kover operates at project-level: it instrument the test suite to collect the code coverage data and then it can publish code coverage report in
+different formats, mainly \texttt{.html} and \texttt{.xml}.
+
+On the other side, Codecov is a cloud service that collects the code coverage data from different sources and then provides a web interface
+to visualize the code coverage of the project. All the coverage reports are uploaded to Codecov through the use of a \texttt{GitHub Action} that is
+triggered every time a new commit is pushed to the repository. A more detailed description of the Codecov integration can be found in
+the~\Cref{sec:ci-cd}.
+
 \subsection{Integration testing}
 \label{sec:integration-testing}
+
+Integration testing is a type of testing that aims to test the interaction between different components of the system.
+A typical software project is composed of several modules, and each one of them is responsible for a specific task; the integration testing
+is focused on testing the interaction between these modules to ensure that they work together as expected when integrated.
+
+There are four main approaches or strategies to perform integration testing: the \emph{bottom-up}, the \emph{top-down}, the \emph{big bang} and
+the \emph{sandwich} approach. Each strategy has its own advantages and disadvantages, and the choice of the strategy to use depends on the
+specific project and the type of testing that is required.
+
+The \emph{big bang} approach involves integrating all modules at once and testing them all as one unit.
+This approach has the following advantages:
+
+\begin{itemize}
+	\item It is easy to implement and it is suitable for small projects
+	\item It is easy to identify errors, saving time and speeding up the deployment
+\end{itemize}
+
+However, the \emph{big bang} approach has the following disadvantages:
+
+\begin{itemize}
+	\item It is difficult to locate the source of the error since different modules are integrated as one unit
+	\item It is time-consuming for large projects with lots of modules
+	\item It must wait until all modules are developed before starting the testing phase
+\end{itemize}
+
+The \emph{top down} approach is an incremental approach that involves testing from the topmost module and then proceeding to the lower modules.
+Each module is tested one by one and then integrated with the other modules. This approach has the following advantages:
+
+\begin{itemize}
+	\item It is easier to identify defects and isolate their sources
+	\item Testers check important units first, so they are more likely to find critical design flaws.
+	\item It is possible to create an early prototype of the system
+\end{itemize}
+
+The main disadvantage of the \emph{top down} approach is that when too many testing stubs are involved, the testing process can become complicated.
+
+The \emph{bottom up} approach is the opposite of the \emph{top down} approach: it involves testing the lower modules first and then integrating
+them with the upper modules. Once the lower-level modules are tested and integrated, then the next level of modules is formed.
+The main advantages of using this approach are: easier to find and localize faults and no time is wasted waiting for all modules to be developed,
+unlike the big bang approach. However, the main disadvantage of this approach is that critical modules which control the flow of the application are
+tested last and may be prone to defects.
+
+Finally, the \emph{sandwich} approach is a combination of the \emph{top down} and \emph{bottom up} approaches. In this approach, top down and bottom
+up testing approaches are combined. The top-level modules are tested with low-level modules and the low-level modules are tested with high-level
+modules simultaneously. Each module interface is tested, so there are fewer chances of a defect.
+The main advantages derived from this approach are represented by the combination of the benefits of both top down and bottom up strategies.
+Moreover, this approach reduces the amount of time spent on the process and all the modules are tested comprehensively.
+The main disadvantage of this approach is that it is more complex than the other approaches.
+
+\paragraph*{}
+
+In the framework development, the \emph{big bang} approach was used to perform the integration testing. The reason for this choice is that the
+framework is composed of a few modules simplifying the integration testing process.
+
+The most important integration test is defined in the \texttt{AsyncScenario} test class. This test class is responsible for testing the
+framework as a whole, in this test, are used the two DSLs to configure the devices and the platform, and then the platform is started testing
+that each deployed component is correctly started and that the messages are correctly sent and received.
+The importance of the test comes from the fact that it convolves the entire stack of the framework bringing all its components into play by verifying
+that they are operating correctly.
 
 \section{Continuous Integration and Delivery}
 \label{sec:ci-cd}
 
-\section{Current framework limitations}
-\label{sec:framework-limitations}
-
-\subsection{Dynamics}
-\label{sec:dynamics}
-
-\subsection{Multi-protocols}
-\label{sec:multi-protocols}
+TODO
 
 \section{Demo 1: Single Device Multiple Components}
 \label{sec:demo-1}
@@ -30,3 +247,12 @@
 
 \section{Demo 3: Crowd estimation}
 \label{sec:demo-3}
+
+\section{Current framework limitations}
+\label{sec:framework-limitations}
+
+\subsection{Dynamics}
+\label{sec:dynamics}
+
+\subsection{Multi-protocols}
+\label{sec:multi-protocols}

@@ -30,8 +30,23 @@ In this way, we can use one programming language and manage the targeting of mul
 
 \begin{figure}
 	\centering
-	\missingfigure[figwidth=\textwidth]{Show from an architectural perspective how a multiplatform language works}
-	\caption{Diagram showing the philosophy of multiplatform languages.}
+	\begin{tikzpicture}
+		\path[mindmap,concept color=blue!20,text=black]
+		node[concept] {Core language}[clockwise from=-33]
+		child[concept color=green!20] {
+				node[concept] {JavaScript} [clockwise from=-60]
+				child { node[concept] {Node.js} }
+				child { node[concept] {Web Browser} }
+			}
+		child[concept color=red!20, level distance=150, clockwise from=-40] {
+				node[concept] {Native}
+				child { node[concept] {Windows} }
+				child { node[concept] {Linux} }
+				child { node[concept] {macOS} }
+			}
+		child[concept color=orange!20] { node[concept] {JVM} };
+	\end{tikzpicture}
+	\caption{Diagram showing the rationale behind the multiplatform languages.}
 	\label{fig:mulitplatform-languages}
 \end{figure}
 
@@ -156,8 +171,20 @@ The Kotlin multiplatform use cases can be synthesized in the following points:
 
 \begin{figure}
 	\centering
-	\includegraphics[width=.5\linewidth]{figures/kotlin-multiplatform.png}
-	\caption{Kotlin multiplatform structure}
+	\begin{tikzpicture}[scale=0.9, every node/.style={scale=0.9}]
+		\filldraw[fill=black!2] (0,0) circle (5);
+		\filldraw[fill=black!10] (0,0) circle (3.5);
+		\draw (0,0) -- (0,5.5);
+		\draw (0,0) -- (4,-4);
+		\draw (0,0) -- (-4,-4);
+		\filldraw[fill=blue!30] (0,0) circle (2) node[align=center, color=white, font=\bfseries] {Common\\Kotlin};
+		\node[align=center] at (3.8,2) {JS\\code};
+		\node[align=center] at (2.5,1) {Kotlin/\\JS};
+		\node[align=center] at (-3.8,2) {JVM\\code};
+		\node[align=center] at (-2.5,1) {Kotlin/\\JVM};
+		\node[align=center] at (0,-2.7) {Kotlin native};
+		\node[align=center] at (0,-4.2) {Native code};
+	\end{tikzpicture}	\caption{Kotlin multiplatform structure}
 	\label{fig:kotlin-multiplatform-structure}
 \end{figure}
 
@@ -184,7 +211,7 @@ Often there is the need to create several native targets that could potentially 
 to create a specific and flexible structure to reuse as much code as possible between the different targets.
 The~\Cref{fig:kotlin-multiplatform-hierarchy} shows a possible representation of a Kotlin multiplatform project hierarchical structure.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\linewidth]{figures/kotlin-multiplatform-hierarchical-structure.pdf}
 	\caption{Kotlin multiplatform hierarchical structure.}
