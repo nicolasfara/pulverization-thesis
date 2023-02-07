@@ -1,0 +1,25 @@
+@startuml package-diagram
+top to bottom direction
+package "core" as c {
+  [core] -- [configuration dsl]
+  [core] -- [component]
+}
+
+package "platform" {
+  [communication] -- [componentref]
+  [communication] -- [platform dsl]
+}
+
+package "rabbitmq platform" {
+  [rabbitmq]
+}
+
+[core] -right- [communication]
+[communication] -right- [rabbitmq]
+
+actor "User" as user
+
+[platform dsl] -- user : "<<uses>>"
+[configuration dsl] -- user : "<<uses>>"
+
+@enduml

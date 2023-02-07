@@ -24,7 +24,7 @@ In~\Cref{fig:package-diagram} are represented all the framework's modules and th
 
 \begin{figure}
 	\centering
-	\missingfigure[figwidth=\textwidth]{Package diagram showing the module relationship}
+	\includegraphics[width=\textwidth]{figures/package-diagram.pdf}
 	\caption{Package diagram showing the modules that constitute the framework and their relationship.}
 	\label{fig:package-diagram}
 \end{figure}
@@ -54,7 +54,26 @@ The~\Cref{fig:framework-architecture} depicts the architecture's choice made to 
 
 \begin{figure}
 	\centering
-	\missingfigure[figwidth=\textwidth]{Create a pyramid diagram showing the architecture of the framework emphasizing the grow-up dependency}
+	\begin{tikzpicture}
+		\tikzstyle{fontbf} = [rectangle,text width=5cm,text centered,font=\bfseries]
+		\draw[fill=blue!20] (0,0) -- (-5, -6) -- (5, -6) -- cycle;
+		\draw[dashed] (-4.5,-2) -- (4.5,-2);
+		\draw[dashed] (-4.5,-4) -- (4.5,-4);
+		\draw[stealth-](0,-1.6) -- (0,-2.3);
+		\draw[stealth-](-1,-1.6) -- (-1,-2.3);
+		\draw[stealth-](1,-1.6) -- (1,-2.3);
+
+		\draw[stealth-](0,-3.6) -- (0,-4.3);
+		\draw[stealth-](-2,-3.6) -- (-2,-4.3);
+		\draw[stealth-](2,-3.6) -- (2,-4.3);
+
+		\draw[stealth-](7,-2.6) -- (7,-3.3);
+		\node at (7,-4) {Depends on};
+
+		\node[fontbf] at (0, -1.3) {\large Core};
+		\node[fontbf] at (0, -3) {\large Platform};
+		\node[fontbf] at (0, -5) {\large RabbitMQ \& other platforms};
+	\end{tikzpicture}
 	\caption{Architectural diagram showing how the pulverization framework is designed.}
 	\label{fig:framework-architecture}
 \end{figure}
@@ -73,7 +92,19 @@ As you move down the pyramid, the complexity of the modules increases but the us
 
 \begin{figure}
 	\centering
-	\missingfigure[figwidth=\textwidth]{pyramid architecture comparing the increase of complexity going down the pyramid and the decrease of user's knowledge going up the pyramid.}
+	\begin{tikzpicture}
+		\tikzstyle{fontbf} = [rectangle,text width=5cm,text centered,font=\bfseries]
+		\draw[fill=blue!20] (0,0) -- (-5, -6) -- (5, -6) -- cycle;
+		\draw[dashed] (-4.5,-2) -- (4.5,-2);
+		\draw[dashed] (-4.5,-4) -- (4.5,-4);
+		\draw [-stealth](6,-1) -- (6,-5);
+		\draw [stealth-](-6,-1) -- (-6,-5);
+		\node[rotate=-90] at (6.5,-3) {Complexity increase};
+		\node[rotate=90] at (-6.5,-3) {User knowledge increase};
+		\node[fontbf] at (0, -1.3) {\large Core};
+		\node[fontbf] at (0, -3) {\large Platform};
+		\node[fontbf] at (0, -5) {\large RabbitMQ \& other platforms};
+	\end{tikzpicture}
 	\caption{A correlation between the framework's complexity and the required user's knowledge to use the framework.}
 	\label{fig:pyramid-user-knowledge}
 \end{figure}
