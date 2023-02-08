@@ -1,0 +1,43 @@
+@startuml core-design-interfaces
+top to bottom direction
+
+interface "PulverizedComponent" as pc {
+  + deviceId: String
+  + initialize()
+  + finalize()
+}
+interface "State" as state {
+  +get()
+  +update()
+}
+
+interface "Behaviour" as bhv {
+  +invoke()
+}
+
+interface "Communication" as comm {
+  +send()
+  +receive()
+}
+
+interface "Sensor" as sens {
+  +sense()
+}
+
+interface "Actuator" as act {
+  +actuate()
+}
+
+class "SensorsContainer" as sens_cont
+class "ActuatorsContainer" as act_cont
+
+pc <|--- bhv
+pc <|--- state
+pc <|--- comm
+pc <|--- act_cont
+pc <|--- sens_cont
+
+sens_cont o-- "*" sens
+act_cont o-- "*" act
+
+@enduml

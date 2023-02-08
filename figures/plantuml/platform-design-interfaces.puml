@@ -1,0 +1,28 @@
+@startuml platform-design-interfaces
+top to bottom direction
+skinparam nodesep 70
+skinparam ranksep 70
+
+interface "Communicator<T>" as comm {
+  + fireMessage()
+  + receiveMessage()
+}
+
+interface "ComponentRef<T>" as cr {
+  + sendToComponent()
+  + receiveFromComponent()
+} 
+
+interface "PulverizationPlatformScope<S, C, SS, AS, R>" as pps {
+  + start()
+  + stop()
+}
+
+package "core" as core {
+}
+
+pps -- cr : uses >
+pps -- comm : creates >
+cr *-right- "1" comm
+pps -right- core: uses
+@enduml
