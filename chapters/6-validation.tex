@@ -225,8 +225,8 @@ The main disadvantage of this approach is that it is more complex than the other
 
 \paragraph*{}
 
-In the framework development, the \emph{big bang} approach was used to perform the integration testing. The reason for this choice is that the
-framework is composed of a few modules simplifying the integration testing process.
+In the framework development, the \emph{big bang} approach was used to perform the integration testing. The reason for this choice is that
+the framework is composed of a few modules, in this way a simpler integration testing process can be achieved.
 
 The most important integration test is defined in the \texttt{AsyncScenario} test class. This test class is responsible for testing the
 framework as a whole, in this test, are used the two DSLs to configure the devices and the platform, and then the platform is started testing
@@ -237,15 +237,206 @@ that they are operating correctly.
 \section{Continuous Integration and Delivery}
 \label{sec:ci-cd}
 
-TODO
+The continuous integration and continuous delivery (CI/CD) pipeline is a set of automated processes that are used to build, test and deploy
+the software. The main focus is on improving the software delivery throughout the software development lifecycle via automation.
+Automating CI/CD throughout the software development lifecycle, including development, testing, production, and monitoring, allows organizations to
+produce higher-quality code faster. While manual execution of CI/CD pipeline steps is possible, the real benefits come from automation.
+
+The CI/CD pipeline is a systematic approach to software development that involves building, testing, and deploying code. Automating the pipeline
+minimizes the risk of human error and ensures a consistent release process. It involves various tools, such as code compilation, unit testing, code
+analysis, security, and binary creation.
+CI/CD forms the foundation of a DevOps methodology and unifies developers and IT operations teams in software deployment.
+The~\Cref{fig:ci-cd} shows a typical CI/CD pipeline.
+
+\begin{figure}
+	\centering
+	\missingfigure{Mostrare immagine di una classica pipeline di CI/CD}
+	\caption{A classic example of a CI/CD pipeline.}
+	\label{fig:ci-cd}
+\end{figure}
+
+To enable a pipeline, adequate tools and infrastructure are required. Over the last ten years, the CI/CD ecosystem has grown significantly,
+and there are many tools available to support the pipeline.
+As follow, a brief landscape of the most popular CI/CD tools is presented, showing the main features, the main advantages and disadvantages.
+
+\todo{Paralre di jekins e github actions}
+
+The CI/CD framework's pipeline is implemented using the GitHub Actions service.
+The pipeline is structured into three main jobs:
+
+\begin{itemize}
+	\item \textbf{Build}: the build job is responsible for running all the quality assurance tools, compiling the source code and generating the
+	      artifacts
+	\item \textbf{Test}: the test job runs all the unit tests and integration tests, and it is responsible to upload the artifacts on the
+	      Maven Central repository and close the repository
+	\item \textbf{Release}: the release job is responsible for releasing the artifacts on the Maven Central repository
+\end{itemize}
+
+All the aforementioned jobs are executed in parallel over three different operating systems: Windows, Linux and macOS.
+The use of three different operating systems allows to verify that the framework is compatible with all the major operating systems and the relative
+platforms, reducing the probability of errors on a specific platform.
+
+When working with Kotlin multiplatform, the pipeline slightly changes, since the artifacts must be generated for each platform.
+To achieve this, the pipeline is enriched with some additional jobs: the very first job is responsible for creating the staging repository on the
+Maven Central repository, setting up the environment for a possible release. Then, are executed the build, test and release jobs for each platform.
+A specific job is also added after the build job to close the staging repository on the Maven Central repository, and consequently, trigger the
+checks over the repository. Finally, the release job is executed to release the artifacts on the Maven Central repository if needed.
+
+\begin{figure}
+	\centering
+	\missingfigure{Mostrare immagine della pipeline di CI/CD}
+	\caption{The CI/CD pipeline of the framework.}
+	\label{fig:ci-cd-pipeline}
+\end{figure}
+
+The rationale behind the choice of using a dedicated job for creating the staging repository is due the fact that the subsequent jobs are executed
+in parallel over different OS, which means that they would create a staging repository for each OS, leading to an unintended condition.
+Using the aforementioned approach, the staging repository is created only once, and then, the subsequent jobs are executed over the same repository
+by sharing the \emph{repository id}. In this way, the artifacts coming from different OS are uploaded to the same repository, and consequently,
+the release job can release all the artifacts on the Maven Central repository consistently.
 
 \section{Demo 1: Single Device Multiple Components}
 \label{sec:demo-1}
 
-\section{Demo 2: Multiple Devices Multiple Components}
+With the first demo, a simple system was aimed at highlighting the main aspects of pulverization instantiated in a real physical scenario.
+As a second goal, the demo aims to provide a reference on how it is possible to ``pulverize'' a device through the framework by also testing it in a
+context closer to real use cases.
+
+This demo models the following scenario: you want to monitor the moisture status of soil through an able device
+to sense the moisture in the soil and through a valve set the water flow to properly adjust the desired moisture level.
+This simple scenario involves several aspects of the pulverization: first, we find the concepts of sensor and actuator, which respectively serve to
+acquire the soil moisture level and regulate water flow. Finally, the behavior specifies how the flow regulation should occur against
+the detected moisture. The~\Cref{fig:demo-1-system} shows the components defining the logical device.
+
+\begin{figure}
+	\centering
+	\missingfigure{Mostrare decomposizione del dispositivo nei suoi componenti}
+	\caption{Decomposition of the moisture device into the pulverization components showing the interaction between them.}
+	\label{fig:demo-1-system}
+\end{figure}
+
+The physical system is composed of three devices: two embedded systems used respectively for moisture sensing and water flow regulation and a server
+which represents the infrastructure where the pulverized system runs.
+Two \textbf{ESP32}~\footnote{\url{https://www.espressif.com/en/products/socs/esp32}} boards are used to implement the sensor component and the
+actuator component. The main reason for choosing these boards is that they are cheap and easy to use. Moreover, they are equipped with a Wi-Fi
+module, which allows them to communicate with the pulverization platform.
+
+\begin{figure}
+	\centering
+	\missingfigure{Mostrare immagine del sistema fisico}
+	\caption{Physical system architecture where are reported the communication between the components and the server.}
+	\label{fig:demo-1-physical-system}
+\end{figure}
+
+In~\Cref{fig:demo-1-physical-system} is reported the physical system architecture where are reported the communication between the components and the
+server.
+
+The multiplatform nature of the framework allows the execution of each ``pulverized component'' on different architectures.
+But at the time of writing, even if the number of supported architectures in Kotlin multiplatform is quite high, the framework does not support the
+\textbf{Xtensa}~\footnote{\textbf{Xtensa} is a configurable and extensible processor architecture developed by Tensilica, now owned by Cadence Design
+	Systems. It is designed to meet the unique requirements of a wide range of applications and systems, from low-power IoT devices to
+	high-performance computing systems.}
+architecture used by the ESP32 boards.
+
+This limitation is solved directly by the framework: we can think of the \emph{sensor component} as acting as a kind of proxy by collecting data from
+the embedded device. In this way, the firmware that will control the board will be written in a language that supports such architecture and will
+provide a communication mechanism with the \emph{sensor component} that will simply forward the received message to other components.
+As can be seen, the framework is extremely flexible, allowing it to accommodate limitations such as the one described above.
+
+In this specific case, the limitation described above is solved by writing the \textbf{ESP32} firmware in \emph{Rust} (a language that supports the
+Xtensa architecture) and implement the communication with the \emph{sensor component} using a TCP socket. The \emph{sensor component} is
+implemented using the framework interface where a TCP socket is opened to listen for incoming messages from the embedded device.
+On each received message, the sensor's value is extracted and saved in a local state; in this way, on each \texttt{sense} method call,
+the last received value is returned.
+This simple workaround allows the use of the pulverization framework also in devices that do not support the Kotlin multiplatform architecture.
+The explanation of the limitation was made using the \emph{sensor component} as an example, but the same principle was applied to the
+\emph{actuator component}, so again via TCP socket, a message is sent to the embedded device for opening or closing the valve.
+
+As follow, are reported the main relevant details of the implementation of this demo.
+As discussed above, the device has four components: \emph{sensor}, \emph{actuator}, \emph{behavior} and \emph{state};
+the~\Cref{lst:demo-1-configuration} shows the configuration of the logical device where the \emph{sensor} and \emph{actuator} components are
+deployed into two devices, and the \emph{behaviour} and \emph{state} components are deployed into the server.
+
+\lstinputlisting[
+	language=Kotlin,
+	label={lst:demo-1-configuration},
+	caption={Configuration of the logical device named ``moisture-device''.}
+]{listings/demo-1-config.kt}
+
+The \emph{behaviour} component defines the logic of the device: get the moisture level from the \emph{sensor} component and, if the moisture level
+is below a threshold, open the valve using the \emph{actuator} component. The \emph{state} component is used to store the moisture level.
+The~\Cref{lst:demo-1-behaviour} shows the implementation of the \emph{behaviour} component.
+
+\lstinputlisting[
+	language=Kotlin,
+	label={lst:demo-1-behaviour},
+	caption={Implementation of the \emph{behaviour} component for the demo 1.}
+]{listings/demo-1-behaviour.kt}
+
+Finally, the three deployment units are defined and containerized using Docker. In particular, a \emph{RabbitMQ} container is used to provide the
+communication between the components, while the other three containers are used to run the \emph{sensor}, \emph{actuator} and \emph{behaviour}
+components. Since the three components are deployed into three different containers, these may be deployed on different machines without affecting
+the execution of the logical device.
+
+The test of the demo was conducted on a local Linux machine running the four containers and the two ESP32 boards. All the containers are deployed
+using \emph{Docker Compose}.
+The two ESP32 boards are connected to the same Wi-Fi network and the \emph{sensor} and \emph{actuator} components are configured to connect to the
+respective container using the IP address of the machine where the container is running.
+Finally, the increase and decrease of soil moisture were simulated by verifying that the valve opened and closed properly.
+
+\section{Demo 2: Multi Devices Multi Components}
 \label{sec:demo-2}
 
-\section{Demo 3: Crowd estimation}
+Demo 2 aims to represent a more complex scenario than the previous one, involving multiple devices and enabling communication between them.
+Also, we want to introduce more types of devices and show how they are supported by the framework.
+This demo gets even closer to real scenarios involving multiple types of devices and where communication between them is a prerequisite.
+
+This demo tries to replicate the hot-warm-cold game using two types of devices: an embedded device that needs to be found and many smartphones that
+need to find it. The smartphones connect to the embedded device via Bluetooth, through which they determine its distance and communicate
+this information with other smartphones. The embedded device receives the information on the distances of the smartphones and sets a light intensity
+of an LED proportional to the proximity of the smartphones to it. Thus, the closer the smartphones are to the embedded device, the brighter the led
+will emit; while the farther away the smartphones are, the less light will be emitted.
+Each smartphone sends its distance to all other smartphones and simultaneously receives the distance of all other smartphones from the embedded
+device. Sharing distance information is intended to test inter-device communication while simultaneously providing clues as to where the device that
+needs to be found is located so that it can be found more quickly.
+
+A Raspberry PI was used as the embedded device since it has both Wi-Fi and Bluetooth. The ESP32 was not chosen, as in the previous demo, because it
+has hardware limitations that prevent Bluetooth and Wi-Fi from being used simultaneously. As for smartphones, Android smartphones were used, thus
+allowing the framework to be tested on this platform as well.
+
+When designing a pulverized system, it is good to represent the system from two different viewpoints: a viewpoint that captures the logical level
+of the interactions between logical devices (see~\Cref{fig:demo-2-logical-diagram}) and a physical viewpoint that shows how the system is deployed in
+the infrastructure (see~\Cref{fig:demo-2-physical-diagram}).
+
+\Cref{fig:demo-2-logical-diagram} shows the network topology and how devices are tied together. This level of abstraction is what should be used by
+the user who intends to implement the system by exploiting the pulverization framework: he or she does not have to worry about infrastructure or
+deployment aspects; how communications take place is handled directly by the framework. This greatly simplifies the development of the system. How
+then the system is deployed in the infrastructure is depicted in~\Cref{fig:demo-2-physical-diagram}, which shows at the physical level where
+components are run and how intra-component communications of each device take place, also, are depicted all the physical devices involved in the
+system.
+
+\begin{figure}
+	\centering
+	\missingfigure{Diagramma logico della demo 2}
+	\caption{Logical diagram of the connection between the logical devices.}
+	\label{fig:demo-2-logical-diagram}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\missingfigure{Diagramma fisico della demo 2}
+	\caption{Physical diagram of the connection between the logical devices.}
+	\label{fig:demo-2-physical-diagram}
+\end{figure}
+
+The demo predicts that as far as smartphones are concerned, behavior and communication are performed in the server, while sensor and actuator are
+present on the device.
+Similarly, behavior and communication of the embedded device are managed on the server while actuation is managed on the device, as can be observed
+in~\Cref{fig:demo-2-physical-diagram}.
+
+\todo{finire la sezione}
+
+\section{Demo 3: crowd estimation}
 \label{sec:demo-3}
 
 \section{Current framework limitations}
