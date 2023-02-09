@@ -494,21 +494,90 @@ system.
 	\label{fig:demo-2-physical-diagram}
 \end{figure}
 
-The demo predicts that as far as smartphones are concerned, behavior and communication are performed in the server, while sensor and actuator are
-present on the device.
-Similarly, behavior and communication of the embedded device are managed on the server while actuation is managed on the device, as can be observed
-in~\Cref{fig:demo-2-physical-diagram}.
+Design choices for the implementation of the demo are explained below. The demo is divided into four main modules:
 
-\todo{finire la sezione}
+\begin{itemize}
+	\item \textbf{Android application:} in this module is implemented the mobile application that runs on smartphones
+	\item \textbf{Raspberry PI firmware:} this module implements the firmware that runs on the Raspberry PI
+	\item \textbf{Common module:} this module contains the common code shared between the \emph{Platform} and \emph{Android application} modules
+	\item \textbf{Platform module:} this module contains the code that runs all the devices' components logics.
+\end{itemize}
+
+The \emph{common module} contains the code shared between the \emph{platform} and \emph{android application} modules. In particular, it contains
+the implementation of each component like the \emph{behaviour, sensors} and \emph{actuators} components, either for the embedded device and the
+smartphones. The reason why all the components are implemented in the same module is that they can be reused whenever a new device is added to the
+system. In this way, the specific device should not implement its specific version of the component but instead reuse the one already implemented.
+
+The android application is structured as follows: during the \emph{initialization} stage the pulverization platform with its components is
+initialized and the \emph{Bluetooth LE} module configured. Then, a user interface is shown to the user, which allows them to start the system by
+providing the IP of the machine where the platform is running and the device id. Once the user starts the system, the \emph{Bluetooth LE} module
+starts scanning for nearby devices and, when the embedded device is found (the Raspberry PI), the \emph{Bluetooth LE} module connects to it and
+starts sending the distance information to all its neighbours. At the same time, the application listen for incoming messages from the neighbours
+and shows their distance on the screen.
+
+The Raspberry PI firmware is structured as follows: first of all, the \emph{Bluetooth LE} module is configured as a server and starts the
+advertising process, so that all the nearby devices can connect to it. Then, a TCP socket is opened toward the \emph{actuator component} deployed
+on the server. Once the connection is established, all the incoming messages are collected. The message contains a decimal value between $0$ and $1$
+that respectively means LED turned off and LED turned on; all the intermediate values are used to set the LED intensity.
+
+Finally, the \emph{Platform} module defines for each logical device in the system all its deployment units. In particular, runs the
+\emph{behaviour, sensors} and \emph{actuators} components for each smartphone and the \emph{behaviour} and \emph{actuators} components for the
+embedded device.
+
+The system was dockerized and deployed using docker compose. The system, once started, was tested by making use of two smartphones that were
+continuously moved around the room to observe how it varied the LED intensity accordingly. The test conducted did not reveal any anomalies or
+malfunctions, except for some inaccuracies in the calculation of the distance of the devices from the Bluetooth antenna due to signal
+fluctuations.
+
+One notable test that has been conducted involves simulating a device failure and observing how the system reacts to this condition.
+The failure of a device was simulated by disconnecting it from the network.
+As soon as the device was disconnected from the network, the system continued to function as expected. Devices that were still active, store the last
+message received from that device and thus did not alter their behavior. When the device returns operational in the network, then it will start
+sending the newly updated data to its neighbors again, which will then update the information about that device's distance from the antenna.
+
+In conclusion, this demo brought out the effectiveness of the framework in clearly separating business logic development from infrastructural and
+deployment aspects, highlighting how more complicated systems are achievable through the sprinkling framework. Again, it highlighted how a failure of
+one component of the system does not preclude its operation in its entirety.
+
+This demo can be extended by going to improve the calculation of the distance of the devices from the antenna, for example, by implementing a filter
+that reduces the noise in the signal acquisition producing more stable and truthful values. Another interesting aspect to analyze may be to have some
+smartphones with all components running on them, while other smartphones have the behavior running in the cloud, thus observing that the overall
+behavior does not change as the deployment structure changes.
 
 \section{Demo 3: crowd estimation}
 \label{sec:demo-3}
 
+\todo{Valutare se questa demo è da inserire}
+
 \section{Current framework limitations}
 \label{sec:framework-limitations}
+
+At present, the framework partially implements the concept of pulverization: dynamics and support for different protocols are some examples of
+shortcomings.
+The goal of this section is therefore to provide an overview of the main shortcomings of the framework by going on to examine in what contexts these,
+if implemented, could solve certain problems.
 
 \subsection{Dynamics}
 \label{sec:dynamics}
 
+By dynamism in this context we mean the ability of the framework to be able, dynamically, to relocate pulverized components in the infrastructure.
+
+At present, the framework does not handle this aspect: the deployment structure is defined a priori and remains so throughout the life of the
+executed system. Although dynamism is a key aspect in pulverization, it was decided to focus more on good domain modeling to build a solid foundation
+on which the framework can be extended, rather than implementing as many aspects as possible running the risk of creating a rigid framework that is
+not very extensible and difficult to use.
+
 \subsection{Multi-protocols}
 \label{sec:multi-protocols}
+
+The management of multiple protocols to enable intra-component communication is an important aspect since sputtering can involve a large number of devices that are also heterogeneous with each other and therefore have different computational and even communication capabilities.
+
+For this reason, the choice of one protocol over another is not mutually exclusive, but it may be appropriate, for example, to provide
+multiple protocols that are used in the pulverized system. Again, you might be dealing with devices that do not support certain protocols, or you are
+in a situation where you want to use a very lightweight protocol (e.g. MQTT) for devices with very low computational resources and instead use a
+higher-performance protocol for those parts of the system with high computational power on board.
+
+At the time of writing, the only protocol implemented to enable intra-component communication is RabbitMQ as it represents a good compromise between
+ease of use, performance and adoption.
+
+Adoption of additional protocols would increase the framework's potential to be used in many contexts with strong device heterogeneity.
