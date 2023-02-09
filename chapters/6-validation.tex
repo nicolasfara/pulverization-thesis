@@ -261,7 +261,43 @@ As follow, a brief landscape of the most popular CI/CD tools is presented, showi
 
 \todo{Paralre di jekins e github actions}
 
-The CI/CD framework's pipeline is implemented using the GitHub Actions service.
+Jenkins is a free, open-source automation server that helps streamline the software development process by automating tasks such as building,
+testing, and deploying code. It offers hundreds of plugins to support various technologies and tools, making it a highly versatile platform. Jenkins
+is often used for continuous integration and continuous delivery (CI/CD) workflows, allowing developers to quickly and easily validate and release
+code changes. A simple example of Jenkins use is to automate the building and testing of a Java application. The~\Cref{lst:jenkins-example} shows an example of a \emph{Jenkinsfile} written in Groovy syntax.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={A Jenkinsfile example.},
+	label={lst:jenkins-example}
+]{listings/jenkins-example}
+
+In the example, the Jenkinsfile defines a pipeline with two stages: one for building the application using Maven, and one for testing it. This is
+just a simple example of what can be achieved with Jenkins, but it demonstrates how it can help automate and streamline the software development
+process.
+
+\emph{GitHub Actions} is a powerful CI/CD platform integrated into GitHub that allows developers to automate their software development workflows.
+With GitHub Actions custom workflows that run on specific events can be defined, such as code pushes, pull requests, and releases. Workflows are
+defined using \emph{YAML} files and can include multiple steps, such as building and testing code, deploying to various environments, and more.
+
+Here is a simple example of a GitHub Actions workflow that builds and tests a Java application:
+
+\lstinputlisting[
+	caption={A GitHub Actions workflow example.},
+	label={lst:github-actions-example}
+]{listings/gha-example.yaml}
+
+In this example, the workflow is triggered on pushes to the main branch and runs on an Ubuntu-based runner. The workflow includes steps to
+check out the code, set up a Java environment, build the application, and run tests. With GitHub Actions, you can easily
+automate and streamline your software development workflows, helping to improve efficiency and reduce errors.
+
+An \emph{action} in the context of GitHub Actions is a pre-written, reusable piece of code that performs a specific task within a software development
+workflow. These actions can be run as part of a workflow to automate tasks such as building code, testing it, deploying it, and more.
+
+\paragraph*{}
+
+The choice to use GitHub Actions to implement the CI/CD pipeline was made primarily for reasons of practicality and prior knowledge, but also because
+it boasts a large community that supports and maintains the actions.
 The pipeline is structured into three main jobs:
 
 \begin{itemize}
@@ -292,8 +328,39 @@ checks over the repository. Finally, the release job is executed to release the 
 The rationale behind the choice of using a dedicated job for creating the staging repository is due the fact that the subsequent jobs are executed
 in parallel over different OS, which means that they would create a staging repository for each OS, leading to an unintended condition.
 Using the aforementioned approach, the staging repository is created only once, and then, the subsequent jobs are executed over the same repository
-by sharing the \emph{repository id}. In this way, the artifacts coming from different OS are uploaded to the same repository, and consequently,
-the release job can release all the artifacts on the Maven Central repository consistently.
+by sharing the \emph{repository id}. In this way, the artifacts coming from different OS are uploaded to the same repository (using the repository id
+generated before), and consequently, the release job releases all the artifacts on the Maven Central repository consistently.
+
+Code maintenance is a key aspect of good project lifecycle management.
+For this reason, tools such as \emph{renovate} \emph{mergify} and \emph{semantic-release} have been used to automate these aspects.
+
+Renovate is an automated tool that is used to manage and automate the process of updating
+dependencies and keeping projects up-to-date. The Renovate Bot can be integrated into a project's code repository and configured to automatically
+detect when updates are available and then create pull requests to implement the updates. This can help to streamline the process of keeping
+dependencies up-to-date and reduce the risk of security vulnerabilities or compatibility issues.
+
+Mergify is an automated tool that helps to manage and automate the process of merging pull requests in a code repository. The Mergify bot
+can be integrated into a project's code repository and configured to automatically merge pull requests that meet specific criteria, such as passing
+all required tests or receiving approval from a specified number of reviewers. This can help to speed up the code review process and reduce the
+workload of maintainers, freeing them up to focus on more strategic tasks.
+
+The semantic-release is a tool that automates the process of versioning and releasing software projects. It uses a specific commit message syntax to
+determine the type of changes made in each commit~\cite{conventional-commits} and automatically generates a new version number and release based on
+those changes.
+This helps to ensure that version numbers are consistently and accurately updated, reducing the risk of errors and confusion, and allowing teams to
+focus on more important tasks. Additionally, by automating the release process, semantic-release can help to speed up the development cycle and allow
+teams to deliver new features and bug fixes to users more quickly and efficiently.
+
+The joint use of these three tools on the one hand greatly speeds up the release and maintenance phases of the code but on the other hand, should be
+paid attention to the fact that since are automatic tools, they could cause unintended updates causing repercussions on the proper functioning of the
+project, such as updating a dependency that modifies a public API thus making it incompatible with its use in the code. To minimize these scenarios,
+an extensive and complete test suite should be set up, but also a CI/CD pipeline that fails as soon as a problem is detected should be used; in this
+way, maintainers are alerted and can proceed with manual intervention to resolve the issue.
+
+Therefore, all these details have been carefully attended to so that no situations arise that lead to inconsistencies or
+incompatibilities in the code base: renovate is configured to open a pull request as soon as a new version of any dependency is available; mergify is
+configured to merge automatically the PRs coming from Renovate which the status check is passed, and semantic-release is configured to make a
+release only from the \emph{master} branch and if the previous jobs are completed successfully.
 
 \section{Demo 1: Single Device Multiple Components}
 \label{sec:demo-1}
