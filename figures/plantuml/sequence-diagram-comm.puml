@@ -1,0 +1,17 @@
+@startuml sequence-diagram-comm
+actor "Devices" as devices
+participant "Communication" as communication
+participant "Behaviour" as behaviour
+
+loop
+devices -> communication : get neighbours' messages
+communication -> behaviour : forward messages
+end
+
+loop
+behaviour -> behaviour : compute function
+behaviour -> communication : new message
+
+communication -> devices : send message to neighbours
+end
+@enduml

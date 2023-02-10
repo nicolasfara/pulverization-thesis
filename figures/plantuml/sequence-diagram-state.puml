@@ -1,0 +1,12 @@
+@startuml sequence-diagram-state
+participant "State" as state
+participant "Behaviour" as behaviour
+
+loop
+behaviour -> state : query
+state -> state : retrieve the state
+state --> behaviour : return the state
+behaviour -> behaviour : compute function
+behaviour -> state : update
+end
+@enduml

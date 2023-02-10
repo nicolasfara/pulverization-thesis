@@ -1,0 +1,15 @@
+@startuml sequence-diagram-sense-act
+participant "Sensor" as sensor
+participant "Actuator" as actuator
+participant "Behaviour" as behaviour
+
+loop
+sensor -> sensor : sense()
+sensor -> behaviour : send sensed value
+
+behaviour -> behaviour : compute function
+
+behaviour -> actuator : send prescriptive action
+actuator -> actuator : actuate()
+end
+@enduml
