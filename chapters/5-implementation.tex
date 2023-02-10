@@ -313,6 +313,151 @@ architectures.
 
 For all the reasons mentioned above, Kotlin multiplatform was chosen as the framework implementation language.
 
+\section{Technologies used in the framework}
+
+This section provides an overview of the technologies used in the framework in the various modules. Key libraries and mechanisms for the operation of
+the framework will be covered, reporting only those that are common to all modules; technologies and dependencies specific to each module will be
+covered in their respective sections.
+
+\subsection{Kotlin coroutines}
+
+Asynchronous programming returned to the mainstream in recent years. Created in the `80s, but with the advent of multi-core processors, it has been
+superseded by multi-threaded programming, which was the de facto standard for concurrent computations.
+Since the 2000s, lots of programming languages have introduced asynchronous programming features from the start while other languages have added
+support later.
+
+Multithreading is a traditional method of performing multiple computations in parallel by executing each computation in a separate thread. However,
+it has drawbacks such as increased programming complexity and reduced performance for tasks that are IO-bound.
+Different flavours of asynchronous programming are an alternative to multithreading. Unlike multithreading, which is based on coarse-grained threads,
+asynchronous programming is implemented via fine-grained suspendable computations, which can more effectively interleave with each other.
+Different attempts have been made over the years to provide programming languages with facilities to support asynchronous programming:
+\emph{callbacks, futures} and \emph{promise} are only some of the most common approaches.
+A callback is a function defined by the user, passed to a callback-aware API as a function value, lambda, function pointer, etc., with the purpose of
+being called at a later time when a certain condition is met. Although this is a rather simple mechanism, callback-based frameworks are known to
+suffer from a complication of code structure disproportionate to the complexity of the logic that code expresses, commonly referred to as ``callback
+hell''~\cite{7321196}. Futures and promises are a step above callback-based computations, working as special proxies for not-yet-completed results
+of asynchronous computations. The two main operations that can be performed on a promise are: checking for completion and getting the result of the
+computation. Promises are a good solution to the callback hell problem, but they are not without their problems: they are not composable, and they
+lack a way to express dependencies between asynchronous computations. \emph{async/await} is an approach that brings asynchronous programming as a
+first-class language citizen: \emph{async/await} is based around expressing asynchronous computations as two interconnected parts.
+
+The first language to introduce \emph{async/await} was C\#. A lot of programming languages used the C\# approach as an inspiration and follow its
+async/await implementation. JavaScript, TypeScript, Dart, Python, Rust — all these languages use async functions containing await operators.
+
+As follow is introduced the concept of the coroutine and how it is implemented in Kotlin, discussing the basic building block for asynchronous
+programming.
+
+Even though the concepts of \emph{coroutine} being used for over 50 years, there is no standard definition of what a coroutine is.
+One valid definition could be ``function which can suspend and resume its execution, preserving the state between suspensions''
+\cite{elizarov2021kotlin}. Coroutines have been classified using the following axes, where implementations may differ:
+\textbf{Symmetric/Asymmetric Control Transfer} and \textbf{Stackfull/Stackless Implementation}.
+
+Symmetric coroutines can suspend themselves and resume the execution to an arbitrary coroutine, in this context the control transfer between
+coroutines is symmetrical. On the other hand, asymmetric coroutines can only suspend themselves and resume the execution to the coroutine that
+suspended them, in this context the control transfer between coroutines is asymmetric. While symmetric coroutines are more expressive than asymmetric
+coroutines, they are also more complex to understand, for this reason, most of the implementation of coroutines are
+asymmetric~\cite{elizarov2021kotlin}.
+
+A stackful coroutine implementation allows for suspension at any point within nested functions and, when resumed, continues execution from the exact
+point of suspension, restoring the original function call stack. Conversely, a stackless implementation can only be suspended within itself,
+requiring that nested functions also be coroutines for asynchronous execution to occur. The majority of modern languages use stackless coroutines.
+While stackful coroutines are more powerful than stackless ones, stackless coroutines can match most (if not the same) capabilities
+via careful handling of nested coroutine calls; moreover, stackful coroutines are noticeably harder to implement efficiently.
+
+One important aspect when implementing coroutines is the \emph{error handling} mechanism.
+There are two approaches currently used in asynchronous programming, the first one is based on supervision trees, which was pioneered in Erlang,
+and involves arranging asynchronous tasks in parent-child trees for desired error propagation. The second approach, structured
+concurrency~\cite{structured-concurrency}, aims to transfer the idea of structured programming to asynchronous programming. It connects tasks to
+their origins and ensures that the lifetime of a task cannot exceed the lifetime of its origin, thereby establishing a \emph{launcher-launchee}
+relation and describing error and cancellation propagation.
+
+Structured concurrency, in comparison to supervision trees, has a fixed error-handling strategy and is therefore less flexible. However, it is more
+concise and aligns well with the typical way asynchronous code is written. This is why structured concurrency has gained significant attention in
+recent years, either as structured concurrency libraries or as a built-in language feature~\cite{alan-struct-concurr}.
+
+Kotlin coroutines are built upon the following goals~\cite{elizarov2021kotlin}:
+\begin{itemize}
+	\item \textbf{Independence from low-level platforms implementation:} Kotlin being a multi-platform language, building its asynchronous support on
+	      existing implementations like futures in JVM would lead to interoperability issues between platforms. Therefore, a unique approach is
+	      necessary to ensure seamless asynchronous support across all platforms.
+	\item \textbf{Adaptability to existing implementation:} a strong emphasis is placed on interoperability with existing code, particularly with
+	      Java code on the JVM platform. To ensure a smooth experience for developers, Kotlin should support seamless integration of established
+	      asynchronous APIs, such as promises in JavaScript or non-blocking input/output in JVM.
+	\item \textbf{Support for pragmatic asynchronous programming:} the popularity of the async/await approach in asynchronous programming highlights
+	      the significance of code readability. Although less expressive than full coroutines, async/await offers adequate coverage for practical use
+	      cases and improved performance.
+\end{itemize}
+
+Kotlin asynchronous programming is built around the ``suspending function'' concept, similar to the ``async function'' concept in JavaScript.
+A suspending function is marked with the \texttt{suspend} modifier and can be called from other suspending functions. However, their call sites
+are \emph{not marked} as \texttt{await}, i.e., calls to suspending functions are implicitly awaited.
+In this way, the problem of ``forgotten await'', characterizing the \emph{async/await} approaches, is avoided.
+
+The~\Cref{lst:example-suspending-function} shows an example of a suspending function, which is called from another suspending function.
+
+\lstinputlisting[
+	language=Kotlin,
+	label=lst:example-suspending-function,
+	caption={Example of a suspending function.},
+]{listings/coroutine-example.kt}
+
+As follow, a brief introduction to how Kotlin coroutines are implemented is presented.
+Each suspendable function goes through a transformation from normally invoked function to a continuation-passing style (CPS).
+For a suspendable function with $p_1, p_2, \dots, p_n$ parameters and result type $T$, a new function is generated with an additional parameter of
+type \texttt{Continuation<T>} and the return type change to \texttt{Any?}.
+Also, the calling convention changes: the function may either \emph{suspend} or \emph{return}. When the function returns some result, this result is
+directly returned from the function (as usual); if the function suspends, it returns the special value \texttt{COROUTINE\_SUSPENDED}.
+The compiler takes care of the transformation, so the developer does not need to worry about it. When the user wants to suspend a coroutine's
+execution, they access the coroutine's continuation by calling an intrinsic function \texttt{suspendCoroutineUninterceptedOrReturn}. Then, stores the
+continuation object to resume it later. Finally, pass the \texttt{COROUTINE\_SUSPENDED} the intrinsic which is then returned from the function.
+
+Kotlin implements suspendable functions as state machines, since such implementation does not require runtime support.
+While being able to wrap different existing frameworks for asynchronous computations, Kotlin coroutines also allow writing asynchronous code in
+different styles: \emph{async/await} style, using \emph{Channels} or \emph{Generator.}
+
+Coroutines were widely used in the framework to implement asynchronous behaviors idiomatically in Kotlin. In addition, since in the framework, the
+exchange of messages between components can occur asynchronously, this was captured through a coroutine-based construct called Flow~\cite{flow}.
+
+Kotlin Flow is a new addition to the Kotlin coroutines library, and it provides a way to perform asynchronous, sequential computations that emit
+values and can be transformed into streams. A Flow is a sequence of values that are emitted asynchronously and can be processed in a non-blocking
+manner. Unlike traditional streams, Flows are also cancellable, meaning that they can be stopped at any point in their execution. Flows are designed
+to be highly composable, allowing the building of complex, multi-step computations by combining and transforming smaller Flows. They are also
+designed to work well with coroutines, making them an excellent choice for asynchronous and reactive programming in Kotlin.
+
+For those reasons, \emph{coroutine} and \emph{Flow} are the main tools where the framework is based, providing a simple and efficient way to
+implement asynchronous behaviors.
+
+\subsection{Dependency Injection: Koin}
+
+Dependency Injection is a software design pattern that allows for the separation of concerns in a software application. It enables the creation of
+loosely-coupled code, which is more flexible and easier to maintain. Dependency Injection is achieved through the injection of dependencies, or
+required objects, into the objects that need them. This can be done either manually or through the use of a Dependency Injection framework.
+
+One such framework is the \emph{Koin} library, which is a popular, lightweight, and pragmatic Dependency Injection solution for Android and Kotlin.
+The library offers a simple and efficient API, with no reflection or code generation required, making it a fast and efficient choice.
+
+Koin uses a modular approach to Dependency Injection, allowing the definition of dependencies in modules, assembling and managing
+them easily. This makes it easy to maintain and update dependencies as needed. In addition, Koin offers a range of features, including scope
+management, property injection, and support for multi-threading, making it a comprehensive solution for Dependency Injection in Android and Kotlin
+projects.
+
+The~\Cref{lst:example-koin} shows how to use Koin to inject a dependency into a class.
+
+\lstinputlisting[
+	language=Kotlin,
+	label=lst:example-koin,
+	caption={Example of Koin usage.},
+]{listings/koin-example.kt}
+
+In this example, a data class \texttt{MySimpleClass} is defined, and a module \texttt{myModule} is defined to provide an instance of the class as a
+singleton. The \texttt{startKoin} function is then used to start Koin and use the defined module. Finally, the dependency is injected into
+\texttt{MyClass} using the by \texttt{inject()} property delegate. The main function creates an instance of MyClass and prints the message from the
+injected \texttt{MySimpleClass.}
+
+The use of Koin in the framework allows for the easy injection of dependencies into the different components of the framework, making it easy to
+maintain and update the framework as needed. Moreover, the use of Koin allows for the easy creation of new components, without an excessive amount of
+boilerplate code.
+
 % - New section ---------------------------------------------------------------
 
 \section{Core module}
