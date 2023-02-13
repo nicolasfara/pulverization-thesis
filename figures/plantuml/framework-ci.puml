@@ -1,0 +1,45 @@
+@startuml framework-ci
+left to right direction
+
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+
+component "Framework  CI/CD pipeline" {
+  component "Linux runner" as crs {
+    component "Create staging repository"
+  }
+  rectangle "Linux runner" as lr {
+    component "Build" as lb
+    component "Test" as lt
+    lb --> lt
+  }
+  rectangle "macOS runner" as mr {
+    component "Build" as mb
+    component "Test" as tb
+    mb --> tb
+  }
+  rectangle "Windows runner" as wr {
+    component "Build" as wb
+    component "Test" as wt
+    wb --> wt
+  }
+  crs ---> lr
+  crs ---> mr
+  crs ---> wr
+
+  component "Linux runner" as cr {
+    component "Close staging repository"
+  }
+  
+  lr ---> cr
+  mr ---> cr
+  wr ---> cr
+
+  component "Linux runner" as rsr {
+    component "Release staging repository"
+  }
+
+  cr --> rsr
+ 
+}
+@enduml

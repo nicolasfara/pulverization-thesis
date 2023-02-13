@@ -1,0 +1,23 @@
+@startuml cicd-example
+skinparam nodesep 70
+skinparam ranksep 70
+
+actor "Developer" as d
+
+rectangle "Classic CI pipeline" as rr {
+  rectangle "Build"
+  rectangle "Test"
+  rectangle "Deploy"
+
+  Build -r-> Test
+  Test -r-> Deploy : OK
+}
+
+cloud "System" as s 
+
+rr <-l- d : Push new code
+
+Deploy -u-> s : " Release"
+
+Test --> d : Notify on error
+@enduml

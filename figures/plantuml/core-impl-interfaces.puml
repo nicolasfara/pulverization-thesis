@@ -1,0 +1,75 @@
+@startuml core-impll-interfaces
+top to bottom direction
+skinparam nodesep 60
+
+interface "KoinComponent" as kc {}
+
+interface "Initializable" as init {
+  +initialize()
+  +finalize()
+}
+
+interface "Context" as ctx {
+  +deviceID: String
+}
+
+interface "PulverizedComponent" as pc {
+  +context: Context
+  +componentType: PulverizedComponentType
+}
+
+interface "State<S>" as state {
+  +get()
+  +update()
+}
+
+interface "Behaviour<S, C, AS, SS, R>" as bhv {
+  +invoke()
+}
+
+interface "Communication<C>" as comm {
+  +send()
+  +receive()
+}
+
+interface "Sensor<T>" as sens {
+  +sense()
+}
+
+interface "Actuator<T>" as act {
+  +actuate()
+}
+
+enum "PulverizedComponentType" as pct {
+  CommunicationComponent
+  BehaviourComponent
+  StateComponent
+  ActuatorsComponent
+  SensorsComponent
+}
+
+class "SensorsContainer" as sens_cont {
+  +get()
+  +getAll()
+}
+
+class "ActuatorsContainer" as act_cont {
+  +get()
+  +getAll()
+}
+
+kc <|-- pc
+init <|-- pc
+
+pc *-right- "1" pct
+pc *-left- "1" ctx : injected
+
+pc <|--- bhv
+pc <|--- state
+pc <|--- comm
+pc <|--- act_cont
+pc <|--- sens_cont
+
+sens_cont o-- "*" sens
+act_cont o-- "*" act
+@enduml

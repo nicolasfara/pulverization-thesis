@@ -1,0 +1,24 @@
+@startuml demo1-physical
+
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+
+component "<<Server>>" {
+  component "Actuators" as act
+  queue "RabbitMQ" as rmq
+  component "Behaviour" as bhv
+  component "State" as st
+  component "Sensors" as sens
+  rmq <--> act
+  rmq <--> bhv
+  rmq <--> st
+  rmq <--> sens
+}
+
+component "Moisture sensor device" as msd <<embedded device>>
+component "Actuator device" as ad <<embedded device>>
+
+act ...> ad : TCP
+sens <... msd : TCP
+
+@enduml

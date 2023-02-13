@@ -1,0 +1,55 @@
+@startuml config-dsl-class
+skinparam nodesep 70
+skinparam ranksep 70
+
+enum "Tier" as tier {
+  Cloud
+  Edge
+  Devcie
+}
+
+enum "PulverizedComponentType" as pct {
+  BehaviourComponent
+  StateComponent
+  ActuatorsComponent
+  SensorsComponent
+  CommunicationComponent
+}
+
+class "LogicalDeviceConfiguration" as ldc {
+  +deviceName: String
+  +components: Set<PulverizedComponentType>
+  +deploymentUnits: Set<DeploymentUnit>
+}
+
+class "DeploymentUnit" as du {
+  +deployableComponents: Set<PulverizedComponentType>
+  +where: Tier
+}
+
+class "DeviceRelationsConfiguration" as drc {
+  +links: Set<DeviceLink>
+}
+
+class "DeviceLink" as dl {
+  +device: String
+  +otherDevice: String
+}
+
+class "PulverizationConfiguration" as pc {
+  +devicesConfig: Set<LogicalDeviceConfiguration>
+  +devicesLinks: DeviceRelationsConfiguration
+}
+
+pc *-- "1..n" ldc
+pc o-- "1" drc
+
+drc o-- "1..n" dl
+
+ldc *-left- "1..5" pct
+ldc *-d- "1..n" du
+
+tier "1" -r-* du
+
+pct "1..5" -r-* du
+@enduml

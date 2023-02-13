@@ -1,0 +1,16 @@
+@startuml demo1-device
+
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+
+component "Device" {
+  component "Behaviour" as bh
+  component "Sensors" as sens
+  component "Actuators" as act
+  component "State" as state
+
+  bh <-u-> state
+  bh -d-> act
+  bh <-d- sens
+}
+@enduml

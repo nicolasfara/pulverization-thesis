@@ -1,0 +1,14 @@
+@startuml demo2-logical-device
+
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+
+component "Smartphone 1" as s1 <<logical device>>
+component "Smartphone 2" as s2 <<logical device>>
+component "Antenna" as ant <<logical device>>
+
+ant -d- s1
+ant -d- s2
+s1 -l- s2
+
+@enduml

@@ -1,0 +1,15 @@
+@startuml platform-impl-package
+top to bottom direction
+skinparam nodesep 80
+skinparam ranksep 80
+
+component [dsl] as dsl
+component [communication] as comm
+component [componentref] as compref
+component [context] as context
+
+compref --> comm : use
+dsl --> context : use
+dsl --> comm : create
+dsl -right-> compref : use
+@enduml

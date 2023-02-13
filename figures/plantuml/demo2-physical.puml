@@ -1,0 +1,56 @@
+@startuml demo2-physical
+top to bottom direction
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+
+component "Server" {
+  component "Antenna" #EB937F {
+    component "β" as bh_a
+    component "χ" as comm_a
+    component "α" as act_a
+  }
+
+  component "S1" as s1 #ADD1B2 {
+    component "β" as bh_1
+    component "χ" as comm_1
+  }
+
+  component "S2" as s2 #A9DCDF {
+    component "β" as bh_2
+    component "χ" as comm_2
+  }
+
+  queue "RabbitMQ" as rmq
+
+  bh_1 <--> rmq
+  comm_1 <--> rmq
+
+  bh_2 <--> rmq
+  comm_2 <--> rmq
+
+  act_a <-- rmq
+  bh_a <--> rmq
+  comm_a <--> rmq
+}
+
+component "Smartphone 1" as sm1 <<device>> #ADD1B2 {
+  component "σ" as sens_1
+  component "α" as act_1
+}
+component "Smartphone 2" as sm2 <<device>> #A9DCDF {
+  component "σ" as sens_2
+  component "α" as act_2
+}
+component "Antenna" as ant <<device>> #EB937F {
+  component "Actuator" as act
+}
+
+rmq <-- sens_1
+rmq --> act_1
+
+rmq <-- sens_2
+rmq --> act_2
+
+act_a .r.> act
+
+@enduml
