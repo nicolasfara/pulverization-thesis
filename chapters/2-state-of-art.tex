@@ -9,8 +9,114 @@ cyber-physical systems.
 \section{Layered and heterogeneous infrastructure}
 \label{sec:layered-heterogeneous-infrastructure}
 
+Nowadays, electronic devices are capable of generating vast amounts of data, from measuring natural phenomena to human behavior.
+The growth of the Internet of Things (IoT) is expected to connect virtually all objects, leading to a need to transfer, store, and process
+unprecedented amounts of data.
+
+Cloud computing has become an accessible platform for storing and processing data for a variety of applications, including IoT devices. It offers
+flexibility and low initial costs, but its adoption has exposed limitations in fulfilling requirements for real-time, low-latency, and mobile
+applications. Centralized cloud data centers are often physically and logically distant from the client, requiring multiple hops and causing delays
+and consuming network bandwidth.
+
+The adoption of cloud computing and the increasing ability of edge devices to generate and consume heterogeneous data requires new distributed
+computing infrastructures that can handle diverse application requirements. Recent computing infrastructures that enact applications at edge devices
+have improved response time and reduced bandwidth use. Fog computing has emerged as a paradigm that combines the ability to run localized
+applications at the edge with the high capacity of the cloud, supporting the heterogeneous requirements of both small and large applications through
+multiple layers of the computational infrastructure.
+
+Taking advantage of the characteristics of the edge-cloud continuum enables many opportunities in the Internet of Things field, like
+having systems that comply with requirements such as security, data locality, real-time computation, etc.
+Nevertheless, the deployment of applications in this infrastructure is still a challenge and several approaches have been
+proposed to address this issue~\cite{BITTENCOURT2018134}.
+
+In the following section will be provided an overview of the main aspects and challenges that demonstrate the suitability of combining edge, fog,
+and cloud computing for various applications used by the Internet of Things.
+
 \subsection{Cloud Fog and Edge interplay}
 \label{sec:cloud-fog-edge-interplay}
+
+This section introduces the concepts and terminology of cloud, fog, and edge computing, discussing their main characteristics and finally, how
+those paradigms can be combined to provide a more flexible and efficient solution for a wide range of applications.
+
+\subsubsection{Cloud computing}
+
+Over the last decade, cloud computing has become a widely adopted computing paradigm for many applications due to its dynamic characteristics such as elasticity and pay-per-use (achievable via virtualization and containerization), reaching a mature state.
+
+Cloud providers offer on-demand computing through three main models, which are Infrastructure as a Service (IaaS), Platform as a Service (PaaS), and
+Software as a Service (SaaS)~\cite{armbrust2010view}. IaaS provides users with remote access to computing power as a service, while PaaS offers a
+platform for software development with necessary libraries and databases to deploy and run applications, and SaaS provides software that relies on
+cloud providers' infrastructure to offload computing and/or data. The concept of Everything as a Service (XaaS) has emerged, which
+includes a wide variety of cloud service levels.
+
+Cloud services operate under a Service Level Agreement (SLA) that determines the services offered and the costs for using them. Common pricing models
+include charging by time unit, amount of data transfer, and the number of requests. Cloud computing's features of elasticity, ubiquitous access, and
+on-demand provisioning make it an attractive option, allowing for lower upfront investments and faster time to market, with reduced
+operational costs.
+
+\subsubsection{Fog computing}
+
+The evolution of hardware in personal devices has increased computing capacity at the edge and the size of mobile devices has shrunk, allowing them
+to run applications with reasonable complexity and quality of service (QoS). As a result, distributed computing paradigms are being utilized, where
+edge devices are used to run applications and store data.
+
+Fog computing creates a bridge between edge devices and the cloud, and introduces a hierarchy of computing capacity, with fog nodes, cloudlets, or
+micro data centers located between the edge and the cloud. This hierarchy can be spread throughout the network, with nodes higher in the hierarchy
+having larger computing capacity and serving more users, while nodes lower in the hierarchy are closer to the edge and have lower communication
+delays.
+
+The computing hierarchy in the fog infrastructure can offer a wider range of service levels, supporting applications that cannot be supported by
+cloud computing alone. A fog infrastructure can handle applications with a variety of QoS requirements, as applications can run at a hierarchy
+level that provides adequate processing capacity and meets latency requirements. Another consequence of the use of processing closer to the edge is
+to reduce (aggregate) bandwidth use in the network along the path between the edge and the cloud.
+
+\subsubsection{Edge computing}
+
+Edge computing is a distributed computing paradigm that brings computation and data storage closer to where it is needed, reducing the distance that
+data must travel and minimizing the latency for applications that require quick responses. Edge computing evolved from the growth of mobile devices
+and the hardware evolution of personal devices.
+
+The combination of higher computing capacity and edge networks enabled distributed computing paradigms that propose the utilization of edge devices
+to run applications and store data. Edge computing is characterized by the use of devices such as smartphones, tablets, and IoT sensors and actuators
+as sources of computational and storage resources. These devices have limited computational capacity and battery life but can support application
+execution and storage capabilities.
+
+Edge computing is expected to enable new applications in areas such as augmented reality, autonomous vehicles, and smart cities, among others, by
+allowing data processing and analysis to occur closer to the data source, reducing response time and network congestion. Edge computing also enables
+the collection of data from a variety of sources and the aggregation of data at the edge for further processing, analysis, and decision-making.
+
+\paragraph*{}
+
+Fog computing and edge computing are two related but distinct concepts in the field of distributed computing. However, they are often used
+interchangeably or confused with one another, which can lead to misunderstandings and miscommunication.
+
+One reason for the confusion is that both fog and edge computing refer to distributed computing infrastructures that process data closer to where it
+is generated, such as on the edge of the network. They both aim to reduce network latency and bandwidth consumption by processing data locally rather
+than sending it to a centralized cloud server.
+
+However, the main difference between fog and edge computing lies in the level of hierarchy at which they operate. Edge computing typically refers to
+processing that occurs at the outermost layer of the network, closer to end-user devices and sensors. It involves lightweight computing devices and
+microservices that are often embedded in sensors, smartphones, or IoT devices.
+
+Fog computing, on the other hand, involves a hierarchy of computing nodes that are distributed between the edge and the cloud. These nodes, also
+known as fog nodes, cloudlets, or micro data centers, can be located at access points, routing devices in the network, or even at the core of the
+network. The idea is to provide a distributed infrastructure that can handle data processing and analysis at different levels of the network
+hierarchy while minimizing latency and bandwidth usage.
+
+In conclusion, while fog computing and edge computing share similar goals and concepts, they are distinct in their approach and level of hierarchy.
+
+\subsubsection{Edge-cloud continuum problems}
+
+The edge-cloud continuum presents many challenges that must be addressed to optimize its performance. One of the primary issues is
+managing the resources distributed across the continuum in a way that ensures efficient resource utilization and maintains QoS levels. This is
+particularly challenging due to the heterogeneity of devices and applications that comprise the continuum, as well as the dynamic nature of the
+network topology caused by device mobility and varying application requirements.
+
+The movement of services in the Edge-Cloud infrastructure is an important consideration due to the inherent heterogeneity of the devices and 
+applications in the system. As edge and fog computing become more prevalent, there is a greater need for services to move between devices in the 
+hierarchy to optimize the use of resources and provide the required Quality of Service (QoS). However, managing the automatic adaptation of 
+services to different deployment locations while considering resource constraints at each level of the infrastructure is a major 
+challenge. Additionally, the heterogeneous network topology and frequent changes in device mobility and application requirements make it even more 
+complex.
 
 % - New section ---------------------------------------------------------------
 
@@ -20,7 +126,7 @@ cyber-physical systems.
 The advantages of integrating different computing paradigms, such as cloud and edge computing, have already been acknowledged by numerous
 industry and academia-based initiatives, one example is the OpenFog Consortium~\cite{opc}.
 
-The cloud-edge computing integration is an open research topic since each of the two paradigms has its own use cases and advantages. The cloud
+The cloud-edge computing integration is an open research topic since each of the two paradigms has its use cases and advantages. The cloud
 computing paradigm is well suited for large-scale applications that require high computational power and storage capacity. On the other hand, edge
 computing is well suited for applications that require low latency and high reliability, such as autonomous vehicles, smart cities, and industrial
 automation. The integration of the two paradigms can provide a more flexible and efficient solution for a wide range of applications.
