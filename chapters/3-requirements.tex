@@ -115,6 +115,77 @@ with limited computational power and memory by offloading the $\beta$-component 
 \section{Framework requirements}
 \label{sec:framework-requirements}
 
+The main objective of this thesis work is to develop a framework that can ``fill the gap'' between the modelling of a CPS (and its simulation) and
+the physical deployment of the system on an infrastructure.
+The framework should model the pulverization concept and provide a clear separation between the behaviour of the overall system and low-level
+details of the deployment via a simple and concise API.
+Also, the framework must capture the concepts defined by the pulverizing approach so that it has a good foundation on which the framework can
+evolve.
+
+\subsubsection{Business requirements}
+\label{sec:business-requirements}
+
+As previously mentioned, the main objective of the framework is to provide a way to deploy CPSs via the pulverization approach.
+The business requirements identified are reported as follows:
+
+\begin{itemize}
+	\item The pulverization approach can be used to simply and effectively deploy a system
+	\item The framework should be flexible to support different deployment strategies
+	\item The framework should be extensible to support different communication protocols
+\end{itemize}
+
+\subsubsection{User requirements}
+\label{sec:user-requirements}
+
+The user requirements are the requirements that are identified from the perspective of the developer who will use the framework.
+The user requirements identified are reported as follows:
+
+\begin{itemize}
+	\item It should be possible to configure the system to deploy by defining the structure of each device \emph{logical device}
+	\item It should be possible to configure the \emph{deployment unit} for each \emph{logical device}
+	\item It should be possible to configure the \emph{logical devices} and \emph{deployment unit} via a DSL
+	\item The \emph{sensors} component should be created
+	\item The \emph{actuators} component should be created
+	\item The \emph{communication} component should be created
+	\item The \emph{behaviour} component should be created
+	\item The \emph{state} component should be created
+\end{itemize}
+
+\subsubsection{Functional requirements}
+\label{sec:functional-requirements}
+
+The functional requirements, obtained from the user requirements, are reported below:
+
+\begin{itemize}
+	\item Multiple \emph{logical devices} can be defined
+	\item For each \emph{logical device}, the \emph{components} that compose it can be defined
+	\item Each \emph{component} defined for a \emph{logical device} must be configured to be deployed on a specific tier of the infrastructure
+	\item A check must be performed to ensure that the configuration of the \emph{logical devices} is valid and consistent
+	\item Links between \emph{logical devices} can be defined
+	\item Multiple deployment units can be defined for each \emph{logical device} using the system configuration
+	\item The user-defined \emph{components} can be added to the deployment unit
+	\item The \emph{deployment unit} can be started
+	\item The \emph{deployment unit} can be stopped
+	\item Prevent the run of the \emph{deployment unit} if the configuration is not honored
+	\item Different protocols can be added to the \emph{deployment unit} to enable intra-component communication
+	\item For each component, a custom implementation of the logic that implements how the communication with other components should occur can be
+	      provided
+\end{itemize}
+
+\subsubsection{Non-functional requirements}
+\label{sec:non-functional-requirements}
+
+\begin{itemize}
+	\item The framework should be easy to use by providing a simple and clean API simplifying the development of the system and adoption of the
+	      framework
+	\item The framework should be extensible in the sense that the user can customize some aspects of the framework like the communication protocols,
+	      and the logic of each component
+	\item The framework should be flexible to support different deployment strategies coping with different scenarios and infrastructures
+	\item The framework should support a wide range of architectures to support a heterogeneous set of devices enabling wide adoption of the
+	      framework
+\end{itemize}
+
+
 % - New section ---------------------------------------------------------------
 
 \section{Reference scenarios}
