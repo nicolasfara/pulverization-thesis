@@ -185,8 +185,46 @@ The functional requirements, obtained from the user requirements, are reported b
 	      framework
 \end{itemize}
 
-
 % - New section ---------------------------------------------------------------
 
 \section{Reference scenarios}
 \label{sec:reference-scenarios}
+
+This section gives examples of scenarios in which the framework can be used to implement a Cyber-Physical System.
+The proposed scenarios are intended on the one hand to show in what contexts the framework can operate and on the other hand to provide guiding
+examples of using the framework for users interested in using it.
+
+The following are three examples that can serve as references for applying the pulverizing approach.
+
+The first example is the simplest scenario where the pulverization can fit in and can be considered the ``hello world'' of the pulverization.
+The scenario is a simple system composed of a single \emph{device} whose objective is to control the moisture level of the soil.
+The \emph{device} is composed of a sensor that measures the moisture level of the soil and an actuator that controls the irrigation system.
+The objective is to keep the moisture level of the soil at a predefined level. From this description emerge a device composed of the following
+components: \emph{sensor, actuator, behaviour,} and \emph{state}. The system is deployed on three hosts: two \emph{thin host} which host the
+\emph{sensor} and \emph{actuator} components and a \emph{thick host} which hosts the \emph{behaviour} and \emph{state} components.
+In this scenario, the device is ``decomposed'' into sub-component that are deployed on different hosts and the communication between the
+components is handled by the framework obtaining the global behaviour of the device. This example shows the basic building blocks of pulverization
+by realizing a system with only one device focusing on the use of either \emph{thin hosts} and \emph{thick hosts.}
+
+The second example is a more complex scenario where multiple devices come into play and where communication between them is the main focus.
+In this example, two types of devices are defined: one that needs to find another device and the device that needs to be found.
+The first device described may be a smartphone, while the second may be an embedded, small device with low computational and memory characteristics.
+The goal of this example is to use smartphones to find the embedded device: the closer the smartphones get to the embedded device, the more intense
+light it will produce; conversely, as they move away, the light will decrease in intensity.
+Meanwhile, smartphones communicate with each other by exchanging information about the distance to the embedded device that needs to be found.
+On smartphones are executed are the sensor and actuator components, while behavior and state are offloaded to the cloud. Similarly, the embedded
+device hosts only the actuator component while the behavior is offloaded to the cloud. As for communication between the devices, all components for
+communication are instantiated in the cloud.
+This scenario emphasizes the communication that takes place between devices in the system: devices are decomposed into their components that are then
+instantiated in the infrastructure where communication does not reside in the devices themselves but rather on the cloud, nevertheless the
+correctness of system operation is preserved.
+
+The last example proposed is quite similar to the previous one but the focus is on having some devices perform the behavior locally while others are
+offloaded to the cloud. This example is intended to show that it is possible to support different ways of deploying the system seamlessly.
+The goal of the example is to implement a system that measures the level of aggregation of people (leveraging a mobile device) through, for example,
+a crowd estimation algorithm.
+The system consists of many devices that interact with each other and exchange information about the distance between them. This information is then
+shared with an additional device in the network that is responsible for making an estimate of the crowd and performing an actuation proportional
+to the computed value. The peculiarity of this deployment lies in the fact that some devices perform behavior computation on the device itself, while
+other devices perform offloaded computation in the cloud. Thus, by varying the system deployment strategy for the same device, we want to observe
+that the system maintains its functional correctness.
