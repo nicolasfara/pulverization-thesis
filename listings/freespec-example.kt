@@ -11,7 +11,6 @@ class BasePulverizationConfigTest : FreeSpec({
         config.devicesConfig.size shouldBe 2
         config.getDeviceConfiguration("device-1")?.let {
             it.deviceName shouldBe "device-1"
-            it.components.size shouldBe 2
             it.deploymentUnits.size shouldBe 2
         }
     }}
