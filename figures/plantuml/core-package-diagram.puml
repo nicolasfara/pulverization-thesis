@@ -1,0 +1,10 @@
+@startuml core-package-diagram
+component core
+component dsl
+
+component component
+
+core -left-> component : use
+core <-right- dsl : " use"
+
+@enduml
