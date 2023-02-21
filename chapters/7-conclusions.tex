@@ -10,8 +10,8 @@ allowing for the collection, aggregation, and processing of data using a hierarc
 reduce data transfers and communication bottlenecks, as well as contribute to reduced latencies. However, realizing systems that operate in the
 edge-cloud continuum is a complex challenge due to the heterogeneity of devices and dynamic requirements of today's systems.
 
-Various approaches have been proposed to address these challenges, including self-organizing systems and methodologies such as osmotic computing and
-DR-BIP. The orchestration of distributed applications requires careful management of the underlying infrastructure to enable the reuse of design
+Various approaches have been proposed to address these challenges, including self-organizing systems and methodologies such as osmotic computing.
+The orchestration of distributed applications requires careful management of the underlying infrastructure to enable the reuse of design
 elements across different scenarios.
 
 The thesis focuses more specifically on the pulverization approach: a framework that breaks the system behaviour into small computational pieces that
@@ -25,27 +25,27 @@ The main contribution of the thesis is the development of a framework that lever
 The framework aims to lay the groundwork for closing the gap between the simulation of these systems and their deployment by exploiting the
 pulverization methodology.
 
-The framework is built trying to maintain ease of use, modularity, and extensibility by modeling well the foundational concepts of pulverization over
+The framework is built trying to maintain ease of use, modularity, and extensibility by modeling the foundational concepts of pulverization over
 which the framework can be extended and improved.
 
 Several technology solutions were examined that could support cross-platform targets allowing the framework to be used seamlessly across different
-platforms and architectures. Kotlin multiplatform was identified as a suitable technology for the development of the framework since it has a wide
-range of supported architectures.
+platforms and architectures. Kotlin multiplatform was identified as a suitable technology for the development of the framework since a wide
+range of architectures is supported.
 
 The most significant implementation details and technology challenges that were faced during the development of the framework and what solutions were
 employed to achieve it were reported.
 
-Finally, topics such as testing and validation were covered by showing what strategies were used to validate the operation of the framework, as well
-as significant demos were developed to show how the framework works in different contexts, each of which brings with it peculiar characteristics that
+Finally, topics such as testing and validation were covered by showing what strategies were used to validate the framework, as well
+as relevant demos were developed to show how the framework works in different contexts, each of which brings with it peculiar characteristics that
 go to corroborate the proper operation and effectiveness of the framework.
 
-From using the framework, it seemed evident that deployment aspects never appear during system implementation, leading to the advantage of focusing
-most efforts on development, delegating infrastructure and communication aspects to the framework. In addition, it was apparent how the reusability
-of the developed components is easily achieved by design: this leads to the same component being able to be reused in different deployment strategies
-in different infrastructures, making it flexible to changes in how it is deployed.
+From using the framework, has emerged that deployment or infrastructural aspects never appear during system implementation, leading to the advantage 
+of most efforts on development, delegating infrastructure and communication aspects to the framework. In addition, it is apparent how the reusability
+of the developed components is easily achieved by design: this leads to the same component being able to be reused in different deployment 
+strategies, making the application flexible to changes in how it is deployed.
 
-\section{Future Works}
-\label{sec:future-works}
+\section{Future Work}
+\label{sec:future-work}
 
 The framework is still in its early stages of development and there is still a lot of work to be done to make it more robust and complete. The
 following are some of the topics that could be explored in future work.
@@ -59,18 +59,20 @@ Dynamics is a key aspect of the edge-cloud continuum, and the framework should b
 the framework to be used in scenarios where the system is subject to changes in the number of devices, the number of resources, or opportunistically
 exploit the best deployment strategy for the actual system.
 
-Currently, to deploy the system, some manual steps such as containerizing the deployment units that will then run in the available infrastructure
-must be performed. Automating this process can reduce the time to deploy the system by reducing the likelihood of error in container deployment.
-As a consequence, it makes sense to study how downstream of containerization, containers can be automatically deployed into the infrastructure
-through DevOps (CI/CD) methodologies.
+At present, to deploy the system, certain manual procedures, such as containerization of the deployment units, which are then executed on 
+the existing infrastructure, need to be carried out. By automating this process, the deployment time can be reduced, and the risk of errors in 
+container deployment can be minimized. Consequently, it is wise to investigate how containers can be automatically deployed into the 
+infrastructure via DevOps (CI/CD) methodologies
 
 \paragraph*{}
 
 With this thesis, I brought in research topics and problems such as pulverization. It was motivating to delve into and understand the
-concepts of pulverization and carry them into the implementation of a framework. Equally satisfying was seeing the framework work in different
-contexts and understanding how it could be evolved in the future. This experience allowed me to study the literature and understand what
+concepts of pulverization and carry them into the implementation of a framework. Was interesting to see the framework work in different
+contexts and understand how it could be evolved in the future. This experience allowed me to study the literature and understand what
 related work has already drawn useful insights from it to implement the framework.
 In addition, this thesis allowed me to delve into the Kotlin ecosystem in its multiplatform version by understanding how this technology may be
 suitable to support the implementation of the framework.
 
-\todo{Vedere se aggiungere altro}
+The completion of this thesis has facilitated my technical growth in two distinct ways. Firstly, it provided me with the opportunity to explore 
+various aspects and tools within the field, thereby enhancing my technical capabilities. Secondly, it enabled me to tackle novel issues by motivating 
+me to seek innovative solutions to support the project.
