@@ -2,22 +2,24 @@
 \label{chap:introduction}
 %----------------------------------------------------------------------------------------
 
-With the Internet of Things more and more devices are connected to the network producing a very large amount of data. Cloud computing has been
-established to acquire computational power and storage for various applications; however, it is not always suitable for handling a myriad of data
-from IoT devices while respecting real-time constraints.
-For these reasons, fog computing is developed and consists in a computing model that sits between IoT devices and the cloud.
-It allows for the collection, aggregation, and processing of data from IoT devices using a hierarchy of computing power.
-Combining fog computing with the cloud can reduce data transfers and communication bottlenecks to the cloud, and can also contribute to reduced
-latencies since fog computing resources are closer to the edge.
+With the Internet of Things (IoT), more and more devices are connected to the network producing a very large amount of data.
+Cloud computing has been established as a technology for acquiring computational power and storage in support of various applications;
+however, it is not always suitable for handling all kinds of systems' requirements: latency, security, and privacy are some of the main
+concerns. This comes true especially with IoT systems since they produce lots of data and in some scenarios, they must respect real-time constraints.
+For these reasons, fog computing tries to overcome the cloud's limitation by defining a computing model that sits between IoT devices and the cloud.
+It allows for the collection, aggregation, and processing of data from IoT devices (or more in general edge devices) using a hierarchy of computing
+power.
+The combination of fog computing with the cloud can reduce data transfers and communication bottlenecks to the cloud, and can also contribute to
+reduced latencies since fog computing resources are closer to the edge.
 
-Nevertheless, realizing systems that operate in the edge-cloud continuum is an open challenge~\cite{BITTENCOURT2018134}.
-The heterogeneity of devices coupled with the dynamic nature of the requirements today's systems must have, leveraging the flexibility of the
-edge-cloud continuum is found to be as strategic as it is complex.
+Nevertheless, realizing systems that operate in the edge-cloud continuum is an open challenge~\cite{BITTENCOURT2018134}:
+the heterogeneity of the devices combined with the dynamic nature of the requirements that modern systems must have, leveraging the flexibility of
+the edge-cloud continuum is found to be as strategic as it is complex.
 
-For these reasons, different approaches have been proposed to address the challenges of realizing systems that well interoperate in heterogeneous
-infrastructures. Some notable methodologies and frameworks are the osmotic computing paradigm~\cite{8781958}, DR-BIP and its
+Different approaches have been proposed to address the challenges of realizing systems that well interoperate in heterogeneous
+infrastructures. Some notable methodologies and frameworks are represented by the osmotic computing paradigm~\cite{8781958}, DR-BIP and its
 extensions~\cite{10.1007/978-3-030-03424-5_20,10.1007/978-3-642-30564-1_1,de2020dream}.
-While the first approach is mainly oriented to distributed microservices, the latter approach is more focused on the orchestration of distributed
+While the first approach is mainly oriented to distributed microservices, the latter is more focused on the orchestration of distributed
 applications by dynamically adapting the system to the changing requirements basing the systems on the \emph{motif} concept.
 
 In the CPS context, engineering systems featuring distributed intelligence in a \emph{self-organization} fashion is one of the main relevant
@@ -28,22 +30,29 @@ costs and potential latency issues, as well as data protection concerns that mus
 computing, on the other hand, brings resources closer to users, resulting in reduced latency and increased reactivity, while simultaneously
 addressing data dissemination concerns.
 
-As stated before, such infrastructures are not easy to manage and orchestrate, complicating the engineering of systems where the logic of the
-systems tends to be coupled with infrastructure aspects. Generally, this prevents reusing design elements across different scenarios by exploiting the
-underlying infrastructure opportunistically.
+As stated before, such infrastructures are not easy to manage and orchestrate, complicating the engineering phase where the logic of the
+system tends to be coupled with infrastructure aspects. Generally, this prevents the reusing of design elements across different scenarios by
+exploiting the underlying infrastructure opportunistically.
 
-To tackle this problem the \emph{pulverization approach} is proposed~\cite{fi12110203}. This framework brakes the system behaviour into small
-computational pieces that are continuously executed and scheduled in the available infrastructure. In this way, the system can be seamlessly
-mapped onto a variety of multi-layered deployment infrastructures.
+To tackle this problem the \emph{pulverization approach} is proposed~\cite{fi12110203}: this framework brakes the system behaviour into small
+computational pieces logically linked to sensors and actuators that are continuously executed and scheduled in the available infrastructure.
+In this way, the system can be seamlessly mapped onto a variety of multi-layered deployment infrastructures.
+It is based on a flexible logical model which can be decomposed into a set of sub-components with well-defined relationships that can be deployed and 
+wired separately. The pulverization facilitates the deployment independence of a system, namely the ability to run the application with no change
+on various deployments retaining its original functional semantics.
+In this way, the application logic will obtain the functional goals independently of the actual deployment since the choice of the deployment 
+strategy is affected typically by non-functional requirements such as latency, security, performance and cost.
+This approach is formalized to provide an unambiguous specification of what constitutes pulverization by clarifying subtle aspects of the model
+and state the deployment-independence property rigorously. 
 
 The main contribution of this thesis is the development of a framework that leverages the pulverization approach to orchestrate distributed
 applications in the edge-cloud continuum.
 This framework aims to lay the groundwork for closing the gap between the simulation of these systems and their deployment by exploiting the
 pulverizing methodology.
 Although the pulverization approach originates in the context of aggregate computing, the framework aims to be generic enough to enable the
-pulverization in more traditional systems as well.
-To showcase the effectiveness of the framework, some scenarios in the context of CPS have been identified that use the framework to deploy such
-systems, highlighting the potential that sputtering possesses as a methodology.
+pulverization in non-aggregate systems as well.
+To showcase the effectiveness of the framework, some scenarios in the context of CPS have been identified by using the framework to deploy such
+systems, highlighting the potential that pulverization has as a methodology.
 In particular, the framework is used in conjunction with \emph{embedded systems} to recreate a heterogeneous infrastructure where the framework
 runs on.
 
@@ -54,7 +63,7 @@ Accordingly, the remainder of this thesis is structured as follows.
 %
 \Cref{chap:background} discusses the background and related works.
 %
-\Cref{chap:requirements} summarize the requirements of the framework and give an overview of relevant deployment scenarios that are worth 
+\Cref{chap:requirements} summarize the requirements of the framework and give an overview of relevant deployment scenarios that are worth
 to be considered during the validation of the framework.
 %
 \Cref{chap:design} presents the framework and its architectural design.
@@ -63,4 +72,4 @@ to be considered during the validation of the framework.
 %
 \Cref{chap:validation} shows the validation process of the framework, including the experimental setup and the results obtained by the demos.
 %
-Finally, \Cref{chap:conclusions} concludes this thesis by summarizing its main contribution, focusing on future works.
+Finally, \Cref{chap:conclusions} concludes this thesis by summarizing its main contribution, with a focus on future works.
