@@ -2,9 +2,9 @@
 \label{chap:requirements}
 
 This chapter introduces the pulverization approach by explaining the terminologies and concepts that will be used in the rest of the thesis.
-The logic that governs pulverization will be discussed by going on to give some examples of pulverized systems.
-Next, the requirements that the framework must have to implement and concretize the pulverization concepts are reported. Finally, the
-chapter concludes by reporting some relevant scenarios in which it makes sense to test the effectiveness of the framework.
+The main principles of pulverization are presented, followed by a description of the pulverization domain model supported by some relevant examples.
+Next, the framework's requirements are reported and, finally, the chapter concludes with relevant scenarios that are worth using to test the use and
+effectiveness of the framework.
 
 \section{Pulverization domain model}
 \label{sec:pulverization-domain-model}
@@ -16,7 +16,10 @@ the deployment details, scheduling and communication.
 The logical model can be partitioned into a set of software components that can be deployed on the available infrastructure, while the application
 logic will preserve the functional goals independently from the actual deployment.
 
-To better formalize the terminology coming from the pulverization, the following ubiquitous language is proposed in~\Cref{tab:ubiquitous-language}.
+To better formalize the terminology coming from the pulverization, the following \emph{ubiquitous language}~\cite{evans2004ddd} is proposed
+in~\Cref{tab:ubiquitous-language}.
+The main reasons for the use of this ubiquitous language are to avoid ambiguity and to ensure that the concepts are understood in the same way by
+anyone who approaches the pulverization.
 
 \begin{table}
 	\begin{tabularx}{\textwidth}{l X}
@@ -36,8 +39,8 @@ To better formalize the terminology coming from the pulverization, the following
 		The aforementioned structure can change over time.                                                                                          \\
 		\bottomrule
 	\end{tabularx}
-	\label{tab:ubiquitous-language}
 	\caption{Pulverization Ubiquitous language.}
+	\label{tab:ubiquitous-language}
 \end{table}
 
 \begin{figure}
@@ -55,7 +58,7 @@ interaction between them determines the device's logic in the system. The~\Cref{
 split into its components defining also a link with another device.
 
 The \emph{Sensors} $\sigma$ and \emph{Actuators} $\alpha$ components represent the way the device interacts with the environment: the former is used
-to acquire information from the environment, while the latter is used to actuate on the environment.
+to acquire information from the environment, while the latter is used to perform actions on the environment.
 The \emph{State} $\kappa$ component represents the device's knowledge and abstract from the actual storage mechanism or representation.
 The \emph{Communication} $\chi$ component handles the interaction with neighbours by holding the information about the identity of the neighbours and
 how to reach them. The send and receive operations occur through respectively the \emph{input channels} and the \emph{output channels}, where the
@@ -67,9 +70,10 @@ Each device performs a MAPE-like cycle that includes the following steps and tha
 depicted in~\Cref{fig:logical-device}, where the arrows denote the message flow:
 
 \begin{enumerate}
-	\item \textbf{Context acquisition:} the device acquires information from its sensors and communications, storing them in the device state
+	\item \textbf{Context acquisition:} the device acquires information from its sensors and the communication component, storing them in the device
+	      state
 	\item \textbf{Computation:} the device behaviour function is computed against the device state
-	\item \textbf{Coordination data propagation:} coordination data is set to all the device neighbours
+	\item \textbf{Coordination data propagation:} coordination data is sent to all the neighbour's device
 	\item \textbf{Actuation:} the actuators are activated to execute a set of prescriptive actions
 \end{enumerate}
 
@@ -104,7 +108,7 @@ This style is not suitable in a sensor network where a device is designed to ope
 with enough power to host a $\beta$-component.
 The~\Cref{fig:notable-deployments}b shows a broker-based style deployment where all the $\chi$-components are deployed on a separate host (broker).
 This is a common scenario in IoT systems where a broker is used to handle the communication between devices.
-The~\Cref{fig:notable-deployments}c shows big data in the cloud style deployment where all the $\kappa$-components are deployed in the cloud
+The~\Cref{fig:notable-deployments}c shows ``big data in the cloud'' style deployment where all the $\kappa$-components are deployed in the cloud
 enabling big-data analysis.
 The~\Cref{fig:notable-deployments}d shows an embedded device with sensors/actuators style deployment where all the $\alpha$ and $\sigma$-components
 are deployed on the same thin host while all the remaining components are deployed on a thick host. This scenario covers the case of a device
@@ -119,8 +123,8 @@ The main objective of this thesis work is to develop a framework that can ``fill
 the physical deployment of the system on an infrastructure.
 The framework should model the pulverization concept and provide a clear separation between the behaviour of the overall system and low-level
 details of the deployment via a simple and concise API.
-Also, the framework must capture the concepts defined by the pulverizing approach so that it has a good foundation on which the framework can
-evolve.
+Also, the framework must capture the concepts defined by the pulverizing approach to provide a good starting point on which the framework can
+be evolved.
 
 \subsubsection{Business requirements}
 \label{sec:business-requirements}
@@ -129,7 +133,7 @@ As previously mentioned, the main objective of the framework is to provide a way
 The business requirements identified are reported as follows:
 
 \begin{itemize}
-	\item The pulverization approach can be used to simply and effectively deploy a system
+	\item The pulverization approach can be used to simply and effectively deploy CPS systems
 	\item The framework should be flexible to support different deployment strategies
 	\item The framework should be extensible to support different communication protocols
 \end{itemize}
@@ -137,18 +141,18 @@ The business requirements identified are reported as follows:
 \subsubsection{User requirements}
 \label{sec:user-requirements}
 
-The user requirements are the requirements that are identified from the perspective of the developer who will use the framework.
+The user requirements are identified from the perspective of the developer who will use the framework.
 The user requirements identified are reported as follows:
 
 \begin{itemize}
 	\item It should be possible to configure the system to deploy by defining the structure of each device \emph{logical device}
 	\item It should be possible to configure the \emph{deployment unit} for each \emph{logical device}
 	\item It should be possible to configure the \emph{logical devices} and \emph{deployment unit} via a DSL
-	\item The \emph{sensors} component should be created
-	\item The \emph{actuators} component should be created
-	\item The \emph{communication} component should be created
-	\item The \emph{behaviour} component should be created
-	\item The \emph{state} component should be created
+	\item It should be possible to create a \emph{sensors} component
+	\item It should be possible to create a \emph{actuators} component
+	\item It should be possible to create a \emph{communication} component
+	\item It should be possible to create a \emph{behaviour} component
+	\item It should be possible to create a \emph{state} component
 \end{itemize}
 
 \subsubsection{Functional requirements}
@@ -194,7 +198,7 @@ This section gives examples of scenarios in which the framework can be used to i
 The proposed scenarios are intended on the one hand to show in what contexts the framework can operate and on the other hand to provide guiding
 examples of using the framework for users interested in using it.
 
-The following are three examples that can serve as references for applying the pulverizing approach.
+The following are three examples that can be used as a reference for applying the pulverization approach.
 
 The first example is the simplest scenario where the pulverization can fit in and can be considered the ``hello world'' of the pulverization.
 The scenario is a simple system composed of a single \emph{device} whose objective is to control the moisture level of the soil.
@@ -208,23 +212,23 @@ by realizing a system with only one device focusing on the use of either \emph{t
 
 The second example is a more complex scenario where multiple devices come into play and where communication between them is the main focus.
 In this example, two types of devices are defined: one that needs to find another device and the device that needs to be found.
-The first device described may be a smartphone, while the second may be an embedded, small device with low computational and memory characteristics.
+The first device described may be a smartphone, while the second may be an embedded device with low computational and memory characteristics.
 The goal of this example is to use smartphones to find the embedded device: the closer the smartphones get to the embedded device, the more intense
-light it will produce; conversely, as they move away, the light will decrease in intensity.
+light the embedded device will produce; conversely, as the smartphones move away, the light will decrease in intensity.
 Meanwhile, smartphones communicate with each other by exchanging information about the distance to the embedded device that needs to be found.
-On smartphones are executed are the sensor and actuator components, while behavior and state are offloaded to the cloud. Similarly, the embedded
-device hosts only the actuator component while the behavior is offloaded to the cloud. As for communication between the devices, all components for
-communication are instantiated in the cloud.
+On smartphones are executed the \emph{sensor} and \emph{actuator} components, while \emph{behavior} and \emph{state} components are offloaded to the
+cloud. Similarly, the embedded device hosts only the \emph{actuator} component while the \emph{behavior} is offloaded to the cloud. As for 
+communication between the devices, all \emph{communication} components are instantiated in the cloud.
 This scenario emphasizes the communication that takes place between devices in the system: devices are decomposed into their components that are then
 instantiated in the infrastructure where communication does not reside in the devices themselves but rather on the cloud, nevertheless the
-correctness of system operation is preserved.
+correctness of system operation will be preserved.
 
-The last example proposed is quite similar to the previous one but the focus is on having some devices perform the behavior locally while others are
-offloaded to the cloud. This example is intended to show that it is possible to support different ways of deploying the system seamlessly.
+The last example proposed is quite similar to the previous one but the focus is on having some devices perform the behavior locally while others 
+are offloaded to the cloud. This example is intended to show that it is possible to support different ways of deploying the system seamlessly.
 The goal of the example is to implement a system that measures the level of aggregation of people (leveraging a mobile device) through, for example,
 a crowd estimation algorithm.
 The system consists of many devices that interact with each other and exchange information about the distance between them. This information is then
 shared with an additional device in the network that is responsible for making an estimate of the crowd and performing an actuation proportional
-to the computed value. The peculiarity of this deployment lies in the fact that some devices perform behavior computation on the device itself, while
-other devices perform offloaded computation in the cloud. Thus, by varying the system deployment strategy for the same device, we want to observe
-that the system maintains its functional correctness.
+to the computed value. The peculiarity of this deployment lies in the fact that some devices perform the behavior computation on the device itself, 
+while other devices perform the computation offloaded in the cloud. Thus, by varying the system deployment strategy for the same device, we want to 
+observe that the system maintains its functional correctness.
