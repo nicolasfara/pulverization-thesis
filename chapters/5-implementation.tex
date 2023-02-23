@@ -4,20 +4,20 @@
 This chapter discusses in detail all the implementation aspects of the framework, showing all its characterizing elements.
 First, the reasons for choosing Kotlin as the language to implement the framework are explained.
 Then, for each module, the logic governing it, the main classes, and usage scenarios will be analyzed.
-Finally, the chapter will conclude with a discussion of the configuration DSL and the platform DSL.
+Finally, the chapter will conclude with a discussion of the configuration DSL and the platform DSL and how they support the user in the system
+configuration.
 
 \section{Languages with multiplatform targets}
 \label{sec:languages-multiplatform-targets}
 
-Pulverization is born in a context where device heterogeneity, understood as the strong difference in computational terms of devices as well as
-diversity of architectures, is the norm.
+Pulverization is born in the context of CPS where device heterogeneity is a real scenario.
 For those reasons, we can deal with networks of embedded devices (which have very limited computational resources) up to networks of computers with
 high computational power and memory.
 Nowadays, architectures that combine these two scenarios are increasingly common, thus having to manage architecturally heterogeneous networks of
 devices.
 
-For these reasons, it is necessary to build a framework that can support as many architectures and platforms as possible to maximize the number
-of devices on which the pulverized system can run.
+For these reasons, it is necessary to build a framework that can support a wide range of architectures and platforms to maximize the number
+of devices on which the framework can run.
 
 In this context, the choice of the language to implement the framework is crucial.
 A cross-platform language (or even known as multiplatform language) is a language that allows the same code to be compiled for different platforms.
@@ -49,8 +49,6 @@ In this way, we can use one programming language and manage the targeting of mul
 	\caption{Diagram showing the rationale behind the multiplatform languages.}
 	\label{fig:mulitplatform-languages}
 \end{figure}
-
-\todo{Aggiungere paragrafo in cui si da un idea piu tecnica di come viene gestito il multiplatform. Ad esempio spiegando IR ecc.}
 
 The two following sections will examine two of the main relevant language based on the JVM ecosystem that supports multiplatform targets.
 
@@ -117,11 +115,11 @@ steps~\cite{Doeraene:256862}:
 \end{itemize}
 
 During the first step, the \texttt{.scala} source files are compiled with scalac, augmented with the Scala.js compiler plugin.
-The compiler plugin, comparatively to the rest of scalac, is small: it takes the internal compiler ASTs that have been lowered to contain JVM-style
-classes, interfaces, methods and instructions, and turns them into Scala.js IR (\texttt{.sjsir} files).
+The compiler plugin takes the internal compiler ASTs that have been lowered to contain JVM-style classes, interfaces, methods and instructions, and
+turns them into Scala.js IR (\texttt{.sjsir} files).
 
 The \texttt{.sjsir} files are similar to \texttt{.class} files, although they are AST-based (instead of stack-machine-based) and contain features
-dedicated to JavaScript interoperability. The \texttt{.sjsir} format and specification are independent of Scala: which means that the linker is
+dedicated to JavaScript interoperability. The \texttt{.sjsir} format and specification are independent of Scala: meaning that the linker is
 independent of the language version.
 
 \subsubsection{Scala multiplatform ecosystem}
@@ -130,7 +128,7 @@ This section will examine the current ecosystem concerning the multiplatform sup
 usability of this technology.
 In particular, will be addressed two main factors: the number of libraries that supports multiplatform targeting and the maturity of each platform.
 
-At first glance, there is a strong sense of fragmentation of projects and various communities. Some communities pervasively support all three
+At first glance, there is a strong sense of fragmentation of projects and communities. Some communities pervasively support all three
 platforms (JVM, JS, and native) while others do not, and this is reflected in the amount of multi-targeting compatible libraries.
 For example, the \emph{typelevel} ecosystem supports all three platforms for all their main libraries:
 \textbf{Cats Effects}~\footnote{\url{https://typelevel.org/cats-effect/}} and \textbf{FS2}~\footnote{\url{https://fs2.io/}}.
@@ -142,14 +140,14 @@ the future the number of libraries targeting multiplatform will increase.
 
 To complete the analysis and to have a more complete picture of the Scala multiplatform ecosystem, will be examined the maturity of each platform.
 Starting from \emph{Scala.js}, the platform is quite mature and stable: the project was born several years ago and it's used in production by many
-companies, year to year several improvements were made to reach a high level of performance and stability~\cite{scala-js-performance, marr2016cross}.
+companies. Year to year several improvements were made to reach a high level of performance and stability~\cite{scala-js-performance, marr2016cross}.
 
 Finally, the \emph{Scala Native} platform works quite well but has some limitations that make it not suitable for all production use.
 One of the biggest and most important limitations is the lack of support for multithreading~\cite{scala-native-multithreading}.
 If for some projects this limitation is not a problem, for others it can be a big issue; nevertheless, the \emph{typelevel} community dealt with this
 restriction by implementing an event-loop-based concurrency model~\cite{scala-native-multithreading} to support the native projects.
-Another limitation is represented by the supported architectures: at the time of writing, only the platforms supported by \emph{LLVM} can be targeted,
-which means that not all the embedded devices can be supported.
+Another limitation is represented by the supported architectures: at the time of writing, only a subset of the platforms supported by LLVM
+can be targeted, which means that not all the embedded devices can be supported.
 
 \subsection{Kotlin Language}
 \label{sec:kotlin-language}
@@ -157,8 +155,8 @@ which means that not all the embedded devices can be supported.
 Kotlin is a cross-platform, statically typed, general-purpose high-level programming language.
 It's designed to interoperate fully with Java but also compile to JavaScript or native code via LLVM.
 
-For what concern the multiplatform support of the language, Kotlin multiplatform is designed to simplify the development of cross-platform projects
-by reducing the time spent writing and maintaining the same code for different platforms.
+Kotlin multiplatform is designed to simplify the development of cross-platform projects by reducing the time spent writing and maintaining the same
+code for different platforms.
 
 The Kotlin multiplatform use cases can be synthesized in the following points:
 \begin{itemize}
@@ -188,8 +186,8 @@ The Kotlin multiplatform use cases can be synthesized in the following points:
 	\label{fig:kotlin-multiplatform-structure}
 \end{figure}
 
-The Kotlin multiplatform works using an onion-like structure (see~\Cref{fig:kotlin-multiplatform-structure}) where the common code is at the center
-and works everywhere on all platforms; to interoperate with platforms, a specific version of Kotlin is used that includes platform-specific
+The Kotlin multiplatform works using a structure (see~\Cref{fig:kotlin-multiplatform-structure}) where the common code is at the center
+and works everywhere on all platforms, and to interoperate with platforms, a specific version of Kotlin is used that includes platform-specific
 libraries and tools. Through these platforms, you can access the platform's native code and leverage all native capabilities.
 
 Similarly to Scala, the multiplatform support for Kotlin is enabled via a
@@ -207,7 +205,7 @@ The~\Cref{lst:koltin-multiplatform-setup} shows a basic setup of Kotlin multipla
 
 To share code between all the platforms, Kotlin provides a specific mechanism using a hierarchical structure of modules.
 The common code is placed in the \texttt{commonMain} module and it's used to share the common business logic that applies to all the platforms.
-Often there is the need to create several native targets that could potentially reuse a lot of the common logic and third-party APIs; Kotlin allows
+Often there is the need to create several native targets that could potentially reuse a lot of the common logic and third-party APIs. Kotlin allows
 to create a specific and flexible structure to reuse as much code as possible between the different targets.
 The~\Cref{fig:kotlin-multiplatform-hierarchy} shows a possible representation of a Kotlin multiplatform project hierarchical structure.
 
@@ -231,7 +229,7 @@ corresponds to the expected declaration.
 \end{figure}
 
 The \emph{expect/actual} mechanism is shown in~\Cref{fig:kotlin-multiplatform-expected-actual} where a class in the common source set is marked as
-\texttt{expect} and the platform-specific source set provides the actual implementation of the class.
+\texttt{expect} and the platform-specific source set provides the actual implementation of the class leveraging platform-specific API.
 
 The compiler ensures that every declaration marked as \texttt{expect} has a corresponding declaration marked as \texttt{actual} in the corresponding
 platform modules. In this way, is guaranteed that every platform has an implementation for that class or function.
@@ -242,25 +240,26 @@ The \emph{Kotlin/JS IR} compiler is responsible for compiling Kotlin code into J
 JavaScript code generates an intermediate representation (IR) of the code which is subsequently compiled into JavaScript code.
 This strategy enables aggressive optimizations, improving, for example, the generated code size.
 
-The \emph{Kotlin/Native} compiler is responsible for compiling Kotlin code into native code. The compiler is available for all the main operating
-systems (macOS, Linux, and Windows) and supports different targets like \textbf{iOS, Windows, macOS, Linux, Raspberry PI, STM32,} and
+Similarly, the \emph{Kotlin/Native} compiler is responsible for compiling Kotlin code into native code. The compiler is available for all the main
+operating systems (macOS, Linux, and Windows) and supports different targets like \textbf{iOS, Windows, macOS, Linux, Raspberry PI,} and
 \textbf{WebAssembly}. Unfortunately, there aren't details about how the compiler pipeline works, but it's possible to see that the compiler generates
 an IR representation of the code and then compiles it into native code via LLVM.
 A relevant feature of \emph{Kotlin/Native} is the interoperability with \emph{C} code. This feature allows using existing C libraries in Kotlin using
-the \emph{cinterop} tools that generate Kotlin bindings for the C library. The \emph{cinterop} tool requires a \texttt{.def} file that describes what
-to include into bindings, in particular, are specified the \texttt{.a/.so} libraries to include and the \texttt{.h} files to parse. Finally, the
-\emph{cinterop} tool generates a Kotlin library that can be used in the Kotlin code.
+the \emph{cinterop} tools by generating Kotlin bindings for the C library. The \emph{cinterop} tool requires a \texttt{.def} file that describes what
+\texttt{.a/.so} libraries to include in the build and the corresponding \texttt{.h} files to parse. Finally, the \emph{cinterop} tool generates a
+Kotlin library that can be used in the Kotlin code.
 
-When a \emph{Kotlin/Native} library is distributed, a special file with extension \texttt{.klib} is generated. This file contains all the information and file specifics for each platform. It's a \texttt{.zip} file containing a predefined directory structure; for example,
-the \texttt{foo.klib} when unpacked as \texttt{foo/} directory contains the following files and directories:
+When a \emph{Kotlin/Native} library is distributed, a special file with extension \texttt{.klib} is generated. This file contains all the information
+and file specifics for each platform. It's a \texttt{.zip} file containing a predefined directory structure: given the \texttt{foo.klib} file, when
+unpacked as \texttt{foo/}, contains the following files and directories:
 \begin{itemize}
-	\item in a folder with the \emph{component name} is contained the serialized Kotlin IR
-	\item in a folder \texttt{targets} are placed the platform-specific files, in particular in the folder \texttt{kotlin} there is Kotlin compiled
+	\item in the folder with the \emph{component name} is contained the serialized Kotlin IR
+	\item in the folder \texttt{targets} are placed the platform-specific files, in particular in the folder \texttt{kotlin} there is Kotlin compiled
 	      into LLVM bitcode; in the \texttt{native} folder there are the bitcode files of additional native objects
 	\item the \texttt{linkdata} folder contains a set of \emph{ProtoBuf}~\footnote{Protocol Buffers (Protobuf) is a free and open-source
 		      cross-platform data format used to serialize structured data.} files with serialized linkage metadata
 	\item the \texttt{resources} folder contains resources such as images, fonts, and other files
-	\item a \texttt{manifest} file in the java property format describing the library.
+	\item the \texttt{manifest} file in the java property format describing the library.
 \end{itemize}
 
 This structure allows having a single \texttt{.klib} file that can be used on different platforms without the need to recompile the library for each
@@ -269,11 +268,11 @@ one of them. In a sense, the \texttt{.klib} file is a portable binary format tha
 \subsubsection{Kotlin multiplatform ecosystem}
 
 As already done for Scala, the ecosystem will be examined for Kotlin to get a better awareness of the usability of this technology.
-Again, the number of supported libraries and the maturity of the framework will be considered.
+Again, the number of supported libraries and the maturity of the framework will be considered to evaluate the adoption of this technology.
 
 Differently from the Scala multiplatform ecosystem, the Kotlin one seems to be more coherent and structured: lots of libraries
 like \textbf{kotlinx.serialization}, \textbf{kotlinx.coroutines}, and \textbf{ktor} are available for all the target platforms supported by Kotlin.
-The other difference is that most of the libraries are developed directly (or with the support of) the Kotlin team, this means that support and the
+The other difference is that most of the libraries are developed directly (or with the support of) the Kotlin team, meaning that support and the
 development is more aligned and coherent with the language itself.
 The identification of the magnitude of libraries targeting Kotlin multiplatform is quite simple since a
 site~\footnote{\url{https://libs.kmp.icerock.dev/}} collects all the available Kotlin multiplatform libraries. From this site can be seen that more
@@ -288,18 +287,18 @@ of the entire framework.
 
 \subsection{Why Kotlin multiplatform as a choice}
 
-This section will present the reasons that led to the choice of Kotlin for the framework implementation over Scala.
-The decision was based on three main factors: \emph{support} of the overall multiplatform ecosystem, \emph{libraries availability} with
+This section will present the reasons that led to the use of Kotlin as a language for the framework implementation instead of Scala.
+The decision was based on three main factors: the \emph{support} of the overall multiplatform ecosystem, \emph{libraries availability} with
 multiplatform support and the number of \emph{supported platforms} by each language.
 
 As for \emph{support} related to Scala multiplatform, the issue is controversial. On the one hand, there's Scala.js, which has always been
 supported and maintained and has reached a very high level of maturity over time. On the other hand, scala native is managed by another community that
-has contributed to the project in a seesaw manner over time, where in some cases it had even been abandoned.
+has contributed to the project in a seesaw manner over time, where in some cases the project had even been abandoned.
 On the other side, Kotlin multiplatform is entirely supported by JetBrains and is constantly evolving and improving. JetBrains has proven over time
 to carefully curate its products ensuring very high-quality standards, a symptom that Kotlin multiplatform may also fall into this case.
 
-The \emph{availability} of libraries that support multiplatform is a key aspect to consider: having a large number of supported libraries available
-allows complex applications to be developed in a short time and with fewer errors.
+The \emph{availability} of libraries that support multiplatform is a key aspect to consider: having a large number of supported available libraries
+could be strategic to develop complex applications.
 In this regard, the Kotlin multiplatform has a clear advantage over Scala multiplatform: the Kotlin ecosystem is much more structured and coherent
 than the Scala one. The Kotlin team has developed a large number of libraries that support multiplatform, and the community has also contributed to
 the development of many other libraries.
@@ -315,9 +314,9 @@ For all the reasons mentioned above, Kotlin multiplatform was chosen as the fram
 
 \section{Technologies used in the framework}
 
-This section provides an overview of the technologies used in the framework in the various modules. Key libraries and mechanisms for the operation of
-the framework will be covered, reporting only those that are common to all modules; technologies and dependencies specific to each module will be
-covered in their respective sections.
+This section offers a comprehensive summary of the various technologies employed across the framework's different modules. Specifically, the key
+libraries and mechanisms used in the framework will be highlighted, with a focus on those that are shared across all modules. It should be noted that
+technologies and dependencies unique to each module will be discussed in their respective sections.
 
 \subsection{Kotlin coroutines}
 
@@ -373,7 +372,10 @@ relation and describing error and cancellation propagation.
 
 Structured concurrency, in comparison to supervision trees, has a fixed error-handling strategy and is therefore less flexible. However, it is more
 concise and aligns well with the typical way asynchronous code is written. This is why structured concurrency has gained significant attention in
-recent years, either as structured concurrency libraries or as a built-in language feature~\cite{alan-struct-concurr}.
+recent years, either as structured concurrency libraries or as a built-in language feature~\cite{alan-struct-concurr}. Kotlin uses the structured
+concurrency approach.
+
+\todo{Spiegare quale approccio ha usato Kotlin coroutine}
 
 Kotlin coroutines are built upon the following goals~\cite{elizarov2021kotlin}:
 \begin{itemize}
@@ -424,8 +426,8 @@ manner. Unlike traditional streams, Flows are also cancellable, meaning that the
 to be highly composable, allowing the building of complex, multi-step computations by combining and transforming smaller Flows. They are also
 designed to work well with coroutines, making them an excellent choice for asynchronous and reactive programming in Kotlin.
 
-For those reasons, \emph{coroutine} and \emph{Flow} are the main tools where the framework is based, providing a simple and efficient way to
-implement asynchronous behaviors.
+For those reasons, \emph{coroutine} and \emph{Flow} are the main tools used in the framework providing a simple and efficient way to implement
+asynchronous behaviors.
 
 \subsection{Dependency Injection: Koin}
 
@@ -449,8 +451,8 @@ The~\Cref{lst:example-koin} shows how to use Koin to inject a dependency into a 
 	caption={Example of Koin usage.},
 ]{listings/koin-example.kt}
 
-In this example, a data class \texttt{MySimpleClass} is defined, and a module \texttt{myModule} is defined to provide an instance of the class as a
-singleton. The \texttt{startKoin} function is then used to start Koin and use the defined module. Finally, the dependency is injected into
+In this example, a data class \texttt{MySimpleClass} is defined, and a module \texttt{myModule} is also defined to provide an instance of the class
+as a singleton. The \texttt{startKoin} function is then used to start Koin and use the defined module. Finally, the dependency is injected into
 \texttt{MyClass} using the by \texttt{inject()} property delegate. The main function creates an instance of MyClass and prints the message from the
 injected \texttt{MySimpleClass.}
 
@@ -481,8 +483,8 @@ In particular, in~\Cref{tab:core-interfaces} are listed the fundamental interfac
 		\toprule
 		Interface                   & Description                                                                            \\ \midrule
 		\texttt{Behaviour}          & The interface that models the behaviour of a component                                 \\
-		\texttt{SensorsContainer}   & The interface that models a single sensor belonging to a device                        \\
-		\texttt{ActuatorsContainer} & The interface that models a single actuator belonging to a device                      \\
+		\texttt{SensorsContainer}   & The interface that models all the sensors belonging to a device                        \\
+		\texttt{ActuatorsContainer} & The interface that models all the actuators belonging to a device                      \\
 		\texttt{State}              & The interface that represents the state of a device                                    \\
 		\texttt{Communication}      & The interface that models the capability of a device to communicate with other devices \\ \bottomrule
 	\end{tabularx}
@@ -499,13 +501,12 @@ needed, during the finalization step of the system.
 
 Analyzing the common aspects of the components defined in~\Cref{tab:core-interfaces}, it is possible to identify another common concept that can
 be isolated in a single common interface: the context in which the component is executed. In this specific scenario, the \texttt{Context} interface
-holds information about the specific device that components belong to, representing this information with a field \texttt{deviceID}.
+holds information about the specific device that components belong to, representing this information with the field \texttt{deviceID}.
 
 All those two concepts are implemented in a third interface that models the concept of ``generic pulverization component'' called
 \texttt{PulverizedComponent}, which is the base interface for all the components defined in~\Cref{tab:core-interfaces}.
 This interface implements also an external interface named \texttt{KoinComponent}; this interface enables field injection for all the class that
 implements it. This feature is used to dynamically inject the \texttt{Context} inside of each component.
-A detailed discussion about the \emph{dependency injection} and \emph{Koin} will be made in the following sections.
 
 \begin{figure}
 	\centering
@@ -546,16 +547,16 @@ More complex and with relevant design choices is the \texttt{SensorContainer} cl
 which implement the \texttt{PulverizationComponent} interface making the container itself initializable.
 The storing of the sensors is done via a \texttt{Set} of \texttt{Sensor} objects; since the \texttt{Sensor} interface is generic, it is not possible
 to determine which type of sensor will be used, for this reason, the Kotlin type projection over the type variable \texttt{T} of the \texttt{Sensor}
-is used. In this way, the \texttt{SensorContainer} can store sensors of different types, it will be the responsibility of the container to provide
+is used. In this way, the \texttt{SensorContainer} can store sensors of different types, and it will be the responsibility of the container to provide
 methods that allow retrieving the sensors of a specific type in a type-safe way.
 In this regard, the \texttt{SensorContainer} provides three-way of retrieving the sensors: \texttt{get<T>()}, \texttt{getAll<T>()} and
 \texttt{get<T>(run)}.
 The first method returns a single sensor of type \texttt{T} if it is present in the container, otherwise, it returns \texttt{null}.
 This method should be used with care considering that if more sensors with type \texttt{T} are present in the container, only one of them will be
-returned with any guarantee on which one will be returned. This method is useful when the container is sure that only one sensor of the specified
-type is present.
+returned with no guarantee on which one will be returned. This method is useful when in the container there is only one sensor of the specified
+type.
 The second method returns a \texttt{Set} of sensors of type \texttt{T} if at least one sensor of that type is present in the container, otherwise,
-it returns an empty \texttt{Set}.
+an empty \texttt{Set} is returned.
 The third method finds the sensor of type \texttt{T} and invokes the \texttt{run} function over the retrieved sensor if it is not \texttt{null},
 otherwise, it does nothing.
 
@@ -577,7 +578,7 @@ The complete implementation of the \texttt{SensorContainer} class is reported in
 ]{listings/SensorContainer.kt}
 
 As stated above, all the considerations and choices made for the \texttt{Sensor} and \texttt{SensorContainer} are valid also for the \texttt{Actuator}
-and \texttt{ActuatorContainer}.
+and \texttt{ActuatorContainer} classes.
 
 \subsubsection{Communication}
 
@@ -594,7 +595,7 @@ their identity, and to provide a simple interface to send and receive messages. 
 provide a generic representation of the network topology and determine how it can change over time, and for this reason, it is better to leave the
 responsibility of managing the neighbors to the specific implementation of the communication component.
 
-The \texttt{Communication} interface, represented in~\Cref{lst:communication-interface}, models the communication component and defines
+The \texttt{Communication} interface, presented in~\Cref{lst:communication-interface}, models the communication component and defines
 two methods: \texttt{send} and \texttt{receive}.
 
 \lstinputlisting[
@@ -610,7 +611,7 @@ topmost type is \texttt{Any?} which represents any nullable data type, enabling 
 a scenario that is not desirable.
 
 While the \texttt{send} method is straightforward, the \texttt{receive} method returns a specific type: \texttt{Flow<P>}.
-This type represents an asynchronous stream of values that in this case represents the messages received by all the neighbors.
+This type represents an asynchronous stream of values that in this case represents the messages received by all the neighbours.
 
 \subsubsection{Behaviour}
 
@@ -628,7 +629,7 @@ The \texttt{Behaviour} interface, represented in~\Cref{lst:behaviour-interface},
 	label={lst:behaviour-interface}
 ]{listings/Behaviour.kt}
 
-How the behaviour function should be structured can be easily inferred from the description above: it should take as input the current state of
+How the behaviour function should be obtained can be easily inferred from the description above: it should take as input the current state of
 the device, the sensed values and the received messages, and it should return the new state of the device, the actuations to be performed and the
 messages to be sent. For this reason, the interface is generic in five type variables: \texttt{S} for the state, \texttt{E} for the communication,
 \texttt{W} for the sensed values, \texttt{A} for the actuations and \texttt{O} for the outcome of the function.
@@ -680,7 +681,7 @@ The~\Cref{fig:platform-module} shows the package diagram of the \texttt{platform
 
 \subsubsection{Communication package}
 
-In this package are given the main abstractions for intra-components communication. In particular, the main relevant interface is the
+In this package are given the main abstractions for intra-components communication. In particular, the main relevant interface is
 \texttt{Communicator}: it is the interface that represents the communication between two components of a logical device.
 This interface is developed keeping in mind the fact that the concrete implementation could be based on any kind of communication medium,
 and for this reason, specific protocol aspects are abstracted over. This specific abstraction is captured by the \texttt{RemotePlace} data class
@@ -714,7 +715,7 @@ The \texttt{outbox} flow is used by the \texttt{fireMessage} method to send mess
 by the \texttt{receiveMessage} method to receive messages from the other component.
 This specific implementation is used by the platform to enable communication between components in memory in the same deployment unit.
 
-An important aspect to consider is the fact that the \texttt{Flow}s used by the \texttt{LocalCommunicator} should be shared across all the local instances otherwise each instance will have its own \texttt{Flow} and the communication will not work. To overcome this issue the
+An important aspect to consider is the fact that the \texttt{Flow}s used by the \texttt{LocalCommunicator} should be shared across all the local instances otherwise each instance will have its own \texttt{Flow} and the communication will not occur. To overcome this issue the
 \texttt{LocalCommunicator} uses another class called \texttt{CommManager} which is responsible for managing the \texttt{Flow}s.
 The \texttt{CommManager} is a singleton that is used to create the \texttt{Flow}s and to share them across all the local instances.
 The \texttt{CommManager} relies on the \texttt{lazy} property of Kotlin to create the \texttt{Flow}s only when they are needed and give the same flow
@@ -761,11 +762,13 @@ the \emph{communicator} to send the message to the other component, while the \t
 methods use the \texttt{receiveMessage} method of the \emph{communicator} to receive messages from the other component.
 The serializer is used to serialize and deserialize the messages that the component can send and receive, while the binding is used to
 setup the communicator.
-A notable aspect is how the serializer is managed: the serialization is managed via a Kotlin compiler plugin which enriches any class with
-a serializer if any; in this way on any serializable class can be used the method \texttt{serializer<C>()} to obtain the serializer of the class,
-but this method is inline so can not be used in the constructor of the \texttt{ComponentRefImpl} class because of type erasure.
+A notable aspect is how the serializer is managed: the serialization is managed via a Kotlin compiler plugin which enriches any class annotated with
+\texttt{@Serializable} with the corresponding serializer; in this way on any serializable class can be used the method \texttt{serializer<C>()} to
+retrieve the serializer of the class, but this method is inline so can not be used in the constructor of the \texttt{ComponentRefImpl} class because of
+type erasure.
 To overcome this issue, inside the \emph{companion object} of the class is defined the operator \texttt{invoke} as an inlined function that
-accepts only the \emph{binding} and \emph{communicator} as parameters, while the \emph{serializer} is obtained via the reified type, using the aforementioned \texttt{serializer} method. Since the operator \texttt{invoke} enable the use of the \texttt{()} operator, the class constructor is
+accepts only the \emph{binding} and \emph{communicator} as parameters, while the \emph{serializer} is obtained via the reified type, using the
+aforementioned \texttt{serializer} method. Since the operator \texttt{invoke} enable the use of the \texttt{()} operator, the class constructor is
 emulated reducing the boilerplate needed to create the class.
 
 \lstinputlisting[
@@ -799,7 +802,7 @@ all, the dependency injection framework is initialized registering the \emph{con
 \emph{remote place provider}.
 Then, from the given configuration is determined which components belong to the same deployment unit and which components are remote.
 To do this, all the components defined in the logical device are retrieved, then from the configuration is checked if the components registered by
-the user matches the configuration otherwise, an exception is raised.
+the user matches the configuration otherwise an exception is raised.
 After that, for each component, the corresponding \emph{component reference} is created and the \emph{communicator} is configured.
 The creation of a \emph{component reference} takes as argument the \emph{serializer}, a set containing all the \emph{components} belonging to
 the logical device, a set containing the \emph{deployment unit} components, and the \emph{communicator}.
@@ -815,10 +818,13 @@ In~\Cref{fig:platform-configuration} is reported the activity diagram showing th
 	\label{fig:platform-configuration}
 \end{figure}
 
-The creation of component references for behavior, requires further analysis: in fact, the behaviour holds a reference for each component, namely
-the \emph{state, actuators, sensors,} and \emph{communication}. In this regard, not all four components might be defined, so the behavior will have
-to create a dummy component reference. This is created automatically when creating component references by looking at the configuration, and if a
-component is neither local nor remote, then the dummy implementation is used.
+The creation of component references for the behavior component, requires further analysis: in fact, the behaviour holds a reference for each
+component, namely the \emph{state, actuators, sensors,} and \emph{communication}.
+In this regard, not all four components might be defined, so the behavior will have to create a dummy component reference for the missing components.
+This is managed automatically when creating component references by looking at the configuration, and if a component is neither local nor remote,
+then the dummy implementation is used.
+
+\todo{Figura esemplificativa di come viene creato il platform}
 
 % - New section ---------------------------------------------------------------
 
@@ -902,15 +908,17 @@ broadcast routing of messages. A fanout exchange can be represented graphically 
 
 Topic exchanges route messages to one or many queues based on matching between a message routing key and the pattern that was used to bind a queue to
 an exchange. The topic exchange type is often used to implement various publish/subscribe pattern variations. Topic exchanges are commonly used for
-the multicast routing of messages. Topic exchanges have a very broad set of use cases. Whenever a problem involves multiple consumers/applications
-that selectively choose which type of messages they want to receive, the use of topic exchanges should be considered.
+the multicast routing of messages. Whenever a problem involves multiple consumers/applications that selectively choose which type of messages they
+want to receive, the use of topic exchanges should be considered.
 
 \subsubsection{Rabbimq communicator}
 
+\hyphenation{default-RabbitMQ-Remote-Place}
+
 When implementing a new \texttt{Communicator}, two main steps are required: the first one is the implementation of the \texttt{Communicator} interface
 and the second one is the implementation of the \texttt{RemotePlaceProvider}.
-The \texttt{Communicator} interface is implemented by the \texttt{RabbitMQCommunicator} class, while the \texttt{defaultRabbitMQRemotePlace} method
-provides a default implementation of the \texttt{RemotePlaceProvider} interface.
+The \texttt{Communicator} interface is implemented by the \texttt{RabbitMQCommunicator} class, while the default implementation of the
+\texttt{RemotePlaceProvider} interface is provided by the \texttt{default\-RabbitMQ\-Remote\-Place} method.
 
 The remote place provider provides the implementation of the concepts ``who'' and ``where'' (defined by the \texttt{RemotePlace} class) in the
 following way: the \texttt{who} is the \emph{device id}, while the \texttt{where} is the \emph{name of the component}.
@@ -919,9 +927,9 @@ This representation will be used by the \texttt{RabbitmqCommunicator} to create 
 The \texttt{RabbitmqCommunicator} should rely on a library that implements the AMQP protocol to communicate with the RabbitMQ broker, but since
 there isn't a Kotlin multiplatform library that implements the AMQP protocol, the class is marked as \texttt{expect} so that the specific target
 platform can provide the implementation. At the time of writing, only the JVM target platform is implemented using the \texttt{reactor-rabbitmq}
-library. The choice of this library is because it is based on \emph{Reactor}~\footnote{\url{https://projectreactor.io/}} and can be seamlessly used
-in combination with the Kotlin coroutines using the
-\texttt{kotlinx-coroutine-reactor}~\footnote{\url{https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-reactor/}}.
+library. The choice of this library is because it is based on project \emph{Reactor}~\footnote{\url{https://projectreactor.io/}} and can be
+seamlessly used in combination with the Kotlin coroutines using the
+\texttt{kotlinx-coroutine-reactor}~\footnote{\url{https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-reactor/}} library.
 
 The class constructor accepts all the RabbitMQ-specific parameters like: \emph{host}, \emph{port}, \emph{username}, \emph{password}, and
 \emph{virtual host}.
@@ -935,7 +943,7 @@ the remote component, while the second one is used to receive messages from the 
 In this communicator, the send queue name format follows the pattern \texttt{<local component name>/<remote component name>/<remote component id},
 while the receive queue name format follows the pattern \texttt{<remote component name>/<local component name>/<remote component id>}.
 The \emph{local component name} is retrieved from the \texttt{binding} parameter, while the \emph{remote component name} and the
-\emph{remote component} are retrieved from the \texttt{remote place} parameter.
+\emph{remote component id} are retrieved from the \texttt{remote place} parameter.
 For example, if the communicator should manage the communication between the \emph{Behaviour} and the \emph{State} (remote) component for a device
 with ID ``1'', the send queue name will be \texttt{Behaviour/State/1}, while the receive queue name will be \texttt{State/Behaviour/1}.
 Vice versa, the counterpart communicator that manages the communication between the \emph{State} and the \emph{Behaviour} (remote) component
@@ -961,6 +969,9 @@ remote component via the receive queue using the \texttt{Receiver} object.
 \section{Configuration DSL}
 \label{sec:configuration-dsl-impl}
 
+\hyphenation{Device-Relations-Configuration}
+\hyphenation{Logical-Device-Configuration}
+
 The configuration DSL is used to define the structure of each logical device in terms of defining components and where they are deployed.
 Before proceeding to discuss the details of the DSL, it is important to define which information the configuration should have.
 
@@ -972,11 +983,10 @@ The \emph{deployment unit} is modeled by the \texttt{DeploymentUnit} class which
 three possible values: \texttt{Cloud}, \texttt{Edge} and \texttt{Device}.
 
 The configuration captures also the concept of ``relationship'' between logical devices. In particular, the configuration DSL defines
-the \texttt{DeviceRelationsConfiguration} and the \texttt{DeviceLink} classes which are used to hold information about the link between the logical
-devices.
+the \texttt{Device\-Relations\-Configuration} and the \texttt{DeviceLink} classes which are used to hold information about the link between the logical devices.
 
-Finally, the \texttt{PulverizationConfiguration} class has a set of \texttt{LogicalDeviceConfiguration} and a \texttt{DeviceRelationsConfiguration};
-this class represents the root of the configuration and is used to configure the pulverization platform.
+Finally, the \texttt{PulverizationConfiguration} class has a set of \texttt{Logical\-Device\-Configuration} and a
+\texttt{DeviceRelationsConfiguration}; this class represents the root of the configuration and is used to configure the pulverization platform.
 The~\Cref{fig:configuration-dsl-classes} depicts the relationship between the classes that define the configuration.
 
 \begin{figure}
@@ -998,16 +1008,16 @@ from a logical device configuration, can be retrieved the deployment unit from t
 An example of configuration is shown on the~\Cref{lst:configuration-dsl-impl}. The configuration defines three logical devices where the
 \emph{device-1} can communicate with the \emph{device-2} and the \emph{device-3}. At the time of writing, the information about the links
 between the logical devices is not used by the framework, but in a future version, this information can be used, for example, by the communication
-components to establish the right communication.
+components to establish the right communication within the network.
 
 % - New section ---------------------------------------------------------------
 
 \section{Platform DSL}
 \label{sec:platform-dsl-impl}
 
-The platform DSl represents one fundamental building block of the entire framework: with this DSL the user can configure the platform in a simple
+The platform DSL represents one fundamental building block of the entire framework: with this DSL the user can configure the platform in a simple
 declarative way, without the need to manage specific aspects like how the components should be instantiated or how the communication between them
-and so on. The DSL is implemented in the \emph{dsl} package of the \emph{platform} module and should provide the following features:
+should occur. The DSL is implemented in the \emph{dsl} package of the \emph{platform} module and should provide the following features:
 \begin{itemize}
 	\item The ability to register the user-defined components with their corresponding logic
 	\item The ability to specify which communicator should be used to communicate between the components
@@ -1054,9 +1064,9 @@ for the \emph{state} should be provided. A first, elegant approach would be to d
 however, this approach is not feasible, since the \texttt{Nothing} type is not serializable and thus, it cannot be inlined as a type.
 The solution adopted is to use \texttt{Any} as the default type for the unspecified components. This solution enables the inlining of the type,
 so the function can be used (as inline) but the drawback is that there is no serializer for the \texttt{Any} type.
-Since the absence of the type means that the component is not used, the serializer for the \texttt{Any} type is a dummy serializer that does nothing
-but makes the function sound. In this way, a check can be made to verify if the given type is \texttt{Any} (and rely on the dummy serializer) or
-if it is a specified type retrieving the serializer from it.
+Since the absence of the type means that the component is not used, and the serializer for the \texttt{Any} type is a dummy serializer that does 
+nothing but makes the function sound. In this way, a check can be made to verify if the given type is \texttt{Any} (and rely on the dummy serializer) 
+or if it is a specified type retrieving the serializer from it.
 
 \lstinputlisting[
 	language=Kotlin,
@@ -1075,7 +1085,7 @@ configures the platform using the DSL, the user does not need to specify the typ
 configuration. However, the Kotlin type inference does not work for the generic types that are not specified raising a compilation error, forcing
 to specify all the types required by the entry point function of the DSL. The~\Cref{lst:platform-dsl-verbose} shows an example of the use of the
 DSL when all the types are specified. The proposed example although valid and works, is not very elegant because forces the user to remember
-the positional order of the types and to specify all of them.
+the positional order of the types and specify all of them.
 
 \lstinputlisting[
 	language=Kotlin,
@@ -1083,8 +1093,11 @@ the positional order of the types and to specify all of them.
 	label={lst:platform-dsl-verbose}
 ]{listings/dsl-verbose.kt}
 
-To reduce the boilerplate code, and keep the DSL as simple as possible, the solution uses extension methods to help the type inference to infer
-all five types in the base of the configuration made by the user.
+To minimize the amount of boilerplate code and maintain the simplicity of the DSL, the proposed solution utilizes extension methods to 
+facilitate type inference for all five types included in the user-defined configuration base.
+With the use of the extension methods, the Kotlin type inference algorithm can infer the right types without specifying them explicitly.
+This is a sort of workaround to deal with the limitation of the Kotlin type inference algorithm that does not infer a default type for an
+unspecified generic type.
 
 \lstinputlisting[
 	language=Kotlin,

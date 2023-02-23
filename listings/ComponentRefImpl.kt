@@ -3,10 +3,8 @@ internal class ComponentRefImpl<S : Any>(
     private val binding: Pair<PulverizedComponentType, PulverizedComponentType>,
     private val communicator: Communicator,
 ) : ComponentRef<S>, KoinComponent {
-
-    override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("No Koin app defined")
-
-    private val remotePlaceProvider: RemotePlaceProvider by inject()
+    private val remotePlaceProvider: 
+        by inject()
     private var last: S? = null
 
     companion object {
@@ -15,19 +13,19 @@ internal class ComponentRefImpl<S : Any>(
             communicator: Communicator,
         ): ComponentRefImpl<S> = ComponentRefImpl(serializer(), binding, communicator)
     }
-
     override suspend fun setup() {
         communicator.setup(binding, remotePlaceProvider[binding.second])
     }
-
     override suspend fun sendToComponent(message: S) {
-        communicator.fireMessage(Json.encodeToString(serializer, message).encodeToByteArray())
+        communicator.fireMessage(
+            Json.encodeToString(serializer, message).encodeToByteArray()
+        )
     }
-
     override suspend fun receiveFromComponent(): Flow<S> {
-        return communicator.receiveMessage().map { Json.decodeFromString(serializer, it.decodeToString()) }
+        return communicator.receiveMessage()
+            .map { Json.decodeFromString(serializer, it.decodeToString()) }
             .onEach { last = it }
     }
-
-    override suspend fun receiveLastFromComponent(): S? = last
+    override suspend fun receiveLastFromComponent(): S?
+        = last
 }
