@@ -391,7 +391,9 @@ A suspending function is marked with the \texttt{suspend} modifier and can be ca
 are \emph{not marked} as \texttt{await}, i.e., calls to suspending functions are implicitly awaited.
 In this way, the problem of ``forgotten await'', characterizing the \emph{async/await} approaches, is avoided.
 
-The~\Cref{lst:example-suspending-function} shows an example of a suspending function, which is called from another suspending function.
+The~\Cref{lst:example-suspending-function} shows an example of a suspending function, which is called from another suspending function showing how
+in Kotlin suspensive functions are called implicitly.
+In the example can be seen that the suspending function is implicitly awaited, and the result is returned to the caller.
 
 \lstinputlisting[
 	language=Kotlin,
@@ -532,7 +534,7 @@ perform the operation of \emph{sensing the environment.}
 
 \lstinputlisting[
 	language=Kotlin,
-	caption={Sensor interface},
+	caption={Sensor interface defined in the framework.},
 	label={lst:sensor-interface}
 ]{listings/Sensor.kt}
 
@@ -569,7 +571,7 @@ The complete implementation of the \texttt{SensorContainer} class is reported in
 
 \lstinputlisting[
 	language=Kotlin,
-	caption={SensorContainer implementation},
+	caption={SensorContainer implementation defined in the framework.},
 	label={lst:sensor-container-impl}
 ]{listings/SensorContainer.kt}
 
@@ -596,7 +598,7 @@ two methods: \texttt{send} and \texttt{receive}.
 
 \lstinputlisting[
 	language=Kotlin,
-	caption={Communication interface},
+	caption={Communication interface defined in the framework.},
 	label={lst:communication-interface}
 ]{listings/Communication.kt}
 
@@ -617,11 +619,11 @@ The behaviour component is described as \textit{``A computation function $\beta$
 	and coordination messages to be emitted''}.
 
 The \texttt{Behaviour} interface, represented in~\Cref{lst:behaviour-interface}, models the behaviour component and defines a single method:
-\texttt{invoke}.
+\texttt{invoke}. Moreover, in the listing are also presented the data classes used to represent the output of the behaviour function.
 
 \lstinputlisting[
 	language=Kotlin,
-	caption={Behaviour interface},
+	caption={Behaviour interface defined by the framework.},
 	label={lst:behaviour-interface}
 ]{listings/Behaviour.kt}
 
@@ -649,7 +651,7 @@ interface does not provide any details about persistence.
 
 \lstinputlisting[
 	language=Kotlin,
-	caption={State interface},
+	caption={State interface defined by the framework.},
 	label={lst:state-interface}
 ]{listings/State.kt}
 
@@ -820,8 +822,6 @@ In this regard, not all four components might be defined, so the behavior will h
 This is managed automatically when creating component references by looking at the configuration, and if a component is neither local nor remote,
 then the dummy implementation is used.
 
-\todo{Figura esemplificativa di come viene creato il platform}
-
 % - New section ---------------------------------------------------------------
 
 \section{RabbitMQ module}
@@ -983,7 +983,8 @@ the \texttt{Device\-Relations\-Configuration} and the \texttt{DeviceLink} classe
 
 Finally, the \texttt{PulverizationConfiguration} class has a set of \texttt{Logical\-Device\-Configuration} and a
 \texttt{DeviceRelationsConfiguration}; this class represents the root of the configuration and is used to configure the pulverization platform.
-The~\Cref{fig:configuration-dsl-classes} depicts the relationship between the classes that define the configuration.
+The~\Cref{fig:configuration-dsl-classes} depicts the relationship between the classes that define the configuration that can be created via the 
+configuration DSL.
 
 \begin{figure}
 	\centering
@@ -995,16 +996,16 @@ The~\Cref{fig:configuration-dsl-classes} depicts the relationship between the cl
 The configuration is enriched with some extension methods that allow getting the logical device configuration from a given device name and
 from a logical device configuration, can be retrieved the deployment unit from the given components.
 
+An example of configuration is shown on the~\Cref{lst:configuration-dsl-impl}. The configuration defines three logical devices where the
+\emph{device-1} can communicate with the \emph{device-2} and the \emph{device-3}. At the time of writing, the information about the links
+between the logical devices is not used by the framework, but in a future version, this information can be used, for example, by the communication
+components to establish the right communication within the network.
+
 \lstinputlisting[
 	language=Kotlin,
 	caption={Configuration DSL},
 	label={lst:configuration-dsl-impl}
 ]{listings/configuration-dsl.kt}
-
-An example of configuration is shown on the~\Cref{lst:configuration-dsl-impl}. The configuration defines three logical devices where the
-\emph{device-1} can communicate with the \emph{device-2} and the \emph{device-3}. At the time of writing, the information about the links
-between the logical devices is not used by the framework, but in a future version, this information can be used, for example, by the communication
-components to establish the right communication within the network.
 
 % - New section ---------------------------------------------------------------
 
