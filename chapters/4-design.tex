@@ -1,7 +1,9 @@
 \chapter{Design} % possible chapter for Projects
 \label{chap:design}
 
-This chapter describes the design choices and the overall architecture of the framework. \todo{Expand the introduction}
+This chapter discusses the design elements characterizing the framework by illustrating how the pulverization concepts were modeled and what 
+adaptations were made to make the pulverization approach better fit in the framework.
+For each module of the framework, the relevant design choices are discussed and finally, a detailed description of the interactions between the framework's modules is also provided to better understand the framework's architecture.
 
 \section{Framework architecture}
 \label{sec:arch-design}
@@ -24,7 +26,7 @@ In~\Cref{fig:package-diagram} are represented all the framework's modules and th
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{figures/package-diagram.pdf}
+	\includegraphics[width=0.9\textwidth]{figures/package-diagram.pdf}
 	\caption{Package diagram showing the modules that constitute the framework and their relationship.}
 	\label{fig:package-diagram}
 \end{figure}
@@ -219,8 +221,6 @@ Four interactions are involved in pulverization:
 	      to send to all the neighbours and correspondingly the \textbf{Communication} send to the state all the \textit{messages} coming from the
 	      neighbours.
 \end{itemize}
-
-\todo{Spiegare che la formulazione originale e' stata concepita come "nastro di turing" rappresentato dallo stato}
 
 Despite this formulation being very clear and reasonable, it requires some extra communication to achieve the result.
 For example, when the \textbf{Behaviour} component computes the \textit{new communication} to send to all the neighbours, it needs to send it to the

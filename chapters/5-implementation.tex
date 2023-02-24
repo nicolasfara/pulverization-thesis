@@ -103,8 +103,6 @@ For what concern the native target, the compilation pipeline is composed of the 
 	      produces the native binary file.
 \end{itemize}
 
-\todo{espandere la parte relativa a scala native}
-
 The pipeline for the JavaScript target is quite more articulated but for the sake of simplicity, are reported only the main phases of the compilation
 steps~\cite{Doeraene:256862}:
 \begin{itemize}
@@ -373,9 +371,7 @@ relation and describing error and cancellation propagation.
 Structured concurrency, in comparison to supervision trees, has a fixed error-handling strategy and is therefore less flexible. However, it is more
 concise and aligns well with the typical way asynchronous code is written. This is why structured concurrency has gained significant attention in
 recent years, either as structured concurrency libraries or as a built-in language feature~\cite{alan-struct-concurr}. Kotlin uses the structured
-concurrency approach.
-
-\todo{Spiegare quale approccio ha usato Kotlin coroutine}
+concurrency approach to manage error handling in coroutines.
 
 Kotlin coroutines are built upon the following goals~\cite{elizarov2021kotlin}:
 \begin{itemize}
@@ -1064,8 +1060,8 @@ for the \emph{state} should be provided. A first, elegant approach would be to d
 however, this approach is not feasible, since the \texttt{Nothing} type is not serializable and thus, it cannot be inlined as a type.
 The solution adopted is to use \texttt{Any} as the default type for the unspecified components. This solution enables the inlining of the type,
 so the function can be used (as inline) but the drawback is that there is no serializer for the \texttt{Any} type.
-Since the absence of the type means that the component is not used, and the serializer for the \texttt{Any} type is a dummy serializer that does 
-nothing but makes the function sound. In this way, a check can be made to verify if the given type is \texttt{Any} (and rely on the dummy serializer) 
+Since the absence of the type means that the component is not used, and the serializer for the \texttt{Any} type is a dummy serializer that does
+nothing but makes the function sound. In this way, a check can be made to verify if the given type is \texttt{Any} (and rely on the dummy serializer)
 or if it is a specified type retrieving the serializer from it.
 
 \lstinputlisting[
@@ -1093,7 +1089,7 @@ the positional order of the types and specify all of them.
 	label={lst:platform-dsl-verbose}
 ]{listings/dsl-verbose.kt}
 
-To minimize the amount of boilerplate code and maintain the simplicity of the DSL, the proposed solution utilizes extension methods to 
+To minimize the amount of boilerplate code and maintain the simplicity of the DSL, the proposed solution utilizes extension methods to
 facilitate type inference for all five types included in the user-defined configuration base.
 With the use of the extension methods, the Kotlin type inference algorithm can infer the right types without specifying them explicitly.
 This is a sort of workaround to deal with the limitation of the Kotlin type inference algorithm that does not infer a default type for an
