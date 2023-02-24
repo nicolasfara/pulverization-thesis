@@ -15,12 +15,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Build report
-        uses: xu-cheng/latex-action@2.7.1
-        with:
-          root_file: thesis-main.tex
-          args: -pdf -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape
-
       - name: Generate tag
         id: tag-generation
         run: |
@@ -31,6 +25,12 @@ jobs:
             TAG="$(git describe --tags --exact-match HEAD)"
           fi
           echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Build report
+        uses: xu-cheng/latex-action@2.7.1
+        with:
+          root_file: thesis-main.tex
+          args: -jobname=nicolas-farabegoli-thesis_${{ steps.tag-generation.outputs.tag }} -pdf -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape
 
       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         with:
