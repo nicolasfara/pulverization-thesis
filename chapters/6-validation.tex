@@ -10,10 +10,11 @@ improving the framework.
 \section{Testing}
 \label{sec:testing}
 
-The \emph{software testing} is a method to check whether the actual software product matches the expected requirements and to ensure that the
-software is ``defect free''. It involves the execution of software or system components using manual (not preferred) or automated tools to evaluate
-one or more properties of interest. The goal of software testing is to identify errors, gaps or missing requirements in contrast to actual
-requirements.
+Software testing is a critical process for verifying whether the actual software product conforms to the specified requirements and meets the
+required quality standards, thereby ensuring its integrity and "defect-free" performance. This process involves the systematic execution of software
+or system components, using either manual or automated tools, to evaluate one or more properties of interest. The overall objective of
+software testing is to identify any discrepancies or deficiencies, such as errors, gaps, or missing requirements, that may exist between the actual
+system and its intended design.
 
 \subsection{Unit testing}
 \label{sec:unit-testing}
@@ -28,13 +29,9 @@ isolation from the rest of the system.
 
 Usually, a lot of unit tests are written to try to cover as much code area as possible by going to test corner cases and wrong uses of the code.
 One metric that indicates the amount of testing that is present in the code base is called code coverage.
-This metric, often expressed as a percentage, defines how many lines of code were covered by unit tests (but not limited to) indicating the
-pervasiveness of the tests. Attention should be paid to the fact that this metric is not an indication of good test quality but rather is intended to
-be the opposite: this metric shows how many portions of the system are untested.
-On the one hand, it might be counterintuitive, but by analyzing the concept of unit testing well, it is clear how it, too, is a part of software and
-as such can be error-prone (thus not exhaustively testing the function or class) so it does not provide guarantees about the actual correctness of
-the part of the code under test.
-Nevertheless, unit tests are critical to intercepting most problems and avoiding the introduction of new ones.
+This metric, often expressed as a percentage, defines how many lines of code were covered by unit tests indicating the
+pervasiveness of the tests but does not provide any guarantee that the tests are correct or that they cover all the possible cases.
+Therefore, an alternate interpretation of the notion of code coverage is the number of lines of code that are untested.
 
 The importance of testing has been recognized as a fundamental tool in the development and maintenance of a code base, and therefore
 several test suites have been developed.
@@ -43,8 +40,8 @@ The most relevant in the JVM ecosystem are JUnit~\footnote{\textbf{JUnit} goal i
 and TestNG~\footnote{\textbf{TestNG} is inspired by JUnit and NUnit but introduces some new functionalities that make it more powerful and easier to
 	use. \url{https://testng.org/doc/}}, which are both unit-testing frameworks for the Java programming language.
 
-In recent years, the concept has developed that tests themselves serve as specifications, and for that reason, they must follow good programming
-practices (such as code) and be as clear and expressive as possible so that they can be easily read and interpreted.
+In recent times, the concept of ``test as specification'' has emerged, and for that reason, they must follow good programming
+practices and be as clear and expressive as possible to be easily read and interpreted, al well as the main codebase.
 In this regard, testing frameworks have emerged that provide DSLs enabling the writing of clear, well-organized and contextualized tests.
 The most relevant in the JVM ecosystem are Spock~\footnote{\textbf{Spock} is a testing and specification framework for Java and Groovy applications.
 	\url{http://spockframework.org/spock/docs/1.3/all\_in\_one.html}} and Kotest~\footnote{\textbf{Kotest} is a testing framework for Kotlin that
@@ -68,7 +65,8 @@ The two main candidates for this project are Spock and Kotest. Although Spock pr
 provide any support for coroutine, since it was born for Java and groovy. In contrast, Kotest is entirely written in Kotlin and provides a full DSL
 with various styles for testing, as well as native support for coroutines.
 For these reasons, Kotest was chosen as the testing framework for this project. Moreover, Kotest supports Kotlin multiplatform, a feature that
-perfectly fits the framework's goal of being cross-platform; in this way, all the tests are executed on the JVM, JS and Native platforms.
+perfectly fits the framework's goal of being cross-platform; in this way, all the tests are executed on the JVM, JS and Native platforms providing
+an effective way of testing the framework for all of them.
 
 For most of the tests in the pulverization framework, the \emph{FreeSpec} style was used, which is a style that allows writing tests in a
 specification-like way, where the test cases are written as a sentence, and the test body is written as a code block.
@@ -89,7 +87,7 @@ As follow will be described the relevant testing aspect for each module of the f
 \subsubsection{Core module}
 
 The core module is mainly composed of interfaces that the user must implement to use the framework. For this reason, the tests for this module
-are limited and mainly focus on testing the \emph{configuration DSL} and the \emph{sensors container} and \emph{actuators container}.
+are limited and mainly focus on testing the \emph{configuration DSL,} the \emph{sensors container} and the \emph{actuators container}.
 
 The testing of the sensors and actuators container presents some interesting details that are worth mentioning.
 The first aspect to consider is how the \emph{dependency injection} is performed during the tests. Is recalled that the \texttt{SensorsContainer} and
@@ -111,10 +109,8 @@ In this way, the test is focused on testing the container itself and not managin
 class.
 
 The test conducted on the container are trivial, but they are useful to ensure that the container is working properly.
-the container is a delicate component in that it is queried through the type of the sensor or actuator to be retrieved, which is why it is necessary
-to exhaustively test all possible scenarios that may occur. In particular, the functionality of sensors/actuators insertion was tested, but especially
-the operations of retrieving instances of them, especially in the case of multiple instances of the same type of sensor/actuator are available in the
-container.
+The container is a delicate component because it is queried via the type of sensor or actuator that needs to be retrieved, which is why it is
+necessary to exhaustively test all possible scenarios that may occur.
 
 \paragraph*{}
 
@@ -137,7 +133,7 @@ The test consists in registering the \texttt{CommManager} to the dependency inje
 the same instance of the flow for the same communication type.
 
 The testing of the local communicator, instead, is more complex.
-First of all, is tested that the local communicator can not be initialized with a self-reference; that means that initialization of the local
+First of all, is verified that the local communicator can not be initialized with a self-reference; this means that initialization of the local
 communicator with the same component as source and destination is not allowed.
 Then, is tested the communication between two local communicators: the test consists in creating two local communicators, spawning each one in a
 different coroutine and then sending a message from one to the other. The test is successful if the message is received by the other local
@@ -145,39 +141,35 @@ communicator. If a problem occurs during the receiving of the message, the test 
 So the test fails if the timeout is reached or if the payload differs from sender to receiver, in all the other case the test succeed.
 Finally, is tested the condition in which the sender sends more messages than the receiver can receive, in this case, the receiver should receive
 only the last message sent by the sender. To emulate this condition, the sender and the receiver are spawned in different coroutines and the sender
-starts sending messages to the receiver. The receiver, instead, when spawned is blocked for a certain amount of time, to emulate a slow receiver.
+starts sending messages to the receiver. The receiver, instead, when spawned is blocked for a certain amount of time, to simulate a high workload.
 After the delay, the receiver starts collecting the messages sent by the sender but only the last one should be collected.
 
 The testing of \emph{components reference} is straightforward: the test consists in creating a \texttt{ComponentsRefImpl} and then set up
-it with the pair of the components to be referenced. After that, is tested that the reference is correctly set up and that the class
+it with the pair of the components to be referenced. After that, is tested that the reference is correctly set up and the class
 relies on the \texttt{LocalCommunicator} to send and receive the messages.
 
-The \emph{dsl} testing is focused on testing possible illegal configurations of the platform. In this regard, several test cases were
+The \emph{dsl} testing is focused to figure out possible illegal configurations of the platform. In this regard, several test cases were
 created to test, for example, the case in which more or fewer components are registered than the one specified in the configuration.
 During the development of a demo of the framework, it was discovered a bug in the DSL relative to the type inference; the bug was fixed and a test
 was added to ensure that the bug will not be reintroduced in the future.
 
 \subsubsection{Code coverage}
 
-The code coverage represents an important indicator to be monitored during the development of a software project. In particular, the code coverage
-of the project is managed by two different tools that operate at two different levels.
-The first tool is \texttt{Kover}, which is a plugin for the \texttt{Gradle} build system that provides code coverage for Kotlin projects.
-The second tool is \texttt{Codecov}, which is a service that provides code coverage for GitHub projects.
+The metric of code coverage holds significant importance in the development of a software project. Its management is facilitated by two distinct
+tools that operate at separate levels of the project. The first tool, Kover, is a plugin for the Gradle build system that is designed to provide code
+coverage for Kotlin projects. The second tool, Codecov, is a cloud-based service that provides code coverage for GitHub projects.
 
-Kover operates at project-level: it instrument the test suite to collect the code coverage data and then it can publish code coverage report in
-different formats, mainly \texttt{.html} and \texttt{.xml}.
-
-On the other side, Codecov is a cloud service that collects the code coverage data from different sources and then provides a web interface
-to visualize the code coverage of the project. All the coverage reports are uploaded to Codecov through the use of a \texttt{GitHub Action} that is
-triggered every time a new commit is pushed to the repository. A more detailed description of the Codecov integration can be found in
-the~\Cref{sec:ci-cd}.
+Kover operates by instrumenting the test suite to collect the code coverage data. Subsequently, it publishes code coverage
+reports in different formats, mainly \texttt{.html} and \texttt{.xml}. On the other hand, Codecov collects code coverage data from various sources and provides a web
+interface to visualize the code coverage of the project. All coverage reports are uploaded to Codecov using a GitHub Action that is automatically
+triggered every time a new commit is pushed to the repository.
 
 \subsection{Integration testing}
 \label{sec:integration-testing}
 
 Integration testing is a type of testing that aims to test the interaction between different components of the system.
 A typical software project is composed of several modules, and each one of them is responsible for a specific task; the integration testing
-is focused on testing the interaction between these modules to ensure that they work together as expected when integrated.
+is focused on testing the interaction between them to ensure that they work together as expected when integrated.
 
 There are four main approaches or strategies to perform integration testing: the \emph{bottom-up}, the \emph{top-down}, the \emph{big bang} and
 the \emph{sandwich} approach. Each strategy has its own advantages and disadvantages, and the choice of the strategy to use depends on the
@@ -200,7 +192,7 @@ However, the \emph{big bang} approach has the following disadvantages:
 \end{itemize}
 
 The \emph{top down} approach is an incremental approach that involves testing from the topmost module and then proceeding to the lower modules.
-Each module is tested one by one and then integrated with the other modules. This approach has the following advantages:
+Each module is tested one by one and then integrated with the other. This approach has the following advantages:
 
 \begin{itemize}
 	\item It is easier to identify defects and isolate their sources
@@ -229,28 +221,23 @@ In the framework development, the \emph{big bang} approach was used to perform t
 the framework is composed of a few modules, in this way a simpler integration testing process can be achieved.
 
 The most important integration test is defined in the \texttt{AsyncScenario} test class. This test class is responsible for testing the
-framework as a whole, in this test, are used the two DSLs to configure the devices and the platform, and then the platform is started testing
+framework as a whole. In this test, are used the two DSLs to configure the devices and the platform, and then the platform is started testing
 that each deployed component is correctly started and that the messages are correctly sent and received.
-The importance of the test comes from the fact that it convolves the entire stack of the framework bringing all its components into play by verifying
+The importance of the test comes from the fact that it involves the entire stack of the framework bringing all its components into play by verifying
 that they are operating correctly.
 
 \section{Continuous Integration and Delivery}
 \label{sec:ci-cd}
 
-The continuous integration and continuous delivery (CI/CD) pipeline is a set of automated processes that are used to build, test and deploy
-the software. The main focus is on improving the software delivery throughout the software development lifecycle via automation.
-Automating CI/CD throughout the software development lifecycle, including development, testing, production, and monitoring, allows organizations to
-produce higher-quality code faster. While manual execution of CI/CD pipeline steps is possible, the real benefits come from automation.
-
-The CI/CD pipeline is a systematic approach to software development that involves building, testing, and deploying code. Automating the pipeline
-minimizes the risk of human error and ensures a consistent release process. It involves various tools, such as code compilation, unit testing, code
-analysis, security, and binary creation.
+The continuous integration and continuous delivery (CI/CD) pipeline is a systematic approach to software development that involves building, testing,
+and deploying code. Automating the pipeline minimizes the risk of human error and ensures a consistent release process. It involves various tools,
+such as code compilation, unit testing, code analysis, security, and binary creation.
 CI/CD forms the foundation of a DevOps methodology and unifies developers and IT operations teams in software deployment.
 The~\Cref{fig:ci-cd} shows a typical CI/CD pipeline.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.9\textwidth]{figures/cicd-example.pdf}
+	\includegraphics[width=0.6\textwidth]{figures/cicd-example.pdf}
 	\caption{A classic example of a CI/CD pipeline.}
 	\label{fig:ci-cd}
 \end{figure}
@@ -262,17 +249,18 @@ As follow, a brief landscape of the most popular CI/CD tools is presented, showi
 Jenkins is a free, open-source automation server that helps streamline the software development process by automating tasks such as building,
 testing, and deploying code. It offers hundreds of plugins to support various technologies and tools, making it a highly versatile platform. Jenkins
 is often used for continuous integration and continuous delivery (CI/CD) workflows, allowing developers to quickly and easily validate and release
-code changes. A simple example of Jenkins use is to automate the building and testing of a Java application. The~\Cref{lst:jenkins-example} shows an example of a \emph{Jenkinsfile} written in Groovy syntax.
+code changes. The~\Cref{lst:jenkins-example} shows an example of a \emph{Jenkinsfile} written in Groovy syntax that builds a java project and
+subsequently runs the tests.
+
+In the example, the Jenkinsfile defines a pipeline with two stages: one for building the application using Maven, and one for testing it. This is
+just a simple example of what can be achieved with Jenkins, but it demonstrates how it can help automate and streamline the software development
+process.
 
 \lstinputlisting[
 	language=Kotlin,
 	caption={A Jenkinsfile example.},
 	label={lst:jenkins-example}
 ]{listings/jenkins-example}
-
-In the example, the Jenkinsfile defines a pipeline with two stages: one for building the application using Maven, and one for testing it. This is
-just a simple example of what can be achieved with Jenkins, but it demonstrates how it can help automate and streamline the software development
-process.
 
 \emph{GitHub Actions} is a powerful CI/CD platform integrated into GitHub that allows developers to automate their software development workflows.
 With GitHub Actions custom workflows that run on specific events can be defined, such as code pushes, pull requests, and releases. Workflows are
@@ -285,8 +273,8 @@ Here is a simple example of a GitHub Actions workflow that builds and tests a Ja
 	label={lst:github-actions-example}
 ]{listings/gha-example.yaml}
 
-In this example, the workflow is triggered on pushes to the main branch and runs on an Ubuntu-based runner. The workflow includes steps to
-check out the code, set up a Java environment, build the application, and run tests. With GitHub Actions, you can easily
+In the~\Cref{lst:github-actions-example}, the workflow is triggered on pushes to the main branch and runs on an Ubuntu-based runner. The workflow
+includes steps to check out the code, set up a Java environment, build the application, and run tests. With GitHub Actions, you can easily
 automate and streamline your software development workflows, helping to improve efficiency and reduce errors.
 
 An \emph{action} in the context of GitHub Actions is a pre-written, reusable piece of code that performs a specific task within a software development
@@ -310,7 +298,7 @@ All the aforementioned jobs are executed in parallel over three different operat
 The use of three different operating systems allows to verify that the framework is compatible with all the major operating systems and the relative
 platforms, reducing the probability of errors on a specific platform.
 
-When working with Kotlin multiplatform, the pipeline slightly changes, since the artifacts must be generated for each platform.
+When working with Kotlin multiplatform, the pipeline slightly changes, since the artifacts must be generated for each supported platform.
 To achieve this, the pipeline is enriched with some additional jobs: the very first job is responsible for creating the staging repository on the
 Maven Central repository, setting up the environment for a possible release. Then, are executed the build, test and release jobs for each platform.
 A specific job is also added after the build job to close the staging repository on the Maven Central repository, and consequently, trigger the
@@ -324,13 +312,13 @@ checks over the repository. Finally, the release job is executed to release the 
 \end{figure}
 
 The rationale behind the choice of using a dedicated job for creating the staging repository is due the fact that the subsequent jobs are executed
-in parallel over different OS, which means that they would create a staging repository for each OS, leading to an unintended condition.
+in parallel over different OS, which means that they would create a different staging repository for each OS, leading to an unintended condition.
 Using the aforementioned approach, the staging repository is created only once, and then, the subsequent jobs are executed over the same repository
 by sharing the \emph{repository id}. In this way, the artifacts coming from different OS are uploaded to the same repository (using the repository id
 generated before), and consequently, the release job releases all the artifacts on the Maven Central repository consistently.
 
 Code maintenance is a key aspect of good project lifecycle management.
-For this reason, tools such as \emph{renovate} \emph{mergify} and \emph{semantic-release} have been used to automate these aspects.
+For this reason, tools such as \emph{renovate,} \emph{mergify} and \emph{semantic-release} have been used to automate these aspects.
 
 Renovate is an automated tool that is used to manage and automate the process of updating
 dependencies and keeping projects up-to-date. The Renovate Bot can be integrated into a project's code repository and configured to automatically
@@ -343,17 +331,17 @@ all required tests or receiving approval from a specified number of reviewers. T
 workload of maintainers, freeing them up to focus on more strategic tasks.
 
 The semantic-release is a tool that automates the process of versioning and releasing software projects. It uses a specific commit message syntax to
-determine the type of changes made in each commit~\cite{conventional-commits} and automatically generates a new version number and release based on
-those changes.
-This helps to ensure that version numbers are consistently and accurately updated, reducing the risk of errors and confusion, and allowing teams to
+determine the type of changes made in each commit message~\cite{conventional-commits} and automatically generates a new version number and make a
+release based on those changes.
+This helps to ensure that version numbers are consistently and accurately updated, reducing the risk of errors and allowing teams to
 focus on more important tasks. Additionally, by automating the release process, semantic-release can help to speed up the development cycle and allow
 teams to deliver new features and bug fixes to users more quickly and efficiently.
 
-The joint use of these three tools on the one hand greatly speeds up the release and maintenance phases of the code but on the other hand, should be
+The joint use of these three tools on the one hand greatly speeds up the release and maintenance process of the code but on the other hand, should be
 paid attention to the fact that since are automatic tools, they could cause unintended updates causing repercussions on the proper functioning of the
 project, such as updating a dependency that modifies a public API thus making it incompatible with its use in the code. To minimize these scenarios,
-an extensive and complete test suite should be set up, but also a CI/CD pipeline that fails as soon as a problem is detected should be used; in this
-way, maintainers are alerted and can proceed with manual intervention to resolve the issue.
+an extensive and complete test suite should be set up, but also a CI/CD pipeline that intercepts similar a problem should be used; in this
+way, maintainers are notified and they proceed with manual intervention to resolve the issue.
 
 Therefore, all these details have been carefully attended to so that no situations arise that lead to inconsistencies or
 incompatibilities in the code base: renovate is configured to open a pull request as soon as a new version of any dependency is available; mergify is
@@ -367,10 +355,10 @@ With the first demo, a simple system was aimed at highlighting the main aspects 
 As a second goal, the demo aims to provide a reference on how it is possible to ``pulverize'' a device through the framework by also testing it in a
 context closer to real use cases.
 
-This demo models the following scenario: you want to monitor the moisture status of soil through an able device
-to sense the moisture in the soil and through a valve set the water flow to properly adjust the desired moisture level.
+This demo models the following scenario: you want to monitor the moisture status of soil through a device
+by sensing the moisture level of the soil and through a valve, set the water flow to properly adjust the desired moisture level.
 This simple scenario involves several aspects of the pulverization: first, we find the concepts of sensor and actuator, which respectively serve to
-acquire the soil moisture level and regulate water flow. Finally, the behavior specifies how the flow regulation should occur against
+acquire the soil moisture level and regulate water flow. Finally, the behavior specifies how the flow regulation should occur based on
 the detected moisture. The~\Cref{fig:demo-1-system} shows the components defining the logical device.
 
 \begin{figure}
@@ -383,8 +371,8 @@ the detected moisture. The~\Cref{fig:demo-1-system} shows the components definin
 The physical system is composed of three devices: two embedded systems used respectively for moisture sensing and water flow regulation and a server
 which represents the infrastructure where the pulverized system runs.
 Two \textbf{ESP32}~\footnote{\url{https://www.espressif.com/en/products/socs/esp32}} boards are used to implement the sensor component and the
-actuator component. The main reason for choosing these boards is that they are cheap and easy to use. Moreover, they are equipped with a Wi-Fi
-module, which allows them to communicate with the pulverization platform.
+actuator component. The primary rationale behind selecting these boards is their cost-effectiveness and ease of use. Additionally, they come equipped
+with a Wi-Fi module, facilitating communication with the pulverization platform.
 
 \begin{figure}
 	\centering
@@ -398,21 +386,19 @@ server.
 
 The multiplatform nature of the framework allows the execution of each ``pulverized component'' on different architectures.
 But at the time of writing, even if the number of supported architectures in Kotlin multiplatform is quite high, the framework does not support the
-\textbf{Xtensa}~\footnote{\textbf{Xtensa} is a configurable and extensible processor architecture developed by Tensilica, now owned by Cadence Design
-	Systems. It is designed to meet the unique requirements of a wide range of applications and systems, from low-power IoT devices to
-	high-performance computing systems.}
+\textbf{Xtensa}~\footnote{\textbf{Xtensa} is a configurable and extensible processor architecture developed by Tensilica, now owned by Cadence Design Systems. It is designed to meet the unique requirements of a wide range of applications and systems, from low-power IoT devices to high-performance computing systems.}
 architecture used by the ESP32 boards.
 
-This limitation is solved directly by the framework: we can think of the \emph{sensor component} as acting as a kind of proxy by collecting data from
-the embedded device. In this way, the firmware that will control the board will be written in a language that supports such architecture and will
-provide a communication mechanism with the \emph{sensor component} that will simply forward the received message to other components.
+This limitation is solved as follow: we can think of the \emph{sensor component} as acting as a kind of proxy by collecting data from
+the embedded device. In this way, the firmware that will control the board will be written in a language that supports the Xtensa architecture and
+will provide a communication mechanism with the \emph{sensor component} that will simply forward the received message to other components.
 As can be seen, the framework is extremely flexible, allowing it to accommodate limitations such as the one described above.
 
 In this specific case, the limitation described above is solved by writing the \textbf{ESP32} firmware in \emph{Rust} (a language that supports the
 Xtensa architecture) and implement the communication with the \emph{sensor component} using a TCP socket. The \emph{sensor component} is
 implemented using the framework interface where a TCP socket is opened to listen for incoming messages from the embedded device.
 On each received message, the sensor's value is extracted and saved in a local state; in this way, on each \texttt{sense} method call,
-the last received value is returned.
+the last received value from the embedded device is returned.
 This simple workaround allows the use of the pulverization framework also in devices that do not support the Kotlin multiplatform architecture.
 The explanation of the limitation was made using the \emph{sensor component} as an example, but the same principle was applied to the
 \emph{actuator component}, so again via TCP socket, a message is sent to the embedded device for opening or closing the valve.
@@ -428,8 +414,7 @@ deployed into two devices, and the \emph{behaviour} and \emph{state} components 
 	caption={Configuration of the logical device named ``moisture-device''.}
 ]{listings/demo-1-config.kt}
 
-The \emph{behaviour} component defines the logic of the device: get the moisture level from the \emph{sensor} component and, if the moisture level
-is below a threshold, open the valve using the \emph{actuator} component. The \emph{state} component is used to store the moisture level.
+The \emph{behaviour} component defines the logic of the device: retrieve the moisture level from the \emph{sensor} component and, if the moisture level is below a threshold, open the valve using the \emph{actuator} component. The \emph{state} component is used to store the moisture level.
 The~\Cref{lst:demo-1-behaviour} shows the implementation of the \emph{behaviour} component.
 
 \lstinputlisting[
@@ -447,7 +432,8 @@ The test of the demo was conducted on a local Linux machine running the four con
 using \emph{Docker Compose}.
 The two ESP32 boards are connected to the same Wi-Fi network and the \emph{sensor} and \emph{actuator} components are configured to connect to the
 respective container using the IP address of the machine where the container is running.
-Finally, the increase and decrease of soil moisture were simulated by verifying that the valve opened and closed properly.
+Finally, the increase and decrease of soil moisture were simulated by verifying that the valve opened and closed properly to maintain the desired
+level of moisture in the soil.
 
 \section{Demo 2: Multi Devices Multi Components}
 \label{sec:demo-2}
@@ -477,8 +463,8 @@ the infrastructure (see~\Cref{fig:demo-2-physical-diagram}).
 the user who intends to implement the system by exploiting the pulverization framework: he or she does not have to worry about infrastructure or
 deployment aspects; how communications take place is handled directly by the framework. This greatly simplifies the development of the system. How
 then the system is deployed in the infrastructure is depicted in~\Cref{fig:demo-2-physical-diagram}, which shows at the physical level where
-components are run and how intra-component communications of each device take place, also, are depicted all the physical devices involved in the
-system.
+components are executed and how intra-component communications of each device take place. Moreover, are depicted all the physical devices involved in
+the system.
 
 \begin{figure}
 	\centering
@@ -505,7 +491,7 @@ Design choices for the implementation of the demo are explained below. The demo 
 
 The \emph{common module} contains the code shared between the \emph{platform} and \emph{android application} modules. In particular, it contains
 the implementation of each component like the \emph{behaviour, sensors} and \emph{actuators} components, either for the embedded device and the
-smartphones. The reason why all the components are implemented in the same module is that they can be reused whenever a new device is added to the
+smartphones. The reason why all the components are implemented in the same module is because they can be reused whenever a new device is added to the
 system. In this way, the specific device should not implement its specific version of the component but instead reuse the one already implemented.
 
 The android application is structured as follows: during the \emph{initialization} stage the pulverization platform with its components is
@@ -524,43 +510,39 @@ Finally, the \emph{Platform} module defines for each logical device in the syste
 \emph{behaviour, sensors} and \emph{actuators} components for each smartphone and the \emph{behaviour} and \emph{actuators} components for the
 embedded device.
 
-The system was dockerized and deployed using docker compose. The system, once started, was tested by making use of two smartphones that were
-continuously moved around the room to observe how it varied the LED intensity accordingly. The test conducted did not reveal any anomalies or
+The system was dockerized and deployed using docker compose. The system, once started, was tested by using two smartphones that were
+continuously moved around the room to observe how it varied the LED intensity accordingly. The conducted test did not reveal any anomalies or
 malfunctions, except for some inaccuracies in the calculation of the distance of the devices from the Bluetooth antenna due to signal
 fluctuations.
 
 One notable test that has been conducted involves simulating a device failure and observing how the system reacts to this condition.
 The failure of a device was simulated by disconnecting it from the network.
-As soon as the device was disconnected from the network, the system continued to function as expected. Devices that were still active, store the last
+As soon as the device was disconnected from the network, the system continued to operate as expected. Devices that were still active, store the last
 message received from that device and thus did not alter their behavior. When the device returns operational in the network, then it will start
 sending the newly updated data to its neighbors again, which will then update the information about that device's distance from the antenna.
 
 In conclusion, this demo brought out the effectiveness of the framework in clearly separating business logic development from infrastructural and
-deployment aspects, highlighting how more complicated systems are achievable through the sprinkling framework. Again, it highlighted how a failure of
-one component of the system does not preclude its operation in its entirety.
+deployment aspects, highlighting how more complicated systems are achievable through the pulverization framework. Again, it highlighted how a failure 
+of one component does not preclude the system's operation.
 
 This demo can be extended by going to improve the calculation of the distance of the devices from the antenna, for example, by implementing a filter
 that reduces the noise in the signal acquisition producing more stable and truthful values. Another interesting aspect to analyze may be to have some
 smartphones with all components running on them, while other smartphones have the behavior running in the cloud, thus observing that the overall
 behavior does not change as the deployment structure changes.
 
-\section{Demo 3: crowd estimation}
-\label{sec:demo-3}
-
 \todo{Valutare se questa demo è da inserire dal momento che non c'e' stato tempo di realizzarla}
 
 \section{Current framework limitations}
 \label{sec:framework-limitations}
 
-At present, the framework partially implements the concept of pulverization: dynamics and support for different protocols are some examples of
-shortcomings.
+At present, the framework has some limitations: dynamics and support for different protocols are some examples of shortcomings.
 The goal of this section is therefore to provide an overview of the main shortcomings of the framework by going on to examine in what contexts these,
 if implemented, could solve certain problems.
 
 \subsection{Dynamics}
 \label{sec:dynamics}
 
-By dynamism in this context we mean the ability of the framework to be able, dynamically, to relocate pulverized components in the infrastructure.
+By dynamism, in this context, we mean the ability of the framework to be able to dynamically relocate pulverized components in the infrastructure.
 
 At present, the framework does not handle this aspect: the deployment structure is defined a priori and remains so throughout the life of the
 executed system. Although dynamism is a key aspect in pulverization, it was decided to focus more on good domain modeling to build a solid foundation
@@ -570,12 +552,13 @@ not very extensible and difficult to use.
 \subsection{Multi-protocols}
 \label{sec:multi-protocols}
 
-The management of multiple protocols to enable intra-component communication is an important aspect since sputtering can involve a large number of devices that are also heterogeneous with each other and therefore have different computational and even communication capabilities.
+The management of multiple protocols to enable intra-component communication is an important aspect since pulverization can involve a large number of 
+heterogeneous devices that have different computational and communication capabilities.
 
 For this reason, the choice of one protocol over another is not mutually exclusive, but it may be appropriate, for example, to provide
 multiple protocols that are used in the pulverized system. Again, you might be dealing with devices that do not support certain protocols, or you are
 in a situation where you want to use a very lightweight protocol (e.g. MQTT) for devices with very low computational resources and instead use a
-higher-performance protocol for those parts of the system with high computational power on board.
+higher-performance protocol for those parts of the system with high computational power.
 
 At the time of writing, the only protocol implemented to enable intra-component communication is RabbitMQ as it represents a good compromise between
 ease of use, performance and adoption.
