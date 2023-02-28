@@ -37,20 +37,36 @@ exploiting the underlying infrastructure opportunistically.
 To tackle this problem the \emph{pulverization approach} is proposed~\cite{fi12110203}: this framework brakes the system behaviour into small
 computational pieces logically linked to sensors and actuators that are continuously executed and scheduled in the available infrastructure.
 In this way, the system can be seamlessly mapped onto a variety of multi-layered deployment infrastructures.
-It is based on a flexible logical model which can be decomposed into a set of sub-components with well-defined relationships that can be deployed and 
+It is based on a flexible logical model which can be decomposed into a set of sub-components with well-defined relationships that can be deployed and
 wired separately. The pulverization facilitates the deployment independence of a system, namely the ability to run the application with no change
 on various deployments retaining its original functional semantics.
-In this way, the application logic will obtain the functional goals independently of the actual deployment since the choice of the deployment 
+In this way, the application logic will obtain the functional goals independently of the actual deployment since the choice of the deployment
 strategy is affected typically by non-functional requirements such as latency, security, performance and cost.
 This approach is formalized to provide an unambiguous specification of what constitutes pulverization by clarifying subtle aspects of the model
-and state the deployment-independence property rigorously. 
+and state the deployment-independence property rigorously.
 
-The main contribution of this thesis is the development of a framework that leverages the pulverization approach to orchestrate distributed
-applications in the edge-cloud continuum.
-This framework aims to lay the groundwork for closing the gap between the simulation of these systems and their deployment by exploiting the
-pulverizing methodology.
+\section{Motivation of the thesis work}
+
+At the time of writing, the pulverization approach is tested and validated in a simulated environment.
+The simulation represents a very important step to figure out the validity of the approach by testing it in a controlled environment.
+In a large view, the simulation represents a powerful tool to validate the correctness of the systems and to identify the
+potential problems that may arise in a real deployment. However, closing the gap between a simulated system and its deployment in a real
+infrastructure is not trivial and it is more challenging to do it seamlessly.
+
+A desired development process might be to port the simulated system to the real one with as few changes as possible. In this sense, it is
+desired to make use of tools that can appropriately handle specific aspects of the infrastructure on which the system will be deployed without the
+user having to worry about them, or even worse having to tie platform-specific aspects in the application logic.
+
+As said before, the pulverization approach has been theorized and verified in simulation and for this reason, it is not corroborated by any tools or
+frameworks that enable the deployment of systems in a real infrastructure leveraging this approach.
+
+To solve these issues, this thesis aims to pave the way for closing the gap between the simulation of systems and their deployment by
+leveraging the pulverization approach via a dedicated framework.
+
+The developed framework leverages the pulverization approach to orchestrate distributed applications in the edge-cloud continuum.
 Although the pulverization approach originates in the context of aggregate computing, the framework aims to be generic enough to enable the
-pulverization in non-aggregate systems as well.
+pulverization in non-aggregate systems as well, opening a wide range of applications.
+
 To showcase the effectiveness of the framework, some scenarios in the context of CPS have been identified by using the framework to deploy such
 systems, highlighting the potential that pulverization has as a methodology.
 In particular, the framework is used in conjunction with \emph{embedded systems} to recreate a heterogeneous infrastructure where the framework
