@@ -15,13 +15,16 @@ abstract class SensorsContainer : PulverizedComponent {
         sensors.firstOrNull(type::isInstance) as? S
 
     fun <T, S : Sensor<T>> getAll(type: KClass<S>): Set<S> =
-        sensors.mapNotNull { e -> e.takeIf { type.isInstance(it) } as? S }.toSet()
+        sensors.mapNotNull { e -> 
+            e.takeIf { type.isInstance(it) } as? S
+        }.toSet()
 
     inline fun <reified S : Sensor<*>> get(): S? = this[S::class]
     
-    inline fun <reified S : Sensor<*>> get(run: S.() -> Unit) = this[S::class]?.run()
-
-    inline fun <reified S : Sensor<*>> getAll(): Set<S> = getAll(S::class)
-
-    inline fun <reified S : Sensor<*>> getAll(run: Set<S>.() -> Unit) = getAll(S::class).run()
+    inline fun <reified S : Sensor<*>> get(run: S.() -> Unit) =
+        this[S::class]?.run()
+    inline fun <reified S : Sensor<*>> getAll(): Set<S> =
+        getAll(S::class)
+    inline fun <reified S : Sensor<*>> getAll(run: Set<S>.() -> Unit) =
+        getAll(S::class).run()
 }

@@ -2,23 +2,18 @@ val platform = pulverizationPlatform<StateOps, Comm, SensorsPayload, ActuatorsPa
     config.getDeviceConfiguration("device-1")
 ) {
     behaviourLogic(
-        BehaviourComponent(),
-        ::behaviourLogic
+        BehaviourComponent(), ::behaviourLogic
     )
     stateLogic(
-        StateComponent(),
-        ::stateLogic
+        StateComponent(), ::stateLogic
     )
     communicationLogic(
-        CommunicationComponent(),
-        ::communicationLogic
+        CommunicationComponent(), ::commLogic
     )
     actuatorsLogic(
-        ActuatorsComponent(),
-        ::actuatorsLogic
+        ActuatorsComponent(), ::actuatorsLogic
     )
     sensorsLogic(
-        SensorsComponent(),
-        ::sensorsLogic
+        SensorsComponent(), ::sensorsLogic
     )
 }

@@ -621,12 +621,6 @@ The behaviour component is described as \textit{``A computation function $\beta$
 The \texttt{Behaviour} interface, represented in~\Cref{lst:behaviour-interface}, models the behaviour component and defines a single method:
 \texttt{invoke}. Moreover, in the listing are also presented the data classes used to represent the output of the behaviour function.
 
-\lstinputlisting[
-	language=Kotlin,
-	caption={Behaviour interface defined by the framework.},
-	label={lst:behaviour-interface}
-]{listings/Behaviour.kt}
-
 How the behaviour function should be obtained can be easily inferred from the description above: it should take as input the current state of
 the device, the sensed values and the received messages, and it should return the new state of the device, the actuations to be performed and the
 messages to be sent. For this reason, the interface is generic in five type variables: \texttt{S} for the state, \texttt{E} for the communication,
@@ -634,6 +628,13 @@ messages to be sent. For this reason, the interface is generic in five type vari
 The output produced by the behaviour function is represented by the \texttt{BehaviourOutput} data class, which is defined
 in~\Cref{lst:behaviour-interface}. This class holds information about the new state, the new communication, the actuations to be performed, and the
 function's outcome.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={Behaviour interface defined by the framework.},
+	label={lst:behaviour-interface}
+]{listings/Behaviour.kt}
+
 The peculiarity of the \texttt{Behaviour} class is that the method \texttt{invoke} is marked as \texttt{operator} which allows the invocation of the
 function using the \texttt{()} operator over the class instance.
 
@@ -642,18 +643,18 @@ function using the \texttt{()} operator over the class instance.
 Finally, the \textbf{state} component is responsible for the representation of the state of the device.
 The state component is described as \textit{``A state $\kappa$, representing the device's local knowledge''}.
 
+\lstinputlisting[
+	language=Kotlin,
+	caption={State interface defined by the framework.},
+	label={lst:state-interface}
+]{listings/State.kt}
+
 The framework should abstract the representation of the state of the device, and for this reason, the \texttt{State} interface, represented in
 \Cref{lst:state-interface}, models the state component and defines two methods: \texttt{get} and \texttt{update}.
 The former is used to retrieve the current value of the state, while the latter is used to update the state with a new value.
 Is the responsibility of the user to implement the concrete representation of the state, and for this reason, the interface is generic in a type
 variable \texttt{S} that represents the type of the state. Is also the responsibility of the user to persist the state somehow, the reason why the
 interface does not provide any details about persistence.
-
-\lstinputlisting[
-	language=Kotlin,
-	caption={State interface defined by the framework.},
-	label={lst:state-interface}
-]{listings/State.kt}
 
 \paragraph*{}
 
@@ -983,7 +984,7 @@ the \texttt{Device\-Relations\-Configuration} and the \texttt{DeviceLink} classe
 
 Finally, the \texttt{PulverizationConfiguration} class has a set of \texttt{Logical\-Device\-Configuration} and a
 \texttt{DeviceRelationsConfiguration}; this class represents the root of the configuration and is used to configure the pulverization platform.
-The~\Cref{fig:configuration-dsl-classes} depicts the relationship between the classes that define the configuration that can be created via the 
+The~\Cref{fig:configuration-dsl-classes} depicts the relationship between the classes that define the configuration that can be created via the
 configuration DSL.
 
 \begin{figure}
@@ -1061,18 +1062,18 @@ for the \emph{state} should be provided. A first, elegant approach would be to d
 however, this approach is not feasible, since the \texttt{Nothing} type is not serializable and thus, it cannot be inlined as a type.
 The solution adopted is to use \texttt{Any} as the default type for the unspecified components. This solution enables the inlining of the type,
 so the function can be used (as inline) but the drawback is that there is no serializer for the \texttt{Any} type.
-Since the absence of the type means that the component is not used, and the serializer for the \texttt{Any} type is a dummy serializer that does
+Since the absence of the type means that the component is not used, the serializer for the \texttt{Any} type is a dummy serializer that does
 nothing but makes the function sound. In this way, a check can be made to verify if the given type is \texttt{Any} (and rely on the dummy serializer)
 or if it is a specified type retrieving the serializer from it.
+
+The~\Cref{lst:any-serializer} shows the implementation of the dummy serializer for the \texttt{Any} type and how the serializer is retrieved from the
+user-defined types.
 
 \lstinputlisting[
 	language=Kotlin,
 	caption={Dummy serializer for the Any type.},
 	label={lst:any-serializer}
 ]{listings/AnySerializer.kt}
-
-The~\Cref{lst:any-serializer} shows the implementation of the dummy serializer for the \texttt{Any} type and how the serializer is retrieved from the
-user-defined types.
 
 \subsubsection{Type inference problem}
 
@@ -1084,12 +1085,6 @@ to specify all the types required by the entry point function of the DSL. The~\C
 DSL when all the types are specified. The proposed example although valid and works, is not very elegant because forces the user to remember
 the positional order of the types and specify all of them.
 
-\lstinputlisting[
-	language=Kotlin,
-	caption={Example of the verbosity of the DSL when all the types are specified.},
-	label={lst:platform-dsl-verbose}
-]{listings/dsl-verbose.kt}
-
 To minimize the amount of boilerplate code and maintain the simplicity of the DSL, the proposed solution utilizes extension methods to
 facilitate type inference for all five types included in the user-defined configuration base.
 With the use of the extension methods, the Kotlin type inference algorithm can infer the right types without specifying them explicitly.
@@ -1098,9 +1093,15 @@ unspecified generic type.
 
 \lstinputlisting[
 	language=Kotlin,
+	caption={Example of the verbosity of the DSL when all the types are specified.},
+	label={lst:platform-dsl-verbose}
+]{listings/dsl-verbose.kt}
+
+The~\Cref{lst:platform-dsl-inference} shows the implementation of the extension methods that help the type inference to infer the
+right types without specifying them explicitly.
+
+\lstinputlisting[
+	language=Kotlin,
 	caption={Extension methods to help the Kotlin type inference algorithm.},
 	label={lst:platform-dsl-inference}
 ]{listings/dsl-type-inference.kt}
-
-The~\Cref{lst:platform-dsl-inference} shows the implementation of the extension methods that help the type inference algorithm to infer the
-right types without specifying them explicitly.
