@@ -26,11 +26,4 @@ abstract class SensorsContainer : PulverizedComponent {
 
     inline fun <reified S : Sensor<*>>
     get(run: S.() -> Unit) = this[S::class]?.run()
-
-    inline fun <reified S : Sensor<*>>
-    getAll(): Set<S> = getAll(S::class)
-
-    inline fun <reified S : Sensor<*>>
-    getAll(run: Set<S>.() -> Unit) =
-        getAll(S::class).run()
 }

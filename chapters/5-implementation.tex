@@ -411,7 +411,7 @@ The compiler takes care of the transformation, so the developer does not need to
 execution, they access the coroutine's continuation by calling an intrinsic function \texttt{suspendCoroutineUninterceptedOrReturn}. Then, stores the
 continuation object to resume it later. Finally, pass the \texttt{COROUTINE\_SUSPENDED} the intrinsic which is then returned from the function.
 
-Kotlin implements suspendable functions as state machines, since such implementation does not require runtime support.
+Kotlin implements suspendable functions as state machines since such implementation does not require runtime support.
 While being able to wrap different existing frameworks for asynchronous computations, Kotlin coroutines also allow writing asynchronous code in
 different styles: \emph{async/await} style, using \emph{Channels} or \emph{Generator.}
 
@@ -558,6 +558,13 @@ an empty \texttt{Set} is returned.
 The third method finds the sensor of type \texttt{T} and invokes the \texttt{run} function over the retrieved sensor if it is not \texttt{null},
 otherwise, it does nothing.
 
+\lstinputlisting[
+	float=ht,
+	language=Kotlin,
+	caption={SensorContainer implementation defined in the framework.},
+	label={lst:sensor-container-impl}
+]{listings/SensorContainer.kt}
+
 One of the challenges faced in implementing these methods stemmed from the presence of type erasure.
 The type erasure is a feature of the Java virtual machine that removes the type information from the compiled bytecode, making it impossible to
 retrieve the type of a generic type variable at runtime. To overcome this limitation, the Kotlin mechanism of \emph{reified type parameters} is used.
@@ -568,12 +575,6 @@ cleanly, without the need of using reflection via \texttt{KClass<T>}.
 Above was discussed the problem of retrieving a sensor in a type-safe way, this problem is solved by inspecting all the objects stored in the
 container and returning only those that are an instance of the type \texttt{T}.
 The complete implementation of the \texttt{SensorContainer} class is reported in~\Cref{lst:sensor-container-impl}.
-
-\lstinputlisting[
-	language=Kotlin,
-	caption={SensorContainer implementation defined in the framework.},
-	label={lst:sensor-container-impl}
-]{listings/SensorContainer.kt}
 
 As stated above, all the considerations and choices made for the \texttt{Sensor} and \texttt{SensorContainer} are valid also for the \texttt{Actuator}
 and \texttt{ActuatorContainer} classes.
@@ -588,6 +589,12 @@ The communication component is described as \textit{``A communication component 
 From this description emerges the bidirectional nature of communication where sending and receiving channels are neatly separated.
 Another aspect that emerges from the description is the need to hold a reference to the neighbors of the device and their identity.
 
+\lstinputlisting[
+	language=Kotlin,
+	caption={Communication interface defined in the framework.},
+	label={lst:communication-interface}
+]{listings/Communication.kt}
+
 In light of the considerations made above, it was decided to demand the user the responsibility of holding the references to the neighbors and
 their identity, and to provide a simple interface to send and receive messages. The rationale behind this choice is that is quite difficult to
 provide a generic representation of the network topology and determine how it can change over time, and for this reason, it is better to leave the
@@ -595,12 +602,6 @@ responsibility of managing the neighbors to the specific implementation of the c
 
 The \texttt{Communication} interface, presented in~\Cref{lst:communication-interface}, models the communication component and defines
 two methods: \texttt{send} and \texttt{receive}.
-
-\lstinputlisting[
-	language=Kotlin,
-	caption={Communication interface defined in the framework.},
-	label={lst:communication-interface}
-]{listings/Communication.kt}
 
 The interface is generic in a type variable \texttt{P} that represents the type of the messages that can be sent and received by the component.
 Moreover, the type variable is bounded to the \texttt{Any} type: this captures the fact that the message could not be nullable.
@@ -621,6 +622,12 @@ The behaviour component is described as \textit{``A computation function $\beta$
 The \texttt{Behaviour} interface, represented in~\Cref{lst:behaviour-interface}, models the behaviour component and defines a single method:
 \texttt{invoke}. Moreover, in the listing are also presented the data classes used to represent the output of the behaviour function.
 
+\lstinputlisting[
+	language=Kotlin,
+	caption={Behaviour interface defined by the framework.},
+	label={lst:behaviour-interface}
+]{listings/Behaviour.kt}
+
 How the behaviour function should be obtained can be easily inferred from the description above: it should take as input the current state of
 the device, the sensed values and the received messages, and it should return the new state of the device, the actuations to be performed and the
 messages to be sent. For this reason, the interface is generic in five type variables: \texttt{S} for the state, \texttt{E} for the communication,
@@ -628,12 +635,6 @@ messages to be sent. For this reason, the interface is generic in five type vari
 The output produced by the behaviour function is represented by the \texttt{BehaviourOutput} data class, which is defined
 in~\Cref{lst:behaviour-interface}. This class holds information about the new state, the new communication, the actuations to be performed, and the
 function's outcome.
-
-\lstinputlisting[
-	language=Kotlin,
-	caption={Behaviour interface defined by the framework.},
-	label={lst:behaviour-interface}
-]{listings/Behaviour.kt}
 
 The peculiarity of the \texttt{Behaviour} class is that the method \texttt{invoke} is marked as \texttt{operator} which allows the invocation of the
 function using the \texttt{()} operator over the class instance.
@@ -743,15 +744,16 @@ The \texttt{ComponentRef} interface can be used in two main scenarios: the first
 deployment unit or remotely, and the second one is when the component to which we refer not exists at all (e.g when a device does not have one of the
 five components).
 
+For the first scenario, the \texttt{ComponentRefImpl} provides an implementation of the \texttt{ComponentRef} interface, while the second scenario is
+handled by the \texttt{NoOpComponentRef} that is an implementation of the \texttt{ComponentRef} interface that does nothing
+(see~\Cref{lst:componentref-impl}).
+
 \lstinputlisting[
 	language=Kotlin,
 	caption={ComponentRefImpl class},
 	label={lst:componentref-impl}
 ]{listings/ComponentRefImpl.kt}
 
-For the first scenario, the \texttt{ComponentRefImpl} provides an implementation of the \texttt{ComponentRef} interface, while the second scenario is
-handled by the \texttt{NoOpComponentRef} that is an implementation of the \texttt{ComponentRef} interface that does nothing
-(see~\Cref{lst:componentref-impl}).
 The \texttt{ComponentRefImpl} defines a three-argument constructor that accepts respectively a \emph{serializer}, a \emph{binding} and a
 \emph{communicator}. The \emph{serializer} is used to serialize and deserialize the messages that the component can send and receive, while the
 \emph{binding} is used to identify the component to which we refer (and consequently the source component) and the \emph{communicator} is used to
@@ -947,7 +949,6 @@ Vice versa, the counterpart communicator that manages the communication between 
 defines the send queue name as \texttt{State/Behaviour/1} and the receive queue name as \texttt{Behaviour/State/1}.
 As can be seen, the send queue name for the first communicator is the same as the receive queue name for the counterpart communicator, and vice versa.
 This means that the message sent by the first communicator will be received by the counterpart communicator.
-
 The~\Cref{fig:rabbitmq-queues} depicts the interaction pattern described above using two communicators.
 
 \begin{figure}
@@ -1016,6 +1017,7 @@ components to establish the right communication within the network.
 The platform DSL represents one fundamental building block of the entire framework: with this DSL the user can configure the platform in a simple
 declarative way, without the need to manage specific aspects like how the components should be instantiated or how the communication between them
 should occur. The DSL is implemented in the \emph{dsl} package of the \emph{platform} module and should provide the following features:
+
 \begin{itemize}
 	\item The ability to register the user-defined components with their corresponding logic
 	\item The ability to specify which communicator should be used to communicate between the components
@@ -1070,6 +1072,7 @@ The~\Cref{lst:any-serializer} shows the implementation of the dummy serializer f
 user-defined types.
 
 \lstinputlisting[
+	float=ht,
 	language=Kotlin,
 	caption={Dummy serializer for the Any type.},
 	label={lst:any-serializer}
@@ -1092,6 +1095,7 @@ This is a sort of workaround to deal with the limitation of the Kotlin type infe
 unspecified generic type.
 
 \lstinputlisting[
+	float=ht,
 	language=Kotlin,
 	caption={Example of the verbosity of the DSL when all the types are specified.},
 	label={lst:platform-dsl-verbose}
