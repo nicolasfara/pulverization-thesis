@@ -193,12 +193,6 @@ Gradle~\footnote{\textbf{Gradle} is a build automation tool for multi-language s
 	\emph{Apache Maven} introducing a Groovy and Kotlin DSL. The main supported languages are \emph{Java, Kotlin, Groovy} and \emph{Scala}.} plugin.
 As for Scala, the plugin enables a series of tools and compiler extensions to support multiplatform development.
 
-\lstinputlisting[
-	language=kotlin,
-	caption={},
-	label={lst:koltin-multiplatform-setup}
-]{listings/kotlin-multiplatform-setup.kts}
-
 The~\Cref{lst:koltin-multiplatform-setup} shows a basic setup of Kotlin multiplatform using the Gradle plugin.
 
 To share code between all the platforms, Kotlin provides a specific mechanism using a hierarchical structure of modules.
@@ -206,6 +200,12 @@ The common code is placed in the \texttt{commonMain} module and it's used to sha
 Often there is the need to create several native targets that could potentially reuse a lot of the common logic and third-party APIs. Kotlin allows
 to create a specific and flexible structure to reuse as much code as possible between the different targets.
 The~\Cref{fig:kotlin-multiplatform-hierarchy} shows a possible representation of a Kotlin multiplatform project hierarchical structure.
+
+\lstinputlisting[
+	language=kotlin,
+	caption={},
+	label={lst:koltin-multiplatform-setup}
+]{listings/kotlin-multiplatform-setup.kts}
 
 \begin{figure}[ht]
 	\centering
@@ -386,6 +386,12 @@ Kotlin coroutines are built upon the following goals~\cite{elizarov2021kotlin}:
 	      cases and improved performance.
 \end{itemize}
 
+\lstinputlisting[
+	language=Kotlin,
+	label=lst:example-suspending-function,
+	caption={Example of a suspending function.},
+]{listings/coroutine-example.kt}
+
 Kotlin asynchronous programming is built around the ``suspending function'' concept, similar to the ``async function'' concept in JavaScript.
 A suspending function is marked with the \texttt{suspend} modifier and can be called from other suspending functions. However, their call sites
 are \emph{not marked} as \texttt{await}, i.e., calls to suspending functions are implicitly awaited.
@@ -394,12 +400,6 @@ In this way, the problem of ``forgotten await'', characterizing the \emph{async/
 The~\Cref{lst:example-suspending-function} shows an example of a suspending function, which is called from another suspending function showing how
 in Kotlin suspensive functions are called implicitly.
 In the example can be seen that the suspending function is implicitly awaited, and the result is returned to the caller.
-
-\lstinputlisting[
-	language=Kotlin,
-	label=lst:example-suspending-function,
-	caption={Example of a suspending function.},
-]{listings/coroutine-example.kt}
 
 As follow, a brief introduction to how Kotlin coroutines are implemented is presented.
 Each suspendable function goes through a transformation from normally invoked function to a continuation-passing style (CPS).
