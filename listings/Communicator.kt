@@ -1,6 +1,8 @@
 interface Communicator {
 
-    suspend fun setup(binding: Binding, remotePlace: RemotePlace?)
+    suspend fun setup(
+        binding: Binding, remotePlace: RemotePlace?
+    )
 
     suspend fun finalize()
 

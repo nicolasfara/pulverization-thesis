@@ -77,6 +77,7 @@ As can be seen, the test is written as a sentence in a specification-like fashio
 can understand the test and its purpose, as well as understand the framework API and its usage.
 
 \lstinputlisting[
+	float=ht,
 	language=Kotlin,
 	label={lst:free-spec},
 	caption={Example of a test written in the \emph{FreeSpec} style.}
@@ -98,6 +99,7 @@ The Koin framework makes available a \texttt{KoinTest} class and overriding the 
 of the context to the container. The \Cref{lst:mocked-context} shows an example of how to provide a mocked version of the context to the container.
 
 \lstinputlisting[
+	float=ht,
 	language=Kotlin,
 	label={lst:mocked-context},
 	caption={Example of how to provide a mocked version of the context to the container during the tests.}
@@ -389,7 +391,7 @@ But at the time of writing, even if the number of supported architectures in Kot
 \textbf{Xtensa}~\footnote{\textbf{Xtensa} is a configurable and extensible processor architecture developed by Tensilica, now owned by Cadence Design Systems. It is designed to meet the unique requirements of a wide range of applications and systems, from low-power IoT devices to high-performance computing systems.}
 architecture used by the ESP32 boards.
 
-This limitation is solved as follow: we can think of the \emph{sensor component} as acting as a kind of proxy by collecting data from
+This limitation is solved as follows: we can think of the \emph{sensor component} as acting as a kind of proxy by collecting data from
 the embedded device. In this way, the firmware that will control the board will be written in a language that supports the Xtensa architecture and
 will provide a communication mechanism with the \emph{sensor component} that will simply forward the received message to other components.
 As can be seen, the framework is extremely flexible, allowing it to accommodate limitations such as the one described above.
@@ -409,6 +411,7 @@ the~\Cref{lst:demo-1-configuration} shows the configuration of the logical devic
 deployed into two devices, and the \emph{behaviour} and \emph{state} components are deployed into the server.
 
 \lstinputlisting[
+	float=ht,
 	language=Kotlin,
 	label={lst:demo-1-configuration},
 	caption={Configuration of the logical device named ``moisture-device''.}
@@ -416,12 +419,6 @@ deployed into two devices, and the \emph{behaviour} and \emph{state} components 
 
 The \emph{behaviour} component defines the logic of the device: retrieve the moisture level from the \emph{sensor} component and, if the moisture level is below a threshold, open the valve using the \emph{actuator} component. The \emph{state} component is used to store the moisture level.
 The~\Cref{lst:demo-1-behaviour} shows the implementation of the \emph{behaviour} component.
-
-\lstinputlisting[
-	language=Kotlin,
-	label={lst:demo-1-behaviour},
-	caption={Implementation of the \emph{behaviour} component for the demo 1.}
-]{listings/demo-1-behaviour.kt}
 
 Finally, the three deployment units are defined and containerized using Docker. In particular, a \emph{RabbitMQ} container is used to provide the
 communication between the components, while the other three containers are used to run the \emph{sensor}, \emph{actuator} and \emph{behaviour}
@@ -434,6 +431,13 @@ The two ESP32 boards are connected to the same Wi-Fi network and the \emph{senso
 respective container using the IP address of the machine where the container is running.
 Finally, the increase and decrease of soil moisture were simulated by verifying that the valve opened and closed properly to maintain the desired
 level of moisture in the soil.
+
+\lstinputlisting[
+	float=ht,
+	language=Kotlin,
+	label={lst:demo-1-behaviour},
+	caption={Implementation of the \emph{behaviour} component for the demo 1.}
+]{listings/demo-1-behaviour.kt}
 
 \section{Demo 2: Multi Devices Multi Components}
 \label{sec:demo-2}
@@ -522,7 +526,7 @@ message received from that device and thus did not alter their behavior. When th
 sending the newly updated data to its neighbors again, which will then update the information about that device's distance from the antenna.
 
 In conclusion, this demo brought out the effectiveness of the framework in clearly separating business logic development from infrastructural and
-deployment aspects, highlighting how more complicated systems are achievable through the pulverization framework. Again, it highlighted how a failure 
+deployment aspects, highlighting how more complicated systems are achievable through the pulverization framework. Again, it highlighted how a failure
 of one component does not preclude the system's operation.
 
 This demo can be extended by going to improve the calculation of the distance of the devices from the antenna, for example, by implementing a filter
@@ -550,7 +554,7 @@ not very extensible and difficult to use.
 \subsection{Multi-protocols}
 \label{sec:multi-protocols}
 
-The management of multiple protocols to enable intra-component communication is an important aspect since pulverization can involve a large number of 
+The management of multiple protocols to enable intra-component communication is an important aspect since pulverization can involve a large number of
 heterogeneous devices that have different computational and communication capabilities.
 
 For this reason, the choice of one protocol over another is not mutually exclusive, but it may be appropriate, for example, to provide

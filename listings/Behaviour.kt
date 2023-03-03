@@ -5,7 +5,10 @@ data class BehaviourOutput<S, E, A, O>(
     val outcome: O,
 )
 
-interface Behaviour<S, E, W, A, O> : PulverizedComponent {
+interface Behaviour<S, E, W, A, O> :
+    PulverizedComponent {
     override val componentType = BehaviourComponent
-    operator fun invoke(state: S, export: List<E>, sensedValues: W): BehaviourOutput<S, E, A, O>
+    operator fun invoke(
+        state: S, export: List<E>, sensedValues: W
+    ): BehaviourOutput<S, E, A, O>
 }
