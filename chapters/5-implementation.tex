@@ -79,13 +79,13 @@ in particular are enabled JVM, JavaScript and native platforms.
 	\begin{subfigure}{.45\textwidth}
 		\centering
 		\includegraphics[width=0.95\linewidth]{figures/scala-native-ir.png}
-		\caption{Scala native compilation pipeline.}
+		\caption{Scala native compilation pipeline. Picture taken from~\cite{scala-native-ir}.}
 		\label{fig:scala-native-ir}
 	\end{subfigure}
 	\begin{subfigure}{.45\textwidth}
 		\centering
 		\includegraphics[width=.95\linewidth]{figures/compilation-pipeline.png}
-		\caption{Scala.js compilation pipeline.}
+		\caption{Scala.js compilation pipeline. Picture taken from~\cite{scala-js}.}
 		\label{fig:scala-js-ir}
 	\end{subfigure}
 	\caption{Representation of the Scala Native and Scala.js IR generation and compilation pipelines.}
@@ -180,7 +180,7 @@ The Kotlin multiplatform use cases can be synthesized in the following points:
 		\node[align=center] at (-2.5,1) {Kotlin/\\JVM};
 		\node[align=center] at (0,-2.7) {Kotlin native};
 		\node[align=center] at (0,-4.2) {Native code};
-	\end{tikzpicture}	\caption{Kotlin multiplatform structure}
+	\end{tikzpicture}	\caption{Kotlin multiplatform structure.}
 	\label{fig:kotlin-multiplatform-structure}
 \end{figure}
 
@@ -202,15 +202,16 @@ to create a specific and flexible structure to reuse as much code as possible be
 The~\Cref{fig:kotlin-multiplatform-hierarchy} shows a possible representation of a Kotlin multiplatform project hierarchical structure.
 
 \lstinputlisting[
+	float=ht,
 	language=kotlin,
-	caption={},
+	caption={Minimal Example of Kotlin multiplatform setup using Gradle.},
 	label={lst:koltin-multiplatform-setup}
 ]{listings/kotlin-multiplatform-setup.kts}
 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\linewidth]{figures/kotlin-multiplatform-hierarchical-structure.pdf}
-	\caption{Kotlin multiplatform hierarchical structure.}
+	\caption{Kotlin multiplatform hierarchical structure. Picture taken from~\cite{kotlin-package-structure}.}
 	\label{fig:kotlin-multiplatform-hierarchy}
 \end{figure}
 
@@ -222,7 +223,7 @@ corresponds to the expected declaration.
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{figures/expect-actual.png}
-	\caption{Kotlin multiplatform expect/actual mechanism.}
+	\caption{Kotlin multiplatform expect/actual mechanism. Picture taken from~\cite{kotlin-expect-actual}.}
 	\label{fig:kotlin-multiplatform-expected-actual}
 \end{figure}
 
@@ -889,7 +890,7 @@ very useful for simple applications: every queue that is created is automaticall
 		\caption{Fanout exchange example.}
 		\label{fig:fanout-exchange}
 	\end{subfigure}
-	\caption{Representation of the two main exchanges defined in the AMQP protocol.}
+	\caption{Representation of the two main exchanges defined in the AMQP protocol. Pictures taken from~\cite{rabbitmq-amqp-concepts}.}
 	\label{fig:amqp-exhange-type}
 \end{figure}
 
