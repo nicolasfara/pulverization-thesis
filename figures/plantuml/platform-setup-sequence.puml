@@ -10,8 +10,7 @@ else (yes)
 endif
 
 :Setup components references\nwith communicators and bindings;
-:Lauch coroutines for each component;
-:Save a reference to each coroutine job;
-:Start the platform;
+:Launch coroutines for each component;
+:Save the reference to each coroutine job;
 stop
 @enduml

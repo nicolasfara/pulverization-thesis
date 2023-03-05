@@ -12,5 +12,5 @@
     "files.watcherExclude": {
         "**/target": true
     },
-    "plantuml.exportOutDir": "../../figures"
+    "plantuml.exportOutDir": "./"
 }

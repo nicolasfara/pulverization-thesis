@@ -28,7 +28,7 @@ can be reused in all the specific platforms.
 
 In this way, we can use one programming language and manage the targeting of multiple platforms effectively (see~\Cref{fig:mulitplatform-languages}).
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\begin{tikzpicture}
 		\path[mindmap,concept color=blue!20,text=black]
@@ -68,13 +68,13 @@ The~\Cref{lst:scala-cross-platform} shows the minimal configuration required to 
 in particular are enabled JVM, JavaScript and native platforms.
 
 \lstinputlisting[
-	float,
+	float=h,
 	language=scala,
 	caption={Minimal configuration to enable cross-platform support for Scala.},
 	label={lst:scala-cross-platform}
 ]{listings/scala-cross-platform.sbt}
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\begin{subfigure}{.45\textwidth}
 		\centering
@@ -95,7 +95,7 @@ in particular are enabled JVM, JavaScript and native platforms.
 The~\Cref{fig:scala-ir} depicts the two main targets and for each one shows the compilation pipeline in particular, the~\Cref{fig:scala-native-ir}
 shows the compilation pipeline for the native target, while the~\Cref{fig:scala-js-ir} shows the compilation pipeline for the JavaScript target.
 
-For what concern the native target, the compilation pipeline is composed of the following steps~\cite{scala-native}:
+For what concern the native target, the compilation pipeline is composed of the following steps~\footnote{https://scala-native.org/en/stable/contrib/compiler.html}:
 \begin{itemize}
 	\item \textbf{Scala code compiled into Native Intermediate Representation:} the \texttt{nscplugin} takes the Scala source code and inspecting the
 	      AST, it generates the \texttt{.nir} files.
@@ -138,12 +138,12 @@ the future the number of libraries targeting multiplatform will increase.
 
 To complete the analysis and to have a more complete picture of the Scala multiplatform ecosystem, will be examined the maturity of each platform.
 Starting from \emph{Scala.js}, the platform is quite mature and stable: the project was born several years ago and it's used in production by many
-companies. Year to year several improvements were made to reach a high level of performance and stability~\cite{scala-js-performance, marr2016cross}.
+companies. Year to year several improvements were made to reach a high level of performance and stability~\cite{marr2016cross}.
 
 Finally, the \emph{Scala Native} platform works quite well but has some limitations that make it not suitable for all production use.
-One of the biggest and most important limitations is the lack of support for multithreading~\cite{scala-native-multithreading}.
+One of the biggest and most important limitations is the lack of support for multithreading~\footnote{\url{https://typelevel.org/blog/2022/09/19/typelevel-native.html}}.
 If for some projects this limitation is not a problem, for others it can be a big issue; nevertheless, the \emph{typelevel} community dealt with this
-restriction by implementing an event-loop-based concurrency model~\cite{scala-native-multithreading} to support the native projects.
+restriction by implementing an event-loop-based concurrency model to support native projects.
 Another limitation is represented by the supported architectures: at the time of writing, only a subset of the platforms supported by LLVM
 can be targeted, which means that not all the embedded devices can be supported.
 
@@ -165,7 +165,7 @@ The Kotlin multiplatform use cases can be synthesized in the following points:
 	\item \textbf{Multiplatform libraries} a multiplatform library with common code and its platform-specific implementations for JVM, JS, and Native platforms can be created. Once published, a multiplatform library can be used in other cross-platform projects as a dependency.
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\begin{tikzpicture}[scale=0.9, every node/.style={scale=0.9}]
 		\filldraw[fill=black!2] (0,0) circle (5);
@@ -208,7 +208,7 @@ The~\Cref{fig:kotlin-multiplatform-hierarchy} shows a possible representation of
 	label={lst:koltin-multiplatform-setup}
 ]{listings/kotlin-multiplatform-setup.kts}
 
-\begin{figure}[ht]
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{figures/kotlin-multiplatform-hierarchical-structure.pdf}
 	\caption{Kotlin multiplatform hierarchical structure. Picture taken from~\cite{kotlin-package-structure}.}
@@ -220,7 +220,7 @@ declarations~\footnote{\url{https://kotlinlang.org/docs/multiplatform-connect-to
 With this mechanism, a common source set defines an expected declaration, and platform source sets must provide the actual declaration that
 corresponds to the expected declaration.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{figures/expect-actual.png}
 	\caption{Kotlin multiplatform expect/actual mechanism. Picture taken from~\cite{kotlin-expect-actual}.}
@@ -365,13 +365,13 @@ via careful handling of nested coroutine calls; moreover, stackful coroutines ar
 One important aspect when implementing coroutines is the \emph{error handling} mechanism.
 There are two approaches currently used in asynchronous programming, the first one is based on supervision trees, which was pioneered in Erlang,
 and involves arranging asynchronous tasks in parent-child trees for desired error propagation. The second approach, structured
-concurrency~\cite{structured-concurrency}, aims to transfer the idea of structured programming to asynchronous programming. It connects tasks to
+concurrency~\footnote{\url{https://250bpm.com/blog:71/}}, aims to transfer the idea of structured programming to asynchronous programming. It connects tasks to
 their origins and ensures that the lifetime of a task cannot exceed the lifetime of its origin, thereby establishing a \emph{launcher-launchee}
 relation and describing error and cancellation propagation.
 
 Structured concurrency, in comparison to supervision trees, has a fixed error-handling strategy and is therefore less flexible. However, it is more
 concise and aligns well with the typical way asynchronous code is written. This is why structured concurrency has gained significant attention in
-recent years, either as structured concurrency libraries or as a built-in language feature~\cite{alan-struct-concurr}. Kotlin uses the structured
+recent years, either as structured concurrency libraries or as a built-in language feature~\footnote{\url{https://wiki.openjdk.org/display/loom/Structured+Concurrency}}. Kotlin uses the structured
 concurrency approach to manage error handling in coroutines.
 
 Kotlin coroutines are built upon the following goals~\cite{elizarov2021kotlin}:
@@ -388,6 +388,7 @@ Kotlin coroutines are built upon the following goals~\cite{elizarov2021kotlin}:
 \end{itemize}
 
 \lstinputlisting[
+	float=h,
 	language=Kotlin,
 	label=lst:example-suspending-function,
 	caption={Example of a suspending function.},
@@ -417,7 +418,8 @@ While being able to wrap different existing frameworks for asynchronous computat
 different styles: \emph{async/await} style, using \emph{Channels} or \emph{Generator.}
 
 Coroutines were widely used in the framework to implement asynchronous behaviors idiomatically in Kotlin. In addition, since in the framework, the
-exchange of messages between components can occur asynchronously, this was captured through a coroutine-based construct called Flow~\cite{flow}.
+exchange of messages between components can occur asynchronously, this was captured through a coroutine-based construct called
+Flow~\footnote{\url{https://kotlinlang.org/docs/flow.html}}.
 
 Kotlin Flow is a new addition to the Kotlin coroutines library, and it provides a way to perform asynchronous, sequential computations that emit
 values and can be transformed into streams. A Flow is a sequence of values that are emitted asynchronously and can be processed in a non-blocking
@@ -445,6 +447,7 @@ projects.
 The~\Cref{lst:example-koin} shows how to use Koin to inject a dependency into a class.
 
 \lstinputlisting[
+	float=h,
 	language=Kotlin,
 	label=lst:example-koin,
 	caption={Example of Koin usage.},
@@ -477,7 +480,7 @@ is divided into two main packages: \texttt{core} and \texttt{dsl}.
 The \texttt{core} package contains all the interfaces that model the pulverization components.
 In particular, in~\Cref{tab:core-interfaces} are listed the fundamental interface defined in the \texttt{core} package.
 
-\begin{table}[ht]
+\begin{table}[h]
 	\begin{tabularx}{\textwidth}{l X}
 		\toprule
 		Interface                   & Description                                                                            \\ \midrule
@@ -507,7 +510,7 @@ All those two concepts are implemented in a third interface that models the conc
 This interface implements also an external interface named \texttt{KoinComponent}; this interface enables field injection for all the class that
 implements it. This feature is used to dynamically inject the \texttt{Context} inside of each component.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{figures/core-impl-interfaces.pdf}
 	\caption{Class diagram showing the relation between the core interfaces of the framework.}
@@ -534,6 +537,7 @@ The \texttt{Sensor} interface, represented in~\Cref{lst:sensor-interface}, model
 perform the operation of \emph{sensing the environment.}
 
 \lstinputlisting[
+	float=h,
 	language=Kotlin,
 	caption={Sensor interface defined in the framework.},
 	label={lst:sensor-interface}
@@ -541,6 +545,12 @@ perform the operation of \emph{sensing the environment.}
 
 The interface is generic in a type variable \texttt{T} that represents the type of the data collected by the sensor and implements the
 \texttt{Initializable} interface to model the ability of initialization of the sensor.
+
+\lstinputlisting[
+	language=Kotlin,
+	caption={SensorContainer implementation defined in the framework.},
+	label={lst:sensor-container-impl}
+]{listings/SensorContainer.kt}
 
 More complex and with relevant design choices is the \texttt{SensorContainer} class. The sensors' container is modeled via an abstract class
 which implement the \texttt{PulverizationComponent} interface making the container itself initializable.
@@ -558,13 +568,6 @@ The second method returns a \texttt{Set} of sensors of type \texttt{T} if at lea
 an empty \texttt{Set} is returned.
 The third method finds the sensor of type \texttt{T} and invokes the \texttt{run} function over the retrieved sensor if it is not \texttt{null},
 otherwise, it does nothing.
-
-\lstinputlisting[
-	float=ht,
-	language=Kotlin,
-	caption={SensorContainer implementation defined in the framework.},
-	label={lst:sensor-container-impl}
-]{listings/SensorContainer.kt}
 
 One of the challenges faced in implementing these methods stemmed from the presence of type erasure.
 The type erasure is a feature of the Java virtual machine that removes the type information from the compiled bytecode, making it impossible to
@@ -591,6 +594,7 @@ From this description emerges the bidirectional nature of communication where se
 Another aspect that emerges from the description is the need to hold a reference to the neighbors of the device and their identity.
 
 \lstinputlisting[
+	float=ht,
 	language=Kotlin,
 	caption={Communication interface defined in the framework.},
 	label={lst:communication-interface}
@@ -604,7 +608,7 @@ responsibility of managing the neighbors to the specific implementation of the c
 The \texttt{Communication} interface, presented in~\Cref{lst:communication-interface}, models the communication component and defines
 two methods: \texttt{send} and \texttt{receive}.
 
-The interface is generic in a type variable \texttt{P} that represents the type of the messages that can be sent and received by the component.
+The interface is generic in a type variable \texttt{P} that represents the type of messages that can be sent and received by the component.
 Moreover, the type variable is bounded to the \texttt{Any} type: this captures the fact that the message could not be nullable.
 While at first analysis it might seem redundant to specify this type bound, it turns out to be fundamental since in the type hierarchy in Kotlin, the
 topmost type is \texttt{Any?} which represents any nullable data type, enabling the possibility of sending and receiving \texttt{null} messages,
@@ -620,15 +624,15 @@ The behaviour component is described as \textit{``A computation function $\beta$
 	modeling the device behavior, which maps the state of the device to a new state, a prescriptive set of actuations to be performed,
 	and coordination messages to be emitted''}.
 
-The \texttt{Behaviour} interface, represented in~\Cref{lst:behaviour-interface}, models the behaviour component and defines a single method:
-\texttt{invoke}. Moreover, in the listing are also presented the data classes used to represent the output of the behaviour function.
-
 \lstinputlisting[
-	float=ht,
+	float=h,
 	language=Kotlin,
 	caption={Behaviour interface defined by the framework.},
 	label={lst:behaviour-interface}
 ]{listings/Behaviour.kt}
+
+The \texttt{Behaviour} interface, represented in~\Cref{lst:behaviour-interface}, models the behaviour component and defines a single method:
+\texttt{invoke}. Moreover, in the listing are also presented the data classes used to represent the output of the behaviour function.
 
 How the behaviour function should be obtained can be easily inferred from the description above: it should take as input the current state of
 the device, the sensed values and the received messages, and it should return the new state of the device, the actuations to be performed and the
@@ -647,6 +651,7 @@ Finally, the \textbf{state} component is responsible for the representation of t
 The state component is described as \textit{``A state $\kappa$, representing the device's local knowledge''}.
 
 \lstinputlisting[
+	float=h,
 	language=Kotlin,
 	caption={State interface defined by the framework.},
 	label={lst:state-interface}
@@ -674,7 +679,7 @@ package which contains all the interfaces needed to uniform the representation o
 logics for the context creation and, finally, a \emph{dsl} package that contains the DSL used to configure the pulverization platform.
 The~\Cref{fig:platform-module} shows the package diagram of the \texttt{platform} module.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\textwidth]{figures/platform-impl-package.pdf}
 	\caption{Package diagram of the \texttt{platform} module showing the relationship between the packages.}
@@ -704,6 +709,7 @@ the connection (using the \texttt{RemotePlace}). The \texttt{finalize} method is
 resources if any.
 
 \lstinputlisting[
+	float=h,
 	language=Kotlin,
 	caption={Communicator interface},
 	label={lst:communicator-interface}
@@ -732,6 +738,13 @@ In this package are modeled the interfaces that are used to represent a componen
 In the framework, the concept of ``component reference'' is introduced to abstract over specific aspects like the protocol used to communicate with
 the component and the way how a component can be reached.
 
+\lstinputlisting[
+	float=ht,
+	language=Kotlin,
+	caption={ComponentRefImpl class},
+	label={lst:componentref-impl}
+]{listings/ComponentRefImpl.kt}
+
 The \texttt{ComponentRef} interface is the main interface that represents a component reference; is generic in a type parameter \texttt{S} that
 represents the type of message that the component can send and receive. Even in this case, the type parameter is bounded to \texttt{Any} to prevent
 the use of nullable types. The interface provides three main methods: \texttt{sendToComponent, receiveFromComponent} and
@@ -739,7 +752,7 @@ the use of nullable types. The interface provides three main methods: \texttt{se
 
 This interface is entirely managed by the platform which is responsible for creating the component reference and for providing the right
 implementation based on the context in which the component is deployed. For this reason, the end user should not care about the implementation
-of this interface and should not extends or implement it. As a design choice, all the implementations of this interface are marked as
+of this interface and should not extend or implement it. As a design choice, all the implementations of this interface are marked as
 \texttt{internal} so that they are not visible outside the platform module.
 
 The \texttt{ComponentRef} interface can be used in two main scenarios: the first one is when the component to which we refer exists in the same
@@ -749,12 +762,6 @@ five components).
 For the first scenario, the \texttt{ComponentRefImpl} provides an implementation of the \texttt{ComponentRef} interface, while the second scenario is
 handled by the \texttt{NoOpComponentRef} that is an implementation of the \texttt{ComponentRef} interface that does nothing
 (see~\Cref{lst:componentref-impl}).
-
-\lstinputlisting[
-	language=Kotlin,
-	caption={ComponentRefImpl class},
-	label={lst:componentref-impl}
-]{listings/ComponentRefImpl.kt}
 
 The \texttt{ComponentRefImpl} defines a three-argument constructor that accepts respectively a \emph{serializer}, a \emph{binding} and a
 \emph{communicator}. The \emph{serializer} is used to serialize and deserialize the messages that the component can send and receive, while the
@@ -775,6 +782,7 @@ aforementioned \texttt{serializer} method. Since the operator \texttt{invoke} en
 emulated reducing the boilerplate needed to create the class.
 
 \lstinputlisting[
+	float=h,
 	language=Kotlin,
 	caption={NoOpComponentRef class},
 	label={lst:noopcomponentref-impl}
@@ -814,9 +822,9 @@ the component is remote or not, and consequently leveraging the local communicat
 Once all the components are created, for each one, the corresponding logic is executed saving into a set the reference of the spawned job.
 In~\Cref{fig:platform-configuration} is reported the activity diagram showing the platform creation process.
 
-\begin{figure}
+\begin{figure}[ht!]
 	\centering
-	\includegraphics[width=0.5\textwidth]{figures/platform-setup-sequence.pdf}
+	\includegraphics[width=0.4\textwidth]{figures/platform-setup-sequence.pdf}
 	\caption{Activity diagram showing the platform creation process.}
 	\label{fig:platform-configuration}
 \end{figure}
@@ -839,7 +847,7 @@ In particular, this module enables the communication between components via \tex
 
 RabbiMQ is an open source \textbf{message broker} written in Erlang that implements the \textbf{AMQP} protocol~\cite{4012603}.
 RabbitMQ is lightweight and easy to deploy on-premises and in the cloud. It supports multiple messaging protocols. RabbitMQ can be deployed in
-distributed and federated configurations to meet high-scale, high-availability requirements~\cite{rabbitmq}.
+distributed and federated configurations to meet high-scale, high-availability requirements~\footnote{\url{https://www.rabbitmq.com/\#features}}.
 
 RabbitMQ is based on the notion of \textbf{broker}, which receives messages from publishers (applications that publish them, also known as producers)
 and route them to consumers (applications that process them). The publishers, consumers and the broker can all reside on different machines,
@@ -857,7 +865,7 @@ message (or group of messages).
 Exchanges are entities that receive messages from producers and route them to zero or more queues. The routing algorithm depends on the exchange
 type and rules called bindings. The AMQP protocol defines four exchange types that are reported in~\Cref{tab:exchange-types}.
 
-\begin{table}
+\begin{table}[ht]
 	\centering
 	\begin{tabular}{l l}
 		\toprule
@@ -876,7 +884,7 @@ type and rules called bindings. The AMQP protocol defines four exchange types th
 The \emph{default exchange} is a direct exchange with no name (empty string) pre-declared by the broker. It has one special property that makes it
 very useful for simple applications: every queue that is created is automatically bound to it with a routing key which is the same as the queue name.
 
-\begin{figure}
+\begin{figure}[h!]
 	\centering
 	\begin{subfigure}{.45\textwidth}
 		\centering
@@ -894,7 +902,9 @@ very useful for simple applications: every queue that is created is automaticall
 	\label{fig:amqp-exhange-type}
 \end{figure}
 
-A direct exchange delivers messages to queues based on the message routing key. A direct exchange is ideal for the unicast routing of messages (although they can be used for multicast routing as well). Here is how it works:
+A direct exchange delivers messages to queues based on the message routing key.
+A direct exchange is ideal for the unicast routing of messages (although they can be used for multicast routing as well).
+Below is reported how a direct exchange works:
 
 \begin{itemize}
 	\item A queue binds to the exchange with a routing key $K$
@@ -953,7 +963,7 @@ As can be seen, the send queue name for the first communicator is the same as th
 This means that the message sent by the first communicator will be received by the counterpart communicator.
 The~\Cref{fig:rabbitmq-queues} depicts the interaction pattern described above using two communicators.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/rabbitmq-queue.pdf}
 	\caption{RabbitMQ queues}
@@ -990,7 +1000,7 @@ Finally, the \texttt{PulverizationConfiguration} class has a set of \texttt{Logi
 The~\Cref{fig:configuration-dsl-classes} depicts the relationship between the classes that define the configuration that can be created via the
 configuration DSL.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{figures/config-dsl-class.pdf}
 	\caption{Configuration DSL class diagram.}
@@ -1006,6 +1016,7 @@ between the logical devices is not used by the framework, but in a future versio
 components to establish the right communication within the network.
 
 \lstinputlisting[
+	float=h,
 	language=Kotlin,
 	caption={Configuration DSL},
 	label={lst:configuration-dsl-impl}
@@ -1031,6 +1042,7 @@ All of those four features are implemented in the DSL using the syntax and the s
 an example of the use of the DSL to configure the platform.
 
 \lstinputlisting[
+	float=h,
 	language=Kotlin,
 	caption={Example of the use of the DSL to configure the platform.},
 	label={lst:platform-dsl}
@@ -1074,7 +1086,7 @@ The~\Cref{lst:any-serializer} shows the implementation of the dummy serializer f
 user-defined types.
 
 \lstinputlisting[
-	float=ht,
+	float=h,
 	language=Kotlin,
 	caption={Dummy serializer for the Any type.},
 	label={lst:any-serializer}
@@ -1097,7 +1109,7 @@ This is a sort of workaround to deal with the limitation of the Kotlin type infe
 unspecified generic type.
 
 \lstinputlisting[
-	float=ht,
+	float=h,
 	language=Kotlin,
 	caption={Example of the verbosity of the DSL when all the types are specified.},
 	label={lst:platform-dsl-verbose}
@@ -1107,6 +1119,7 @@ The~\Cref{lst:platform-dsl-inference} shows the implementation of the extension 
 right types without specifying them explicitly.
 
 \lstinputlisting[
+	float=h,
 	language=Kotlin,
 	caption={Extension methods to help the Kotlin type inference algorithm.},
 	label={lst:platform-dsl-inference}
