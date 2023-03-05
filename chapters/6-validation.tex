@@ -77,7 +77,7 @@ As can be seen, the test is written as a sentence in a specification-like fashio
 can understand the test and its purpose, as well as understand the framework API and its usage.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	label={lst:free-spec},
 	caption={Example of a test written in the \emph{FreeSpec} style.}
@@ -99,7 +99,7 @@ The Koin framework makes available a \texttt{KoinTest} class and overriding the 
 of the context to the container. The \Cref{lst:mocked-context} shows an example of how to provide a mocked version of the context to the container.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	label={lst:mocked-context},
 	caption={Example of how to provide a mocked version of the context to the container during the tests.}
@@ -237,7 +237,7 @@ such as code compilation, unit testing, code analysis, security, and binary crea
 CI/CD forms the foundation of a DevOps methodology and unifies developers and IT operations teams in software deployment.
 The~\Cref{fig:ci-cd} shows a typical CI/CD pipeline.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.6\textwidth]{figures/cicd-example.pdf}
 	\caption{A classic example of a CI/CD pipeline.}
@@ -259,7 +259,7 @@ just a simple example of what can be achieved with Jenkins, but it demonstrates 
 process.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	caption={A Jenkinsfile example.},
 	label={lst:jenkins-example}
@@ -272,7 +272,7 @@ defined using \emph{YAML} files and can include multiple steps, such as building
 Here is a simple example of a GitHub Actions workflow that builds and tests a Java application:
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	caption={A GitHub Actions workflow example.},
 	label={lst:github-actions-example}
 ]{listings/gha-example.yaml}
@@ -309,7 +309,7 @@ A specific job is also added after the build job to close the staging repository
 checks over the repository. Finally, the release job is executed to release the artifacts on the Maven Central repository if needed
 (see~\Cref{fig:ci-cd-pipeline}).
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/framework-ci.pdf}
 	\caption{The CI/CD pipeline of the framework.}
@@ -366,7 +366,7 @@ This simple scenario involves several aspects of the pulverization: first, we fi
 acquire the soil moisture level and regulate water flow. Finally, the behavior specifies how the flow regulation should occur based on
 the detected moisture. The~\Cref{fig:demo-1-system} shows the components defining the logical device.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.4\textwidth]{figures/demo1-device.pdf}
 	\caption{Decomposition of the moisture device into the pulverization components showing the interaction between them.}
@@ -379,7 +379,7 @@ Two \textbf{ESP32}~\footnote{\url{https://www.espressif.com/en/products/socs/esp
 actuator component. The primary rationale behind selecting these boards is their cost-effectiveness and ease of use. Additionally, they come equipped
 with a Wi-Fi module, facilitating communication with the pulverization platform.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.7\textwidth]{figures/demo1-physical.pdf}
 	\caption{Physical system architecture where are reported the communication between the components and the server.}
@@ -473,14 +473,14 @@ then the system is deployed in the infrastructure is depicted in~\Cref{fig:demo-
 components are executed and how intra-component communications of each device take place. Moreover, are depicted all the physical devices involved in
 the system.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.6\textwidth]{figures/demo2-logical-device.pdf}
 	\caption{Logical diagram of the connection between the logical devices.}
 	\label{fig:demo-2-logical-diagram}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/demo2-physical.pdf}
 	\caption{Physical diagram of the connection between the logical devices.}

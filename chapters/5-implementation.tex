@@ -68,13 +68,13 @@ The~\Cref{lst:scala-cross-platform} shows the minimal configuration required to 
 in particular are enabled JVM, JavaScript and native platforms.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=scala,
 	caption={Minimal configuration to enable cross-platform support for Scala.},
 	label={lst:scala-cross-platform}
 ]{listings/scala-cross-platform.sbt}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\begin{subfigure}{.45\textwidth}
 		\centering
@@ -165,7 +165,7 @@ The Kotlin multiplatform use cases can be synthesized in the following points:
 	\item \textbf{Multiplatform libraries} a multiplatform library with common code and its platform-specific implementations for JVM, JS, and Native platforms can be created. Once published, a multiplatform library can be used in other cross-platform projects as a dependency.
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\begin{tikzpicture}[scale=0.9, every node/.style={scale=0.9}]
 		\filldraw[fill=black!2] (0,0) circle (5);
@@ -208,7 +208,7 @@ The~\Cref{fig:kotlin-multiplatform-hierarchy} shows a possible representation of
 	label={lst:koltin-multiplatform-setup}
 ]{listings/kotlin-multiplatform-setup.kts}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\linewidth]{figures/kotlin-multiplatform-hierarchical-structure.pdf}
 	\caption{Kotlin multiplatform hierarchical structure. Picture taken from~\cite{kotlin-package-structure}.}
@@ -220,7 +220,7 @@ declarations~\footnote{\url{https://kotlinlang.org/docs/multiplatform-connect-to
 With this mechanism, a common source set defines an expected declaration, and platform source sets must provide the actual declaration that
 corresponds to the expected declaration.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\linewidth]{figures/expect-actual.png}
 	\caption{Kotlin multiplatform expect/actual mechanism. Picture taken from~\cite{kotlin-expect-actual}.}
@@ -388,7 +388,7 @@ Kotlin coroutines are built upon the following goals~\cite{elizarov2021kotlin}:
 \end{itemize}
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	label=lst:example-suspending-function,
 	caption={Example of a suspending function.},
@@ -447,7 +447,7 @@ projects.
 The~\Cref{lst:example-koin} shows how to use Koin to inject a dependency into a class.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	label=lst:example-koin,
 	caption={Example of Koin usage.},
@@ -470,7 +470,7 @@ boilerplate code.
 The \texttt{core} module models the core concepts of the framework. The~\Cref{fig:core-module-impl} shows the package structure of the module, which
 is divided into two main packages: \texttt{core} and \texttt{dsl}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.7\textwidth]{figures/core-package-diagram.pdf}
 	\caption{Core module implementation}
@@ -480,7 +480,7 @@ is divided into two main packages: \texttt{core} and \texttt{dsl}.
 The \texttt{core} package contains all the interfaces that model the pulverization components.
 In particular, in~\Cref{tab:core-interfaces} are listed the fundamental interface defined in the \texttt{core} package.
 
-\begin{table}[h]
+\begin{table}[ht]
 	\begin{tabularx}{\textwidth}{l X}
 		\toprule
 		Interface                   & Description                                                                            \\ \midrule
@@ -510,7 +510,7 @@ All those two concepts are implemented in a third interface that models the conc
 This interface implements also an external interface named \texttt{KoinComponent}; this interface enables field injection for all the class that
 implements it. This feature is used to dynamically inject the \texttt{Context} inside of each component.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/core-impl-interfaces.pdf}
 	\caption{Class diagram showing the relation between the core interfaces of the framework.}
@@ -537,7 +537,7 @@ The \texttt{Sensor} interface, represented in~\Cref{lst:sensor-interface}, model
 perform the operation of \emph{sensing the environment.}
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	caption={Sensor interface defined in the framework.},
 	label={lst:sensor-interface}
@@ -547,6 +547,7 @@ The interface is generic in a type variable \texttt{T} that represents the type 
 \texttt{Initializable} interface to model the ability of initialization of the sensor.
 
 \lstinputlisting[
+	float=ht,
 	language=Kotlin,
 	caption={SensorContainer implementation defined in the framework.},
 	label={lst:sensor-container-impl}
@@ -625,7 +626,7 @@ The behaviour component is described as \textit{``A computation function $\beta$
 	and coordination messages to be emitted''}.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	caption={Behaviour interface defined by the framework.},
 	label={lst:behaviour-interface}
@@ -651,7 +652,7 @@ Finally, the \textbf{state} component is responsible for the representation of t
 The state component is described as \textit{``A state $\kappa$, representing the device's local knowledge''}.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	caption={State interface defined by the framework.},
 	label={lst:state-interface}
@@ -679,7 +680,7 @@ package which contains all the interfaces needed to uniform the representation o
 logics for the context creation and, finally, a \emph{dsl} package that contains the DSL used to configure the pulverization platform.
 The~\Cref{fig:platform-module} shows the package diagram of the \texttt{platform} module.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.7\textwidth]{figures/platform-impl-package.pdf}
 	\caption{Package diagram of the \texttt{platform} module showing the relationship between the packages.}
@@ -709,7 +710,7 @@ the connection (using the \texttt{RemotePlace}). The \texttt{finalize} method is
 resources if any.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	caption={Communicator interface},
 	label={lst:communicator-interface}
@@ -782,7 +783,7 @@ aforementioned \texttt{serializer} method. Since the operator \texttt{invoke} en
 emulated reducing the boilerplate needed to create the class.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	caption={NoOpComponentRef class},
 	label={lst:noopcomponentref-impl}
@@ -822,7 +823,7 @@ the component is remote or not, and consequently leveraging the local communicat
 Once all the components are created, for each one, the corresponding logic is executed saving into a set the reference of the spawned job.
 In~\Cref{fig:platform-configuration} is reported the activity diagram showing the platform creation process.
 
-\begin{figure}[ht!]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.4\textwidth]{figures/platform-setup-sequence.pdf}
 	\caption{Activity diagram showing the platform creation process.}
@@ -884,7 +885,7 @@ type and rules called bindings. The AMQP protocol defines four exchange types th
 The \emph{default exchange} is a direct exchange with no name (empty string) pre-declared by the broker. It has one special property that makes it
 very useful for simple applications: every queue that is created is automatically bound to it with a routing key which is the same as the queue name.
 
-\begin{figure}[h!]
+\begin{figure}[ht]
 	\centering
 	\begin{subfigure}{.45\textwidth}
 		\centering
@@ -1000,7 +1001,7 @@ Finally, the \texttt{PulverizationConfiguration} class has a set of \texttt{Logi
 The~\Cref{fig:configuration-dsl-classes} depicts the relationship between the classes that define the configuration that can be created via the
 configuration DSL.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/config-dsl-class.pdf}
 	\caption{Configuration DSL class diagram.}
@@ -1016,7 +1017,7 @@ between the logical devices is not used by the framework, but in a future versio
 components to establish the right communication within the network.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	caption={Configuration DSL},
 	label={lst:configuration-dsl-impl}
@@ -1042,7 +1043,7 @@ All of those four features are implemented in the DSL using the syntax and the s
 an example of the use of the DSL to configure the platform.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	caption={Example of the use of the DSL to configure the platform.},
 	label={lst:platform-dsl}
@@ -1086,7 +1087,7 @@ The~\Cref{lst:any-serializer} shows the implementation of the dummy serializer f
 user-defined types.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	caption={Dummy serializer for the Any type.},
 	label={lst:any-serializer}
@@ -1109,7 +1110,7 @@ This is a sort of workaround to deal with the limitation of the Kotlin type infe
 unspecified generic type.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	caption={Example of the verbosity of the DSL when all the types are specified.},
 	label={lst:platform-dsl-verbose}
@@ -1119,7 +1120,7 @@ The~\Cref{lst:platform-dsl-inference} shows the implementation of the extension 
 right types without specifying them explicitly.
 
 \lstinputlisting[
-	float=h,
+	float=ht,
 	language=Kotlin,
 	caption={Extension methods to help the Kotlin type inference algorithm.},
 	label={lst:platform-dsl-inference}

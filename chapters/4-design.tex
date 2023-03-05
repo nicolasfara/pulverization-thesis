@@ -24,7 +24,7 @@ This component manages all the low-level aspects related to communication like t
 
 In~\Cref{fig:package-diagram} are represented all the framework's modules and the relationship between them.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.9\textwidth]{figures/package-diagram.pdf}
 	\caption{Package diagram showing the modules that constitute the framework and their relationship.}
@@ -34,7 +34,7 @@ In~\Cref{fig:package-diagram} are represented all the framework's modules and th
 In the~\Cref{tab:framework-modules} are reported a synthetic representation of the modules that constitute the framework with a corresponding
 description.
 
-\begin{table}
+\begin{table}[ht]
 	\begin{tabularx}{\textwidth}{l X}
 		\toprule
 		\textbf{Module}            & \textbf{Description}
@@ -55,7 +55,7 @@ of the layer above and makes accessible their functionalities to the layer below
 The described architecture takes with it the implicit ``one-way dependency'' where the layer below depends on the layer above and not vice versa.
 The~\Cref{fig:framework-architecture} depicts the architecture's choice made to design the framework.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\begin{tikzpicture}
 		\tikzstyle{fontbf} = [rectangle,text width=5cm,text centered,font=\bfseries]
@@ -91,7 +91,7 @@ Those abstraction needs to be as clear as possible from a software engineering p
 and also because these interfaces depend on the whole framework.
 As you move down the ``pyramid'', the complexity of the modules increases but the user's knowledge needed to run the framework decreases.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\begin{tikzpicture}
 		\tikzstyle{fontbf} = [rectangle,text width=5cm,text centered,font=\bfseries]
@@ -127,7 +127,7 @@ The pulverization represents a device as the combination of five components: \em
 \emph{sensors} and \emph{actuators}~\cite{fi12110203}.
 All of those concepts are modeled by the framework through interfaces that the user will implement based on the specific scenario.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/core-design-interfaces.pdf}
 	\caption{Class diagram showing the interfaces defined by the core module.}
@@ -164,7 +164,7 @@ Finally, the platform module provides a DSL to allow the user to instantiate the
 The DSL allows, declaratively, to specify the components intended to be executed in that specific deployment unit, as well as indicate which
 specific communicator implementation to use. In~\Cref{fig:platform-module-architecture} is depicted the overall architecture of the platform module.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/platform-design-interfaces.pdf}
 	\caption{Class diagram showing the interfaces defined by the platform module.}
@@ -202,7 +202,7 @@ The following sections will describe the data flow in the framework, from the pe
 
 The original formulation of the pulverization defines the component's interaction as follows (see~\Cref{fig:framework-components-interaction}):
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/original-components-interactions.pdf}
 	\caption{Design of the interactions between components proposed in the original article~\cite{fi12110203}.}
@@ -234,7 +234,7 @@ communication creating an extra step.
 The framework uses a different formulation of the component's interaction to reduce the extra communication simplifying the overall communication
 pattern. This formulation is depicted in~\Cref{fig:framework-components-interaction-2}.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/framework-components-interactions.pdf}
 	\caption{Interaction between components.}
@@ -265,7 +265,7 @@ sensors send to the behaviour the sensed values and the actuators receive from t
 The sequence diagrams in~\Cref{fig:framework-components-interaction-2-sensors-actuators} show the interaction of the sensors and actuator with the
 behaviour.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/sequence-diagram-sense-act.pdf}
 	\caption{Interaction between sensors and actuators with the behaviour.}
@@ -280,7 +280,7 @@ to abstract over the specific pattern giving the freedom to use the one that bet
 The sequence diagrams in~\Cref{fig:framework-components-interaction-2-communication-behaviour} shows the interaction between the communication and
 behaviour components using a communication pattern which not represents the only possible one.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.9\textwidth]{figures/sequence-diagram-comm.pdf}
 	\caption{Interaction between communication and behaviour.}
@@ -292,7 +292,7 @@ The behaviour queries the state component to get the current state, then, the be
 Even in this case, the way this interaction is modeled is not relevant and should be abstracted over the specific pattern.
 The sequence diagrams in~\Cref{fig:framework-components-interaction-2-state-behaviour} shows the interaction between the state and behaviour.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.5\textwidth]{figures/sequence-diagram-state.pdf}
 	\caption{Interaction between state and behaviour.}
