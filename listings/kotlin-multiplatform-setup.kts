@@ -6,7 +6,9 @@ kotlin {
     jvm()
     android()
 
-    ios(); watchos(); tvos()
+    ios()
+    watchos()
+    tvos()
 
     linuxX64(); linuxArm64()
     mingwX64();

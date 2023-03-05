@@ -78,14 +78,14 @@ in particular are enabled JVM, JavaScript and native platforms.
 	\centering
 	\begin{subfigure}{.45\textwidth}
 		\centering
-		\includegraphics[width=0.95\linewidth]{figures/scala-native-ir.png}
-		\caption{Scala native compilation pipeline. Picture taken from~\cite{scala-native-ir}.}
+		\includegraphics[width=\linewidth]{figures/scala-native-pipeline.pdf}
+		\caption{Scala native compilation pipeline.}
 		\label{fig:scala-native-ir}
 	\end{subfigure}
 	\begin{subfigure}{.45\textwidth}
 		\centering
-		\includegraphics[width=.95\linewidth]{figures/compilation-pipeline.png}
-		\caption{Scala.js compilation pipeline. Picture taken from~\cite{scala-js}.}
+		\includegraphics[width=\linewidth]{figures/scala-js-pipeline.pdf}
+		\caption{Scala.js compilation pipeline.}
 		\label{fig:scala-js-ir}
 	\end{subfigure}
 	\caption{Representation of the Scala Native and Scala.js IR generation and compilation pipelines.}
@@ -95,7 +95,7 @@ in particular are enabled JVM, JavaScript and native platforms.
 The~\Cref{fig:scala-ir} depicts the two main targets and for each one shows the compilation pipeline in particular, the~\Cref{fig:scala-native-ir}
 shows the compilation pipeline for the native target, while the~\Cref{fig:scala-js-ir} shows the compilation pipeline for the JavaScript target.
 
-For what concern the native target, the compilation pipeline is composed of the following steps~\footnote{https://scala-native.org/en/stable/contrib/compiler.html}:
+For what concern the native target, the compilation pipeline is composed of the following steps~\footnote{\url{https://scala-native.org/en/stable/contrib/compiler.html}}:
 \begin{itemize}
 	\item \textbf{Scala code compiled into Native Intermediate Representation:} the \texttt{nscplugin} takes the Scala source code and inspecting the
 	      AST, it generates the \texttt{.nir} files.
@@ -210,7 +210,7 @@ The~\Cref{fig:kotlin-multiplatform-hierarchy} shows a possible representation of
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\linewidth]{figures/kotlin-multiplatform-hierarchical-structure.pdf}
+	\includegraphics[width=\linewidth]{figures/kt-mp-package-structure.pdf}
 	\caption{Kotlin multiplatform hierarchical structure. Picture taken from~\cite{kotlin-package-structure}.}
 	\label{fig:kotlin-multiplatform-hierarchy}
 \end{figure}
@@ -222,7 +222,7 @@ corresponds to the expected declaration.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\linewidth]{figures/expect-actual.png}
+	\includegraphics[width=0.95\linewidth]{figures/expect-actual-kotlin.pdf}
 	\caption{Kotlin multiplatform expect/actual mechanism. Picture taken from~\cite{kotlin-expect-actual}.}
 	\label{fig:kotlin-multiplatform-expected-actual}
 \end{figure}
@@ -447,7 +447,7 @@ projects.
 The~\Cref{lst:example-koin} shows how to use Koin to inject a dependency into a class.
 
 \lstinputlisting[
-	float=ht,
+	float=!ht,
 	language=Kotlin,
 	label=lst:example-koin,
 	caption={Example of Koin usage.},
@@ -547,7 +547,7 @@ The interface is generic in a type variable \texttt{T} that represents the type 
 \texttt{Initializable} interface to model the ability of initialization of the sensor.
 
 \lstinputlisting[
-	float=ht,
+	float=!ht,
 	language=Kotlin,
 	caption={SensorContainer implementation defined in the framework.},
 	label={lst:sensor-container-impl}
@@ -889,17 +889,17 @@ very useful for simple applications: every queue that is created is automaticall
 	\centering
 	\begin{subfigure}{.45\textwidth}
 		\centering
-		\includegraphics[width=0.84\linewidth]{figures/exchange-direct.png}
+		\includegraphics[width=\linewidth]{figures/direct-exchange.pdf}
 		\caption{Direct exchange example.}
 		\label{fig:direc-exchange}
 	\end{subfigure}
 	\begin{subfigure}{.45\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/exchange-fanout.png}
+		\includegraphics[width=\linewidth]{figures/fanout-exchange.pdf}
 		\caption{Fanout exchange example.}
 		\label{fig:fanout-exchange}
 	\end{subfigure}
-	\caption{Representation of the two main exchanges defined in the AMQP protocol. Pictures taken from~\cite{rabbitmq-amqp-concepts}.}
+	\caption{Representation of the two main exchanges defined in the AMQP protocol.}
 	\label{fig:amqp-exhange-type}
 \end{figure}
 
