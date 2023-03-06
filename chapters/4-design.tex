@@ -1,7 +1,7 @@
 \chapter{Design} % possible chapter for Projects
 \label{chap:design}
 
-This chapter discusses the design elements characterizing the framework by illustrating how the pulverization concepts were modeled and what 
+This chapter discusses the design elements characterizing the framework by illustrating how the pulverization concepts were modeled and what
 adaptations were made to make the pulverization approach better fit in the framework.
 For each module of the framework, the relevant design choices are discussed and finally, a detailed description of the interactions between the framework's modules is also provided to better understand the framework's architecture.
 
@@ -27,7 +27,7 @@ In~\Cref{fig:package-diagram} are represented all the framework's modules and th
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.9\textwidth]{figures/package-diagram.pdf}
-	\caption{Package diagram showing the modules that constitute the framework and their relationship.}
+	\caption[Framework's package diagram]{Package diagram showing the modules that constitute the framework and their relationship.}
 	\label{fig:package-diagram}
 \end{figure}
 
@@ -77,7 +77,7 @@ The~\Cref{fig:framework-architecture} depicts the architecture's choice made to 
 		\node[fontbf] at (0, -3) {\large Platform};
 		\node[fontbf] at (0, -5) {\large RabbitMQ \& other platforms};
 	\end{tikzpicture}
-	\caption{Architectural diagram showing how the pulverization framework is designed.}
+	\caption[Framework's architectural diagram]{Architectural diagram showing how the pulverization framework is designed.}
 	\label{fig:framework-architecture}
 \end{figure}
 
@@ -106,7 +106,7 @@ As you move down the ``pyramid'', the complexity of the modules increases but th
 		\node[fontbf] at (0, -3) {\large Platform};
 		\node[fontbf] at (0, -5) {\large RabbitMQ \& other platforms};
 	\end{tikzpicture}
-	\caption{A correlation between the framework's complexity and the required user's knowledge to use the framework.}
+	\caption[Correlation between framework's complexity and user knowledge]{A correlation between the framework's complexity and the required user's knowledge to use the framework.}
 	\label{fig:pyramid-user-knowledge}
 \end{figure}
 
@@ -205,7 +205,7 @@ The original formulation of the pulverization defines the component's interactio
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/original-components-interactions.pdf}
-	\caption{Design of the interactions between components proposed in the original article~\cite{fi12110203}.}
+	\caption[Original components interaction]{Design of the interactions between components proposed in the original article~\cite{fi12110203}.}
 	\label{fig:framework-components-interaction}
 \end{figure}
 
@@ -332,5 +332,5 @@ The latter is used by the \emph{ComponentRef} to communicate with the component 
 aspects of the communication, e.g., the protocol used to communicate, the serialization of the data, etc.
 
 Is the responsibility of the platform to create the right \emph{Communicator} for each \emph{ComponentRef} based on the initial configuration given
-by the user. Separating the reference to a component from how the communication occurs, allows the platform to optimize all the communication and 
+by the user. Separating the reference to a component from how the communication occurs, allows the platform to optimize all the communication and
 change the communicator based, for example, on the new deployment.

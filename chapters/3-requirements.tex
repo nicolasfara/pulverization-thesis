@@ -46,7 +46,7 @@ anyone who approaches the pulverization.
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{figures/original-components-interactions.pdf}
-	\caption{Representation of a logical device split into its components and a connection with one of its neighbours}
+	\caption[Logical device in the pulverization]{Representation of a logical device split into its components and a connection with one of its neighbours}
 	\label{fig:logical-device}
 \end{figure}
 
@@ -87,14 +87,14 @@ power and memory, while thick hosts can compute and may even do so on behalf of 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/cps-example.png}
-	\caption{Example of instantiation of the CPS model. Picture taken from~\cite{fi12110203}.}
+	\caption[Instantiation example of the CPS model]{Example of instantiation of the CPS model. Picture taken from~\cite{fi12110203}.}
 	\label{fig:cps-example}
 \end{figure}
 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/notable-deployments.png}
-	\caption{\textbf{(a)} Peer-to-peer style; \textbf{(b)} broker-based style (e.g. MQTT); \textbf{(c)} Big data in the cloud style; \textbf{(d)} embedded device with sensors/actuators. Picture taken from~\cite{fi12110203}.}
+	\caption[Styles of pulverization deployment]{\textbf{(a)} Peer-to-peer style; \textbf{(b)} broker-based style (e.g. MQTT); \textbf{(c)} Big data in the cloud style; \textbf{(d)} embedded device with sensors/actuators. Picture taken from~\cite{fi12110203}.}
 	\label{fig:notable-deployments}
 \end{figure}
 
@@ -217,18 +217,18 @@ The goal of this example is to use smartphones to find the embedded device: the 
 light the embedded device will produce; conversely, as the smartphones move away, the light will decrease in intensity.
 Meanwhile, smartphones communicate with each other by exchanging information about the distance to the embedded device that needs to be found.
 On smartphones are executed the \emph{sensor} and \emph{actuator} components, while \emph{behavior} and \emph{state} components are offloaded to the
-cloud. Similarly, the embedded device hosts only the \emph{actuator} component while the \emph{behavior} is offloaded to the cloud. As for 
+cloud. Similarly, the embedded device hosts only the \emph{actuator} component while the \emph{behavior} is offloaded to the cloud. As for
 communication between the devices, all \emph{communication} components are instantiated in the cloud.
 This scenario emphasizes the communication that takes place between devices in the system: devices are decomposed into their components that are then
 instantiated in the infrastructure where communication does not reside in the devices themselves but rather on the cloud, nevertheless the
 correctness of system operation will be preserved.
 
-The last example proposed is quite similar to the previous one but the focus is on having some devices perform the behavior locally while others 
+The last example proposed is quite similar to the previous one but the focus is on having some devices perform the behavior locally while others
 are offloaded to the cloud. This example is intended to show that it is possible to support different ways of deploying the system seamlessly.
 The goal of the example is to implement a system that measures the level of aggregation of people (leveraging a mobile device) through, for example,
 a crowd estimation algorithm.
 The system consists of many devices that interact with each other and exchange information about the distance between them. This information is then
 shared with an additional device in the network that is responsible for making an estimate of the crowd and performing an actuation proportional
-to the computed value. The peculiarity of this deployment lies in the fact that some devices perform the behavior computation on the device itself, 
-while other devices perform the computation offloaded in the cloud. Thus, by varying the system deployment strategy for the same device, we want to 
+to the computed value. The peculiarity of this deployment lies in the fact that some devices perform the behavior computation on the device itself,
+while other devices perform the computation offloaded in the cloud. Thus, by varying the system deployment strategy for the same device, we want to
 observe that the system maintains its functional correctness.
