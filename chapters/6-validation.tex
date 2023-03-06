@@ -569,3 +569,19 @@ At the time of writing, the only protocol implemented to enable intra-component 
 ease of use, performance and adoption.
 
 Adoption of additional protocols would increase the framework's potential to be used in many contexts with strong device heterogeneity.
+
+\subsection{Performance evaluation}
+\label{sec:performance-evaluation}
+
+Currently, no performance evaluation has been conducted on the framework. This is a very important aspect that must be addressed in the future to
+understand how the framework behaves in terms of performance and scalability. In particular, it is important to understand, in terms of latency and
+throughput, how these aspects are affected using different deployment strategies. For example, could be interesting to understand how the latency and
+throughput are affected when all the components are deployed on the same deployment unit (leveraging an in-memory communication) and when the
+components are deployed on different deployment units leveraging the \emph{communicator} implementation to communicate.
+
+Moreover, another aspect to evaluate could be how the latency and throughput are affected when different protocols are used at the same time: for
+example, when different \emph{communicator} implementations are used to opportunistically exploit the underlying infrastructure.
+
+The main reason why this aspect has not been addressed yet is that all the effort has been focused on testing the operational semantics of the
+framework checking that all the functional requirements are met. However, the performance aspect is very important and must be addressed in the
+future.

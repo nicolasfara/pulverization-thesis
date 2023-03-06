@@ -34,8 +34,9 @@ As stated before, such infrastructures are not easy to manage and orchestrate, c
 system tends to be coupled with infrastructure aspects. Generally, this prevents the reusing of design elements across different scenarios by
 exploiting the underlying infrastructure opportunistically.
 
-To tackle this problem the \emph{pulverization approach} is proposed~\cite{DBLP:journals/fi/CasadeiPPVW20}: this framework brakes the system behaviour into small
-computational pieces logically linked to sensors and actuators that are continuously executed and scheduled in the available infrastructure.
+To tackle this problem in~\cite{DBLP:journals/fi/CasadeiPPVW20} the \emph{pulverization approach} is proposed: this framework brakes the system
+behaviour into small computational pieces logically linked to sensors and actuators that are continuously executed and scheduled in the available
+infrastructure.
 In this way, the system can be seamlessly mapped onto a variety of multi-layered deployment infrastructures.
 It is based on a flexible logical model which can be decomposed into a set of sub-components with well-defined relationships that can be deployed and
 wired separately. The pulverization facilitates the deployment independence of a system, namely the ability to run the application with no change
@@ -64,13 +65,28 @@ To solve these issues, this thesis aims to pave the way for closing the gap betw
 leveraging the pulverization approach via a dedicated framework.
 
 The developed framework leverages the pulverization approach to orchestrate distributed applications in the edge-cloud continuum.
-Although the pulverization approach originates in the context of aggregate computing, the framework aims to be generic enough to enable the
-pulverization in non-aggregate systems as well, opening a wide range of applications.
+The framework aims to be versatile enough to allow pulverization in non-aggregate systems, thus expanding its scope of applications beyond aggregate
+computing.
+
+The framework is hosted in Kotlin multiplatform, which allows the framework to be used on several platforms, including
+Android, iOS, JVM and native target. This variety of platforms is fundamental to enable the framework to be used in a variety of scenarios, spanning
+from cloud servers to embedded devices. Another relevant technology adopted in the framework is RabbitMQ, which is a message broker that allows
+communication between the different components of the system. The decision to use RabbitMQ is justified by its compatibility with multiple protocols,
+including AMQP, MQTT, and WebSocket, which enables a broad spectrum of supported devices and platforms. Furthermore, RabbitMQ facilitates several
+communication patterns, such as publish/subscribe, request/reply, and routing, thereby offering significant flexibility in how communications should
+occur.
 
 To showcase the effectiveness of the framework, some scenarios in the context of CPS have been identified by using the framework to deploy such
 systems, highlighting the potential that pulverization has as a methodology.
 In particular, the framework is used in conjunction with \emph{embedded systems} to recreate a heterogeneous infrastructure where the framework
 runs on.
+
+For what concerns the testing of the framework and performance evaluation, an exhaustive test suite (composed of unit and integration tests) has been
+developed to validate the operational semantics of the framework.
+Moreover, as stated above, the framework is tested in real scenarios by deploying a set of demos that showcase the potential of the framework and its
+resilience to failures.
+In future work, evaluating the performance of various deployment strategies of a given system and their impact on communication in terms of latency 
+and throughput represents a relevant topic to be investigated.
 
 %
 \paragraph{Thesis Structure.} % Optional paragraph title
