@@ -474,7 +474,7 @@ is divided into two main packages: \texttt{core} and \texttt{dsl}.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.7\textwidth]{figures/core-package-diagram.pdf}
-	\caption{Core module implementation}
+	\caption{Core module package diagram.}
 	\label{fig:core-module-impl}
 \end{figure}
 
@@ -544,13 +544,13 @@ perform the operation of \emph{sensing the environment.}
 	label={lst:sensor-interface}
 ]{listings/Sensor.kt}
 
-The interface is generic in a type variable \texttt{T} that represents the type of the data collected by the sensor and implements the
+The interface is generic in a type variable \texttt{T} that represents the type of data collected by the sensor and implements the
 \texttt{Initializable} interface to model the ability of initialization of the sensor.
 
 \lstinputlisting[
 	float=!ht,
 	language=Kotlin,
-	caption={SensorContainer implementation defined in the framework.},
+	caption={[Implementation of sensors container]Implementation of the \texttt{SensorsContainer} using inline methods and \texttt{KClass}.},
 	label={lst:sensor-container-impl}
 ]{listings/SensorContainer.kt}
 
@@ -713,7 +713,7 @@ resources if any.
 \lstinputlisting[
 	float=ht,
 	language=Kotlin,
-	caption={Communicator interface},
+	caption={Communicator interface defined by the framework.},
 	label={lst:communicator-interface}
 ]{listings/Communicator.kt}
 
@@ -743,7 +743,7 @@ the component and the way how a component can be reached.
 \lstinputlisting[
 	float=ht,
 	language=Kotlin,
-	caption={ComponentRefImpl class},
+	caption={[Implementation of component reference interface]Implementation of the \texttt{ComponentRef} interface.},
 	label={lst:componentref-impl}
 ]{listings/ComponentRefImpl.kt}
 
@@ -786,7 +786,7 @@ emulated reducing the boilerplate needed to create the class.
 \lstinputlisting[
 	float=ht,
 	language=Kotlin,
-	caption={NoOpComponentRef class},
+	caption={[Implementation of component reference that do nothing]Implementation of the \texttt{ComponentRef} interface that does nothing.},
 	label={lst:noopcomponentref-impl}
 ]{listings/NoOpComponentRef.kt}
 
@@ -968,7 +968,7 @@ The~\Cref{fig:rabbitmq-queues} depicts the interaction pattern described above u
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/rabbitmq-queue.pdf}
-	\caption{RabbitMQ queues}
+	\caption[Example of queue declaration in the framework]{Example of queue declaration in the framework for the communication between the \emph{Behaviour} and the \emph{State} components.}
 	\label{fig:rabbitmq-queues}
 \end{figure}
 
@@ -997,17 +997,17 @@ three possible values: \texttt{Cloud}, \texttt{Edge} and \texttt{Device}.
 The configuration captures also the concept of ``relationship'' between logical devices. In particular, the configuration DSL defines
 the \texttt{Device\-Relations\-Configuration} and the \texttt{DeviceLink} classes which are used to hold information about the link between the logical devices.
 
-Finally, the \texttt{PulverizationConfiguration} class has a set of \texttt{Logical\-Device\-Configuration} and a
-\texttt{DeviceRelationsConfiguration}; this class represents the root of the configuration and is used to configure the pulverization platform.
-The~\Cref{fig:configuration-dsl-classes} depicts the relationship between the classes that define the configuration that can be created via the
-configuration DSL.
-
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/config-dsl-class.pdf}
 	\caption{Configuration DSL class diagram.}
 	\label{fig:configuration-dsl-classes}
 \end{figure}
+
+Finally, the \texttt{PulverizationConfiguration} class has a set of \texttt{Logical\-Device\-Configuration} and a
+\texttt{DeviceRelationsConfiguration}; this class represents the root of the configuration and is used to configure the pulverization platform.
+The~\Cref{fig:configuration-dsl-classes} depicts the relationship between the classes that define the configuration that can be created via the
+configuration DSL.
 
 The configuration is enriched with some extension methods that allow getting the logical device configuration from a given device name and
 from a logical device configuration, can be retrieved the deployment unit from the given components.
