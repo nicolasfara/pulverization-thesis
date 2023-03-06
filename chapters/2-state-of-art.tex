@@ -27,7 +27,7 @@ multiple layers of the computational infrastructure.
 Taking advantage of the characteristics of the edge-cloud continuum enables many opportunities in the Internet of Things field, like
 having systems that comply with requirements such as security, data locality, real-time computation, etc.
 Nevertheless, the deployment of applications in this infrastructure is still a challenge and several approaches have been
-proposed to address this issue~\cite{BITTENCOURT2018134}.
+proposed to address this issue~\cite{DBLP:journals/iot/BittencourtISFM18}.
 
 In the following section will be provided an overview of the main aspects and challenges that demonstrate the suitability of combining edge, fog,
 and cloud computing for various applications used by the Internet of Things.
@@ -43,7 +43,7 @@ those paradigms can be combined to provide a more flexible and efficient solutio
 Over the last decade, cloud computing has become a widely adopted computing paradigm for many applications due to its dynamic characteristics such as elasticity and pay-per-use (achievable via virtualization and containerization), reaching a mature state.
 
 Cloud providers offer on-demand computing through three main models, which are Infrastructure as a Service (IaaS), Platform as a Service (PaaS), and
-Software as a Service (SaaS)~\cite{armbrust2010view}. IaaS provides users with remote access to computing power as a service, while PaaS offers a
+Software as a Service (SaaS)~\cite{DBLP:journals/cacm/ArmbrustFGJKKLPRSZ10}. IaaS provides users with remote access to computing power as a service, while PaaS offers a
 platform for software development with necessary libraries and databases to deploy and run applications, and SaaS provides software that relies on
 cloud providers' infrastructure to offload computing and/or data. The concept of Everything as a Service (XaaS) has emerged, which
 includes a wide variety of cloud service levels.
@@ -155,7 +155,7 @@ The following is an overview of how these two methodologies work, highlighting t
 
 \subsubsection{Osmotic computing}
 
-Osmotic computing~\cite{8781958} utilizes a concept known as a MEL (microelement) to encompass resources, services, and data. In the realm of IoT,
+Osmotic computing~\cite{DBLP:journals/computer/VillariFDRJR19} utilizes a concept known as a MEL (microelement) to encompass resources, services, and data. In the realm of IoT,
 MELs can be structured as a graph and relocated across various infrastructures based on factors such as cost, security, privacy, and performance.
 MELs encapsulate four distinct elements: microservices that provide specific functionality, microdata representing the flow of information to and from
 sensors or actuators, microcomputing that performs various computational tasks using real-time and historic data, and microactuators that control the
@@ -182,7 +182,7 @@ based on factors such as quality of service, security, and runtime perturbations
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.8\linewidth]{figures/osmotic-architecture.png}
-	\caption[Osmotic computing architecture reference]{Osmotic computing architecture reference. Picture taken from~\Cite{8781958}.}
+	\caption[Osmotic computing architecture reference]{Osmotic computing architecture reference. Picture taken from~\Cite{DBLP:journals/computer/VillariFDRJR19}.}
 	\label{fig:osmotic-computing}
 \end{figure}
 
@@ -191,17 +191,17 @@ to appropriate deployment locations. This approach focuses mainly on systems tha
 
 \subsubsection{DR-BIP and DReAM framework}
 
-The \emph{Dynamic Reconfigurable BIP} framework (DR-BIP)~\cite{10.1007/978-3-030-03424-5_20} includes three main aspects of dynamism: (I) the ability
+The \emph{Dynamic Reconfigurable BIP} framework (DR-BIP)~\cite{DBLP:conf/isola/BallouliBBS18} includes three main aspects of dynamism: (I) the ability
 to describe parametric system coordination for an arbitrary number of instances of component types, (II) the ability to add/delete components and
 manage their interaction rules depending on dynamically changing conditions, and (III) allow services to seamlessly continue their activity on any
-available device or computer (fluid architectures~\cite{taivalsaari2014liquid}).
-The \emph{DR-BIP} framework is an extension of the \emph{Behavioral Interconnection Protocol} (BIP)~\cite{5719588} and
-\emph{Dy-BIP} (a former extension that support dynamic interactions)~\cite{10.1007/978-3-642-30564-1_1}.
+available device or computer (fluid architectures~\cite{DBLP:conf/compsac/TaivalsaariMS14}).
+The \emph{DR-BIP} framework is an extension of the \emph{Behavioral Interconnection Protocol} (BIP)~\cite{DBLP:journals/software/BasuBBCJNS11} and
+\emph{Dy-BIP} (a former extension that support dynamic interactions)~\cite{DBLP:conf/soco/BozgaJMS12}.
 
 The DR-DIP framework provides support for runtime changes in the system, including component creation and removal, migration between motifs, and both
 programmed and triggered reconfiguration.
 The use of motifs allows components to interact with others based on their behavior and interaction rules within their new
-motif, providing a flexible framework for coordination. The platform shares similarities with DReAM~\cite{de2020dream}, but the use of constraints
+motif, providing a flexible framework for coordination. The platform shares similarities with DReAM~\cite{DBLP:journals/sttt/NicolaMS20}, but the use of constraints
 allows for more expressive coordination.
 
 DR-BIP uses motifs as the basic unit for describing dynamic architectures (see~\Cref{fig:motif-concept}). Each motif includes the behavior of
@@ -224,7 +224,7 @@ be added or removed.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.8\linewidth]{figures/motif-concept.png}
-	\caption[Motif-based systems]{Motif-based System Concept. Picture taken from~\cite{10.1007/978-3-030-03424-5_20}.}
+	\caption[Motif-based systems]{Motif-based System Concept. Picture taken from~\cite{DBLP:conf/isola/BallouliBBS18}.}
 	\label{fig:motif-concept}
 \end{figure}
 
@@ -247,31 +247,31 @@ sensors and use it to control the system behavior.
 
 However, recent advances in technology have made modern CPS increasingly large-scale, heterogeneous, and dynamic, which makes it challenging to
 engineer distributed intelligent systems that can be deployed in different contexts and exploit available resources opportunistically. To address
-this problem, a framework based on the pulverization approach is proposed~\cite{fi12110203}, which breaks the overall system behavior into tiny
+this problem, a framework based on the pulverization approach is proposed~\cite{DBLP:journals/fi/CasadeiPPVW20}, which breaks the overall system behavior into tiny
 pieces of computation linked to sensors, actuators, and neighboring components. These sub-components can be deployed and wired separately, allowing
 for a separation of concerns between the self-organization logic and the deployment context.
 
-The pulverization approach can be implemented in the framework of Aggregate Computing~\cite{beal2015aggregate}, where global self-organizing behavior
+The pulverization approach can be implemented in the framework of Aggregate Computing~\cite{DBLP:journals/computer/BealPV15}, where global self-organizing behavior
 can be specified declaratively by composing pure functions expressing increasingly complex distributed algorithms.
 This approach allows for the design of distributed adaptive behavior for large-scale CPS that can be deployed in a deployment-independent way,
 meaning that the behavioral description of the self-organization logic remains unchanged regardless of the specifics of the deployment context.
 
 The pulverization approach was exercised simulating a CPS whose aim is to reduce the contribution of household winter heating to air pollution by
-imposing a custom maximum temperature relative to the level of particulate matter (PM) in the area surrounding the household~\cite{fi12110203}.
+imposing a custom maximum temperature relative to the level of particulate matter (PM) in the area surrounding the household~\cite{DBLP:journals/fi/CasadeiPPVW20}.
 The system implements the functionality in a self-organization fashion, where there isn't a central coordinator and the system autonomously organizes
 its behaviour even in the face of disturbance.
 The goal of the experiment is to show that via the pulverization approach, the system's business logic, defined once, can be reused in different
 deployment schemes, preserving its functional behavior.
 
-Another initial research effort~\cite{9599177} was made by combining the pulverization approach with the multi-tier programming
-paradigm~\cite{weisenburger2020survey}.
+Another initial research effort~\cite{DBLP:conf/acsos/AguzziCPSV21} was made by combining the pulverization approach with the multi-tier programming
+paradigm~\cite{DBLP:journals/csur/WeisenburgerWS20}.
 The multi-tier programming paradigm defines a distributed architecture in a single compilation unit with a single language. Once the program is
 specified, the compiler (or the runtime) is responsible for splitting the computation among different peers.
-A language that supports multi-tier programming is \emph{ScalaLoci}~\cite{weisenburger2018distributed, weisenburger2020implementing}, a type-safe
+A language that supports multi-tier programming is \emph{ScalaLoci}~\cite{DBLP:journals/pacmpl/WeisenburgerKS18, DBLP:journals/programming/WeisenburgerS20}, a type-safe
 multi-tier language hosted in Scala.
 A ScalaLoci application is structured through \emph{peers} and \emph{ties,}where peers abstract over the locations representing the components of an
 application, while the ties define the connection between peers. Only tied peers can communicate with each other.
-The example provided in~\cite{9599177} shows how the pulverization approach can be fitted into the multi-tier programming paradigm, by defining
+The example provided in~\cite{DBLP:conf/acsos/AguzziCPSV21} shows how the pulverization approach can be fitted into the multi-tier programming paradigm, by defining
 a logical node as a peer which in turn is composed of a set of peers representing the pulverized device.
 Moreover, the example shows the conjunction of ScaFi, a Scala internal DSL that can run on the JVM or in the browser and ScalaLoci showing
 how this could be the foundation stone of a unified framework living in the Scala ecosystem.

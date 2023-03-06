@@ -104,7 +104,7 @@ For what concern the native target, the compilation pipeline is composed of the 
 \end{itemize}
 
 The pipeline for the JavaScript target is quite more articulated but for the sake of simplicity, are reported only the main phases of the compilation
-steps~\cite{Doeraene:256862}:
+steps~\cite{DBLP:phd/ch/Doeraene18}:
 \begin{itemize}
 	\item \textbf{Generation of the Scala.js IR:} the \texttt{scalajs-compiler} takes the Scala source code and generates the \texttt{.sjsir} files.
 	\item \textbf{Optimization (linking):} in this phase the \texttt{scalajs-optimizer} takes the \texttt{.sjsir} files and performs optimizations
@@ -138,7 +138,7 @@ the future the number of libraries targeting multiplatform will increase.
 
 To complete the analysis and to have a more complete picture of the Scala multiplatform ecosystem, will be examined the maturity of each platform.
 Starting from \emph{Scala.js}, the platform is quite mature and stable: the project was born several years ago and it's used in production by many
-companies. Year to year several improvements were made to reach a high level of performance and stability~\cite{marr2016cross}.
+companies. Year to year several improvements were made to reach a high level of performance and stability~\cite{DBLP:conf/dls/MarrDM16}.
 
 Finally, the \emph{Scala Native} platform works quite well but has some limitations that make it not suitable for all production use.
 One of the biggest and most important limitations is the lack of support for multithreading~\footnote{\url{https://typelevel.org/blog/2022/09/19/typelevel-native.html}}.
@@ -334,7 +334,7 @@ Different attempts have been made over the years to provide programming language
 A callback is a function defined by the user, passed to a callback-aware API as a function value, lambda, function pointer, etc., with the purpose of
 being called at a later time when a certain condition is met. Although this is a rather simple mechanism, callback-based frameworks are known to
 suffer from a complication of code structure disproportionate to the complexity of the logic that code expresses, commonly referred to as ``callback
-hell''~\cite{7321196}. Futures and promises are a step above callback-based computations, working as special proxies for not-yet-completed results
+hell''~\cite{DBLP:conf/esem/GallabaMB15}. Futures and promises are a step above callback-based computations, working as special proxies for not-yet-completed results
 of asynchronous computations. The two main operations that can be performed on a promise are: checking for completion and getting the result of the
 computation. Promises are a good solution to the callback hell problem, but they are not without their problems: they are not composable, and they
 lack a way to express dependencies between asynchronous computations. \emph{async/await} is an approach that brings asynchronous programming as a
@@ -348,14 +348,14 @@ programming.
 
 Even though the concepts of \emph{coroutine} being used for over 50 years, there is no standard definition of what a coroutine is.
 One valid definition could be ``function which can suspend and resume its execution, preserving the state between suspensions''
-\cite{elizarov2021kotlin}. Coroutines have been classified using the following axes, where implementations may differ:
+\cite{DBLP:conf/oopsla/ElizarovBAU21}. Coroutines have been classified using the following axes, where implementations may differ:
 \textbf{Symmetric/Asymmetric Control Transfer} and \textbf{Stackfull/Stackless Implementation}.
 
 Symmetric coroutines can suspend themselves and resume the execution to an arbitrary coroutine, in this context the control transfer between
 coroutines is symmetrical. On the other hand, asymmetric coroutines can only suspend themselves and resume the execution to the coroutine that
 suspended them, in this context the control transfer between coroutines is asymmetric. While symmetric coroutines are more expressive than asymmetric
 coroutines, they are also more complex to understand, for this reason, most of the implementation of coroutines are
-asymmetric~\cite{elizarov2021kotlin}.
+asymmetric~\cite{DBLP:conf/oopsla/ElizarovBAU21}.
 
 A stackful coroutine implementation allows for suspension at any point within nested functions and, when resumed, continues execution from the exact
 point of suspension, restoring the original function call stack. Conversely, a stackless implementation can only be suspended within itself,
@@ -375,7 +375,7 @@ concise and aligns well with the typical way asynchronous code is written. This 
 recent years, either as structured concurrency libraries or as a built-in language feature~\footnote{\url{https://wiki.openjdk.org/display/loom/Structured+Concurrency}}. Kotlin uses the structured
 concurrency approach to manage error handling in coroutines.
 
-Kotlin coroutines are built upon the following goals~\cite{elizarov2021kotlin}:
+Kotlin coroutines are built upon the following goals~\cite{DBLP:conf/oopsla/ElizarovBAU21}:
 \begin{itemize}
 	\item \textbf{Independence from low-level platforms implementation:} Kotlin being a multi-platform language, building its asynchronous support on
 	      existing implementations like futures in JVM would lead to interoperability issues between platforms. Therefore, a unique approach is
@@ -529,7 +529,7 @@ framework are discussed in more detail below.
 All the considerations and choices made to model the concept of \emph{sensor} hold also for the concept of \emph{actuator}, so for the sake of
 brevity, only the discussion about the \emph{sensor} concept is reported.
 
-The formulation presented in the original paper~\cite{fi12110203} defines the sensors module as \textit{``a set $\sigma$ of logical sensors''};
+The formulation presented in the original paper~\cite{DBLP:journals/fi/CasadeiPPVW20} defines the sensors module as \textit{``a set $\sigma$ of logical sensors''};
 starting from this assertion the \textbf{sensor} component is broken down into two separate concepts: the \emph{sensor} which models the physical
 sensor from which the data is collected, and the \emph{sensors container} which represents the collector of the sensors belonging to a specific
 device.
@@ -847,7 +847,7 @@ In particular, this module enables the communication between components via \tex
 
 \subsubsection{RabbitMQ overview}
 
-RabbiMQ is an open source \textbf{message broker} written in Erlang that implements the \textbf{AMQP} protocol~\cite{4012603}.
+RabbiMQ is an open source \textbf{message broker} written in Erlang that implements the \textbf{AMQP} protocol~\cite{DBLP:journals/internet/Vinoski06e}.
 RabbitMQ is lightweight and easy to deploy on-premises and in the cloud. It supports multiple messaging protocols. RabbitMQ can be deployed in
 distributed and federated configurations to meet high-scale, high-availability requirements~\footnote{\url{https://www.rabbitmq.com/\#features}}.
 

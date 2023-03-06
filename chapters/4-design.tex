@@ -121,10 +121,10 @@ The sections below will describe the architectural choices made for each framewo
 Architecturally, the \emph{core} module is rather simple. Its simplicity is a consequence of the fact that this module is the main entry point
 for the user, and the lower the complexity of this module, the faster the user can become familiar with the framework.
 Moreover, a correct design of the interfaces defined in the \emph{core} module is a crucial aspect to consider to be aligned with the
-pulverization concepts illustrated in the article~\cite{fi12110203}.
+pulverization concepts illustrated in the article~\cite{DBLP:journals/fi/CasadeiPPVW20}.
 
 The pulverization represents a device as the combination of five components: \emph{state}, \emph{behaviour}, \emph{communication},
-\emph{sensors} and \emph{actuators}~\cite{fi12110203}.
+\emph{sensors} and \emph{actuators}~\cite{DBLP:journals/fi/CasadeiPPVW20}.
 All of those concepts are modeled by the framework through interfaces that the user will implement based on the specific scenario.
 
 \begin{figure}[ht]
@@ -148,7 +148,7 @@ representing a remote component and how to reach it; finally, it manages all the
 The highly distributed nature of a ``pulverized system'' has forced the design of the framework to abstract from the actual place where components
 are actually deployed; in this way, we avoid the need for the user to specify and manage specific aspects of deployment but can focus solely on
 application logic while remaining adherent to the objectives of the pulverization, which among many want to separate aspects of
-deployment from aspects of application logic~\cite{fi12110203}.
+deployment from aspects of application logic~\cite{DBLP:journals/fi/CasadeiPPVW20}.
 
 Although the abstractions defined in this module are fundamental to the execution of the system, their understanding by the user is not essential.
 Nevertheless, their understanding becomes crucial when the user wants to extend the framework with new features, like implementing a new protocol to
@@ -205,7 +205,7 @@ The original formulation of the pulverization defines the component's interactio
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/original-components-interactions.pdf}
-	\caption[Original components interaction]{Design of the interactions between components proposed in the original article~\cite{fi12110203}.}
+	\caption[Original components interaction]{Design of the interactions between components proposed in the original article~\cite{DBLP:journals/fi/CasadeiPPVW20}.}
 	\label{fig:framework-components-interaction}
 \end{figure}
 
