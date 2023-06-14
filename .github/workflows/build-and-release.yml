@@ -27,7 +27,7 @@ jobs:
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Build report
-        uses: xu-cheng/latex-action@2.8.1
+        uses: xu-cheng/latex-action@2.8.2
         with:
           root_file: thesis-main.tex
           args: -jobname=nicolas-farabegoli-thesis_${{ steps.tag-generation.outputs.tag }} -pdf -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape
