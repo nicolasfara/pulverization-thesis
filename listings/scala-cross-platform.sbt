@@ -8,5 +8,5 @@ lazy val root = project(file("."))
     )
     .settings(
       name := "project-name",
-      scalaVersion := "3.4.2",
+      scalaVersion := "3.5.0",
     )
